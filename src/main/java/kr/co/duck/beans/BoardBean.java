@@ -3,6 +3,7 @@ package kr.co.duck.beans;
 public class BoardBean {
 
 	private int board_id;
+	private String board_name;
 	private String comment;
 	private String title;
 	private String artist;
@@ -19,6 +20,12 @@ public class BoardBean {
 	}
 	public void setBoard_id(int board_id) {
 		this.board_id = board_id;
+	}
+	public String getBoard_name() {
+		return board_name;
+	}
+	public void setBoard_name(String board_name) {
+		this.board_name = board_name;
 	}
 	public String getComment() {
 		return comment;

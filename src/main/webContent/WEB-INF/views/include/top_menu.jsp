@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <c:set var='root' value="${pageContext.request.contextPath }/" />
 <!DOCTYPE html>
 <html>
@@ -9,7 +10,7 @@
 <title>Insert title here</title>
 </head>
 <body>
- <!-- Navigation-->
+	<!-- Navigation-->
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<div class="container px-4 px-lg-5">
 			<a class="navbar-brand" href="${root }main">Start Bootstrap</a>
@@ -34,14 +35,35 @@
 							<li><a class="dropdown-item" href="#!">New Arrivals</a></li>
 						</ul></li>
 				</ul>
-				<form:form class="d-flex">
-					<form:button class="btn btn-outline-dark" type="submit">
-						<i class="bi-cart-fill me-1"></i>
+
+				<ul class="navbar-nav ml-auto">
+					<c:choose>
+						<c:when test="${loginMemberBean.memberLogin == true }">
+							<!-- 로그인시 -->
+							<li class="nav-item"><a href="${root }member/modify"
+								class="nav-link">정보수정</a></li>
+							<li class="nav-item"><a href="${root }member/logout"
+								class="nav-link">로그아웃</a></li>
+							<form:form class="d-flex">
+								<form:button class="btn btn-outline-dark" type="submit">
+									<i class="bi-cart-fill me-1"></i>
                             Cart
                             <span
-							class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-					</form:button>
-				</form:form>
+										class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+								</form:button>
+							</form:form>
+						</c:when>
+						<c:otherwise>
+							<!-- 로그아웃시 -->
+							<li class="nav-item"><a href="${root }member/login"
+								class="nav-link">로그인</a></li>
+							<li class="nav-item"><a href="${root }member/join"
+								class="nav-link">회원가입</a></li>
+						</c:otherwise>
+					</c:choose>
+				</ul>
+
+
 			</div>
 		</div>
 	</nav>

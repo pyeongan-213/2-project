@@ -32,7 +32,8 @@ public class MemberBean {
 	@Pattern(regexp = "[a-zA-Z0-9!@#$%^&*()_+=\\-`~]*")
 	private String password2;	//유저 비밀번호2 (임의 추가
 	
-	@Pattern(regexp = "[0-9]{1,3}")
+	@Size(min = 1, max =3)
+	@Pattern(regexp = "[0-9]*")
 	private String age;	//유저 나이
 	
 	@Email
