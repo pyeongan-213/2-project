@@ -16,6 +16,7 @@ public class QuizBean {
 	private int join_user; // 첫번재 들어온 사람이 host
 	private int user_id;	//유저 식별번호
 
+	
 	public int getQuiz_id() {
 		return quiz_id;
 	}

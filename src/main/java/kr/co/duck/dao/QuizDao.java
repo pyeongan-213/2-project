@@ -10,6 +10,6 @@ public class QuizDao{
 	
 	@Autowired
 	private QuizMapper quizMapper;
-	//
+	
 	
 }

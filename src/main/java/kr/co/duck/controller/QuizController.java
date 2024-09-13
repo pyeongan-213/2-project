@@ -13,6 +13,6 @@ public class QuizController {
 	@Autowired
 	private QuizService quizService;
 	
-	//@GetMapping 같은r
+	//@GetMapping 같은
 	
 }
