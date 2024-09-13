@@ -8,7 +8,7 @@ public class ChattingBean {
 	private int chat_user_id; // 유저 식별번호
 	private String chat_text; // 채팅 내용
 	private LocalDateTime chat_time; // 채팅을 적은 시간
-	private int user_score;
+	private int user_score; //
 
 	public int getChat_id() {
 		return chat_id;

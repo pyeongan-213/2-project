@@ -14,7 +14,7 @@ public class QuizBean {
 	private int quiz_score; // 퀴즈 정답 점수
 	private String quiz_hint; // 퀴즈 힌트
 	private int join_user; // 첫번재 들어온 사람이 host
-	private int user_id;
+	private int user_id;	//유저 식별번호
 
 	public int getQuiz_id() {
 		return quiz_id;
