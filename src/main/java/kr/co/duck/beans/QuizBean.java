@@ -14,9 +14,8 @@ public class QuizBean {
 	private int quiz_score; // 퀴즈 정답 점수
 	private String quiz_hint; // 퀴즈 힌트
 	private int join_user; // 첫번재 들어온 사람이 host
-	private int user_id;	//유저 식별번호
+	private int user_id; // 유저 식별번호
 
-	
 	public int getQuiz_id() {
 		return quiz_id;
 	}
@@ -103,6 +102,11 @@ public class QuizBean {
 
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
+	}
+
+	@Override
+	public String toString() {
+		return "QuizBean [quiz_id=" + quiz_id + ", quiz_title=" + quiz_title + ", quiz_text=" + quiz_text + "]";
 	}
 
 }
