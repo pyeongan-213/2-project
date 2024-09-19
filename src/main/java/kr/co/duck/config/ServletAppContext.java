@@ -16,6 +16,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import kr.co.duck.service.PlaylistService;
+
 
 @Configuration
 @EnableWebMvc
@@ -97,6 +99,9 @@ public class ServletAppContext implements WebMvcConfigurer {
 		return new StandardServletMultipartResolver();
 	}
 	
-	
+	 @Bean
+	    public PlaylistService playlistService() {
+	        return new PlaylistService();
+	    }
 
 }

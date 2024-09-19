@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>MVCProjectJava</groupId>
-	<artifactId>MVCProjectJava</artifactId>
+	<groupId>Project_2</groupId>
+	<artifactId>Project_2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<build>
@@ -128,7 +128,11 @@
 			<version>5.13.0.202109080827-r</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version> <!-- 최신 버전으로 변경 가능 -->
+		</dependency>
 	</dependencies>
 
 </project>
