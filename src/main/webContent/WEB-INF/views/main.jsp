@@ -15,6 +15,9 @@
 		<a href="${root}temp/tempMain">To tempMain</a> 
 		<hr />
 		<a href="${root}temp/playlist">플레이리스트로 가기</a>
+		<hr />
+		<a href="${root}melon-chart">Melon 차트 보기</a> <!-- Melon 차트로 가는 링크 -->
+		
 	
 	</h2>
 </body>
