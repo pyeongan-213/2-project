@@ -5,24 +5,24 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class MemberBean {
-
-	private int member_idx;
 	
-	private boolean memberIdExist;
+	private boolean memberNameExist;
 	private boolean memberLogin;	
 	
 	public MemberBean() {
-		this.memberIdExist = false;
+		this.memberNameExist = false;
 		this.memberLogin = false;
 	}
 	
-	@Size(min = 2, max = 10)
+	private int member_id; //로그인시 작성하는 id 아님 유저식별번호임
+	
+	@Size(min = 1, max = 10)
 	@Pattern(regexp = "[a-zA-Z0-9]*")
-	private int member_id; //로그인시 작성하는 id
+	private String membername;	// = 아이디
 	
 	@Size(min = 2, max = 5)
 	@Pattern(regexp = "[가-힣a-zA-Z0-9]*")
-	private String membername;	// 이름
+	private String nickname;	//닉네임
 	
 	@Size(min = 2, max = 20)
 	@Pattern(regexp = "[a-zA-Z0-9!@#$%^&*()_+=\\-`~]*")
@@ -39,8 +39,6 @@ public class MemberBean {
 	@Email
 	private String email;	//유저 이메일
 	
-	private String song_quantity;	
-	private String board_quantity; 
 	private String join_date; 
 	private String provider;
 	private String provider_id;
@@ -51,17 +49,12 @@ public class MemberBean {
 	private String role;
 	
 	
-	public int getMember_idx() {
-		return member_idx;
+	
+	public boolean isMemberNameExist() {
+		return memberNameExist;
 	}
-	public void setMember_idx(int member_idx) {
-		this.member_idx = member_idx;
-	}
-	public boolean isMemberIdExist() {
-		return memberIdExist;
-	}
-	public void setMemberIdExist(boolean memberIdExist) {
-		this.memberIdExist = memberIdExist;
+	public void setMemberNameExist(boolean memberNameExist) {
+		this.memberNameExist = memberNameExist;
 	}
 	public boolean isMemberLogin() {
 		return memberLogin;
@@ -80,6 +73,12 @@ public class MemberBean {
 	}
 	public void setMembername(String membername) {
 		this.membername = membername;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	public String getPassword() {
 		return password;
@@ -104,18 +103,6 @@ public class MemberBean {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getSong_quantity() {
-		return song_quantity;
-	}
-	public void setSong_quantity(String song_quantity) {
-		this.song_quantity = song_quantity;
-	}
-	public String getBoard_quantity() {
-		return board_quantity;
-	}
-	public void setBoard_quantity(String board_quantity) {
-		this.board_quantity = board_quantity;
 	}
 	public String getJoin_date() {
 		return join_date;

@@ -17,8 +17,8 @@ public class MemberService {
 	@Resource(name = "loginMemberBean")
 	private MemberBean loginMemberBean;
 	
-	public boolean checkUserIdExist(String member_id) {
-		String member_name = memberDao.checkMemberIdExist(member_id);
+	public boolean checkMemberNameExist(String membername) {
+		String member_name = memberDao.checkMemberNameExist(membername);
 		
 		if(member_name == null) {
 			return true; //=아이디 사용할 수 있음
@@ -29,6 +29,15 @@ public class MemberService {
 	
 	public void addMemberInfo(MemberBean joinMemberBean) {
 		memberDao.addMemberInfo(joinMemberBean);
+	}
+	
+	public void getLoginMemberInfo(MemberBean tempLoginMemberBean) {
+		MemberBean tempLoginMemberBean2 = memberDao.getLoginMemberInfo(tempLoginMemberBean);
+		
+		if(tempLoginMemberBean2 != null) {
+			loginMemberBean.setMembername(tempLoginMemberBean2.getMembername());
+			loginMemberBean.setMemberLogin(true);
+		}
 	}
 	
 }

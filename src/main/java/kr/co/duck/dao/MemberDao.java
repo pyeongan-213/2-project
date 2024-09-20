@@ -12,12 +12,16 @@ public class MemberDao {
 	@Autowired
 	private MemberMapper memberMapper;
 	
-	public String checkMemberIdExist(String member_id) {
-		return memberMapper.checkMemberIdExist(member_id);
+	public String checkMemberNameExist(String membername) {
+		return memberMapper.checkMemberIdExist(membername);
 	}
 	
 	public void addMemberInfo(MemberBean joinMemberBean) {
 		memberMapper.addMemberInfo(joinMemberBean);
+	}
+	
+	public MemberBean getLoginMemberInfo(MemberBean tempLoginMemberBean) {
+		return memberMapper.getLoginMemberInfo(tempLoginMemberBean);
 	}
 	
 }

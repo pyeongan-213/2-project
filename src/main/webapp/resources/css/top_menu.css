@@ -1,0 +1,86 @@
+@charset "UTF-8";
+
+/* 전체 페이지 레이아웃 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin-top: 100px;
+}
+
+/* 카드 스타일 */
+.card {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* 입력 필드 스타일 */
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* 에러 메시지 스타일 */
+form:errors {
+    color: red;
+    font-size: 12px;
+}
+
+/* 중복확인 버튼 스타일 */
+.input-group-append .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+.input-group-append .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* 회원가입 버튼 스타일 */
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* 반응형 레이아웃 */
+@media (max-width: 768px) {
+    .container {
+        margin-top: 50px;
+    }
+
+    .card {
+        margin: 0 10px;
+    }
+}

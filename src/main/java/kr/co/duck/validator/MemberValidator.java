@@ -26,15 +26,16 @@ public class MemberValidator implements Validator{
 				errors.rejectValue("password", "NotEquals");
 				errors.rejectValue("password2", "NotEquals");
 			}
+		
 
 			//회원가입시
 			if (beanName.equals("joinMemberBean")) {
 
-				if (memberBean.isMemberIdExist() == false) {
-					errors.rejectValue("user_id", "DontCheckUserIdExist");
+				if (memberBean.isMemberNameExist() == false) {
+					errors.rejectValue("membername", "DontCheckMemberNameExist");
 				}
 			}
-		} 
+		}
 		
 	}
 

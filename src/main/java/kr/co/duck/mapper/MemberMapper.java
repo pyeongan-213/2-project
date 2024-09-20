@@ -7,12 +7,15 @@ import kr.co.duck.beans.MemberBean;
 
 public interface MemberMapper {
 
-	@Select("select username from member where member_id = #{member_id}")
-	String checkMemberIdExist(String member_id);
+	@Select("select nickname from member where membername = #{membername}")
+	String checkMemberIdExist(String membername);
 	
-	@Insert("insert into member(member_id, membername, password, age, email, song_quantity, board_quantity, "
-			+ "join_date, provider, provider_id) values (#{member_id}, #{membername}, #{password}, #{age}, "
-			+ "#{email}, #{song_quantity}, #{board_quantity}, #{join_date}, #{provider}, #{provider_id}")
+	@Insert("insert into member(member_id, membername, password, age, email, "
+			+ "join_date, provider, provider_id) values (member_seq.nextval, #{membername}, #{password}, #{age}, "
+			+ "#{email}, #{join_date}, #{provider}, #{provider_id}")
 	void addMemberInfo(MemberBean joinMemberBean);
+	
+	@Select("select membername, nickname from member where membername = #{membername} and password = #{password}")
+	MemberBean getLoginMemberInfo(MemberBean tempLoginMemberBean);
 	
 }
