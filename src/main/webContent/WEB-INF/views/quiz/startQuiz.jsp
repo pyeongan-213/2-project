@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var='root' value="${pageContext.request.contextPath }/" />
+<c:set var='root' value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -9,7 +9,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>gameEffect01</title>
+
+<title>DuckMusicQuiz</title>
 
 <link rel="stylesheet" href="${root }/css/game.css">
 <link rel="stylesheet" href="${root }/css/music.css">
@@ -33,19 +34,19 @@
 	<main id="main">
 		<div class="icon_box">
 			<div class="icon i1">
-				<img src="/resources/img/game_folder_icon11.png" alt="뮤직"> <span>Music</span>
+				<img src="./../img/game_folder_icon11.png" alt="뮤직"> <span>Music</span>
 			</div>
 			<div class="icon i2">
-				<img src="./../img/game_folder_icon12.png" alt="2"> <span>Search</span>
+				<img src="./../img/game_folder_icon12.png" alt="2"> <span>Quiz</span>
 			</div>
 			<div class="icon i3">
-				<img src="./../img/game_folder_icon12.png" alt="3"> <span>1</span>
+				<img src="./../img/game_folder_icon12.png" alt="3"> <span>3</span>
 			</div>
 			<div class="icon i4">
-				<img src="./../img/game_folder_icon12.png" alt="4"> <span>2</span>
+				<img src="./../img/game_folder_icon12.png" alt="4"> <span>4</span>
 			</div>
 			<div class="icon i5">
-				<img src="./../img/game_folder_icon12.png" alt="5"> <span>3</span>
+				<img src="./../img/game_folder_icon12.png" alt="5"> <span>5</span>
 			</div>
 		</div>
 	</main>
@@ -69,11 +70,11 @@
 				<div class="music__contents">
 					<div class="music__view">
 						<div class="img">
-							<img src="" alt="">
+							<img src="./../img/ai-generated-8274619_1280.png" alt="">
 						</div>
 						<div class="title">
-							<h3>A Year Ago</h3>
-							<p>NETFFEX</p>
+							<h3>First Song</h3>
+							<p>None</p>
 						</div>
 						<div class="volume">
 							<input type="range" id="volume-control" min="0.1" max="10">
@@ -82,7 +83,7 @@
 					<div class="music__control">
 						<div class="progress">
 							<div class="bar">
-								<audio id="main-audio" src=""></audio>
+								<audio id="main-audio" src="${root }/audio/music_audio01.mp3"></audio>
 							</div>
 							<div class="timer">
 								<span class="current">0:00</span> <span class="duration">4:00</span>
@@ -125,10 +126,12 @@
 	</div>
 	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-	<script src="../assets/js/gsap.min.js"></script>
-	<script src="../assets/js/music.js"></script>
-	<script src="../assets/js/searchgame.js"></script>
-	<script src="../assets/js/memory.js"></script>
+	<!-- <script src="./../js/gsap.min.js"></script> -->
+	<script src="${root}/js/music.js"></script>
+	<script src="${root}/js/changeBackground.js"></script>
+	
+	<!-- <script src="./../js/searchgame.js"></script>
+	<script src="./../js/memory.js"></script> -->
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js"></script>
 	<script>
@@ -137,10 +140,10 @@
         $(".i3").draggable({});
         $(".i4").draggable({});
         $(".i5").draggable({});
-        $(".i6").draggable({});
+     // $(".i6").draggable({});
         $(".music__wrap").draggable();
-        $(".search__wrap").draggable();
-        $(".memory__wrap").draggable();
+ /*     $(".search__wrap").draggable();
+        $(".memory__wrap").draggable(); */
 
         const icon = document.querySelector(".icon");
         const i1 = document.querySelector(".i1");
@@ -162,11 +165,11 @@
 
         i1.addEventListener("click", () => {
             if (i1.classList.contains("active")) {
-                $(".i1 img").attr("src", "../assets/img/game_folder_icon11.png");
+                $(".i1 img").attr("src", "./../img/game_folder_icon11.png");
                 i1.classList.remove("active");
                 musicBox.classList.remove("show");
             } else {
-                $(".i1 img").attr("src", "../assets/img/game_folder_over11.png");
+                $(".i1 img").attr("src", "./../img/game_folder_over11.png");
                 i1.classList.add("active");
                 musicBox.classList.add("show");
             }
@@ -174,11 +177,11 @@
 
         i2.addEventListener("click", () => {
             if (i2.classList.contains("active")) {
-                $(".i2 img").attr("src", "../assets/img/game_folder_icon12.png");
+                $(".i2 img").attr("src", "./../img/game_folder_icon12.png");
                 i2.classList.remove("active");
                 searchGame.classList.remove("show");
             } else {
-                $(".i2 img").attr("src", "../assets/img/game_folder_over12.png");
+                $(".i2 img").attr("src", "./../img/game_folder_over12.png");
                 i2.classList.add("active");
                 searchGame.classList.add("show");
             }
@@ -186,11 +189,11 @@
 
         i3.addEventListener("click", () => {
             if (i3.classList.contains("active")) {
-                $(".i3 img").attr("src", "../assets/img/game_folder_icon12.png");
+                $(".i3 img").attr("src", "./../img/game_folder_icon12.png");
                 i3.classList.remove("active");
                 memoryGame.classList.remove("show");
             } else {
-                $(".i3 img").attr("src", "../assets/img/game_folder_over12.png");
+                $(".i3 img").attr("src", "./../img/game_folder_over12.png");
                 i3.classList.add("active");
                 memoryGame.classList.add("show");
             }
@@ -198,11 +201,11 @@
 
         i4.addEventListener("click", () => {
             if (i4.classList.contains("active")) {
-                $(".i4 img").attr("src", "../assets/img/game_folder_icon12.png");
+                $(".i4 img").attr("src", "./../img/game_folder_icon12.png");
                 i4.classList.remove("active");
                 i4.classList.remove("show");
             } else {
-                $(".i4 img").attr("src", "../assets/img/game_folder_over12.png");
+                $(".i4 img").attr("src", "./../img/game_folder_over12.png");
                 i4.classList.add("active");
                 i4.classList.add("show");
             }
@@ -210,17 +213,17 @@
 
         i5.addEventListener("click", () => {
             if (i5.classList.contains("active")) {
-                $(".i5 img").attr("src", "../assets/img/game_folder_icon12.png");
+                $(".i5 img").attr("src", "./../img/game_folder_icon12.png");
                 i5.classList.remove("active");
                 i5.classList.remove("show");
             } else {
-                $(".i5 img").attr("src", "../assets/img/game_folder_over12.png");
+                $(".i5 img").attr("src", "./../img/game_folder_over12.png");
                 i5.classList.add("active");
                 i5.classList.add("show");
             }
         })
 
-        i6.addEventListener("click", () => {
+       /*  i6.addEventListener("click", () => {
             // $(".i6 img").attr("src", "../assets/img/game_folder_over16.png");
             // codeSite.classList.add("show");
 
@@ -238,7 +241,7 @@
         codeExit.addEventListener("click", () => {
             codeSite.classList.remove("show");
             $(".i6 img").attr("src", "../assets/img/game_folder_icon16.png");
-        })
+        }) */
 
         // 볼륨 조절
         const audio = document.getElementById('main-audio');
@@ -257,7 +260,7 @@
         // 	}
         // });
 
-        //시계
+       /*  //시계
         function printTime() {
             //지금 시간 넣기기
             const clock = document.querySelector(".time");
@@ -286,10 +289,10 @@
 
             clock.innerText = nowTime;
             setTimeout("printTime()", 1000);
-        }
+        } */
 
 
-        function printAgent() {
+    /*     function printAgent() {
             const agent = document.querySelector(".agent");
             const os = navigator.userAgent.toLocaleLowerCase();
 
@@ -314,10 +317,9 @@
         window.onload = function () {
             printTime();
             printAgent();
-        }
+        } */
 
     </script>
-
 
 </body>
 
