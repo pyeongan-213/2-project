@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate.Param;
-
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.service.MemberService;
 import kr.co.duck.validator.MemberValidator;
@@ -63,6 +61,13 @@ public class MemberController {
 		return "member/not_login";
 	}
 	
+	@GetMapping("/logout")
+	public String logout() {
+		loginMemberBean.setMemberLogin(false);
+		
+		return "member/logout";
+	}
+	
 	
 	@GetMapping("/join")
 	public String join(@ModelAttribute("joinMemberBean") MemberBean joinMemberBean) {
@@ -99,9 +104,7 @@ public class MemberController {
     @ResponseBody
     public String checkMemberNameExist(@PathVariable("membername") String membername) {
         // 아이디 중복 확인 로직 (서비스 호출 등)
-        boolean isExist = memberService.checkMemberNameExist(membername);
-        
-        
+        boolean isExist = memberService.checkMemberNameExist(membername);               
         
         // 중복 여부에 따라 "true" 또는 "false" 반환
         return isExist ? "true" : "false";

@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <c:set var='root' value="${pageContext.request.contextPath }/" />
 <!DOCTYPE html>
 <html>
@@ -43,14 +42,7 @@
 							<li class="nav-item"><a href="${root }member/modify"
 								class="nav-link">정보수정</a></li>
 							<li class="nav-item"><a href="${root }member/logout"
-								class="nav-link">로그아웃</a></li>
-							<form:form class="d-flex">
-								<form:button class="btn btn-outline-dark" type="submit">
-									<i class="bi-cart-fill me-1"></i>
-                            Cart
-                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-								</form:button>
-							</form:form>
+								class="nav-link">로그아웃</a></li>							
 						</c:when>
 						<c:otherwise>
 							<!-- 로그아웃시 -->

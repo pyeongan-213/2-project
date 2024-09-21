@@ -11,11 +11,11 @@ public interface MemberMapper {
 	String checkMemberIdExist(String membername);
 	
 	@Insert("insert into member(member_id, membername, password, age, email, "
-			+ "join_date, provider, provider_id) values (member_seq.nextval, #{membername}, #{password}, #{age}, "
-			+ "#{email}, #{join_date}, #{provider}, #{provider_id}")
+			+ "join_date) values (member_seq.nextval, #{membername}, #{password}, #{age}, #{email}, sysdate)")
 	void addMemberInfo(MemberBean joinMemberBean);
 	
 	@Select("select membername, nickname from member where membername = #{membername} and password = #{password}")
 	MemberBean getLoginMemberInfo(MemberBean tempLoginMemberBean);
+	
 	
 }
