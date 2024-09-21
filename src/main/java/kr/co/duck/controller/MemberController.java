@@ -90,6 +90,7 @@ public class MemberController {
 		binder.addValidators(validator1);
 	}
 	
+	asd
 	
 	/*
 	 * @GetMapping("/checkMemberNameExist")
