@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Update;
 import kr.co.duck.domain.Payment;
 
 @Mapper
-public interface paymentMapper {
+public interface PaymentMapper {
 
     // 결제 정보 삽입
     @Insert("INSERT INTO Payment (payment_id, member_id, subscription_date, expiry_date, is_renewed, payment_amount, payment_method, payment_info) " +
@@ -36,3 +36,4 @@ public interface paymentMapper {
     @Delete("DELETE FROM Payment WHERE payment_id = #{payment_id}")
     void deletePayment(int payment_id);
 }
+
