@@ -270,3 +270,11 @@ select option {
 	font-size: 16px; /* 화살표 크기 조정 */
 	color: gray; /* 화살표 색상 */
 }
+
+.comment-container > div{
+	margin: 5px;
+}
+
+.comment-container > div:nth-child(even) {
+	margin-bottom: 15px;
+}

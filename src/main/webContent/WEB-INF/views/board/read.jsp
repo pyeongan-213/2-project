@@ -25,11 +25,11 @@
 		<div>
 		<h3>자유게시판  제목1~~~~~~~~~~~~~~~~~</h3>
 		</div>
-		<div style="font-size: 13px; margin-bottom: 20px;">
+		<div style="font-size: 13px;">
 			<div>글쓴이1</div>
 			<div>2024-09-13  ⊙34</div>
 		</div>
-		<div style="text-align: center;">
+		<div style="text-align: center; margin: 20px 0;">
 		강의 시청 링크는 맨 아래에!<br />
 		<br />
 		프로작곡가가 되고싶다면?<br />
@@ -40,6 +40,18 @@
 		</div>
 		<div>
 		<div style="display: flex;">♡2 ©0 <span style="margin-left: auto;">공유 | 저장</span></div>
+		</div>
+		<div class="comment-container">
+			<div style="font-size: 14px;">
+			<span>댓글쓴이 1</span>
+			<span style="color: gray;">2024-09-14</span>
+			</div>
+			<div>댓글 내용 1</div>
+			<div style="font-size: 14px;">
+			<span>댓글쓴이 2</span>
+			<span style="color: gray;">2024-09-14</span>
+			</div>
+			<div>댓글 내용 2</div>
 		</div>
 		<div style="border: 1px solid gray; width: 100%; height: 100px; position: relative;">
 			<input
