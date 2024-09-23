@@ -1,58 +1,106 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html lang="ko">
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>ManiaDB 검색</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
+<title>Music Search</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+}
+
+.container {
+	width: 80%;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.search-form {
+	margin-bottom: 20px;
+}
+
+.search-form input[type="text"] {
+	width: 70%;
+	padding: 10px;
+	font-size: 16px;
+}
+
+.search-form button {
+	padding: 10px 15px;
+	font-size: 16px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+table, th, td {
+	border: 1px solid #ccc;
+}
+
+th, td {
+	padding: 10px;
+	text-align: left;
+}
+
+img {
+	max-width: 100px;
+}
+
+.no-results {
+	color: red;
+	font-weight: bold;
+}
+</style>
 </head>
 <body>
-    <h1>ManiaDB 검색</h1>
-    <form action="${pageContext.request.contextPath}/temp/maniadbSearch" method="get">
-        <input type="text" name="query" placeholder="검색어 입력" required>
-        <button type="submit">검색</button>
-    </form>
+	<div class="container">
+		<!-- 검색 창 -->
+		<div class="search-form">
+			<h1>Search for Music</h1>
+			<form action="search" method="get">
+				<input type="text" name="query" placeholder="Enter song or artist"
+					value="${param.query}" required />
+				<button type="submit">Search</button>
+			</form>
+		</div>
 
-    <div>
-        <h2>검색 결과</h2>
-        <c:if test="${not empty result}">
-            <table>
-                <thead>
-                    <tr>
-                        <th>곡 제목</th>
-                        <th>아티스트</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="music" items="${result}">
-                        <tr>
-                            <td>${music.title}</td>
-                            <td>${music.artist}</td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </c:if>
-        <c:if test="${empty result}">
-            <p>${resultMessage}</p>  <!-- 결과가 비어 있을 때 메시지 -->
-        </c:if>
-    </div>
+		<!-- 검색 결과 -->
+		<div class="search-results">
+			<h2>Search Results for "${param.query}"</h2>
+
+			<c:choose>
+				<c:when test="${not empty musicList}">
+					<table>
+						<thead>
+							<tr>
+								<th>Album Image</th>
+								<th>Title</th>
+								<th>Artist</th>
+								<th>Album Title</th>
+
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="music" items="${musicList}">
+								<tr>
+									<td><img src="${music.albumImage}" alt="Album Image" /></td>
+									<td>${music.title}</td>
+									<td>${music.albumArtist}</td>
+									<td>${music.albumTitle}</td>
+									<td><a href="${music.link}" target="_blank">View</a></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:when>
+				<c:otherwise>
+					<p class="no-results">No results found.</p>
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</div>
 </body>
 </html>
