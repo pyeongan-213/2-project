@@ -3,6 +3,7 @@ package kr.co.duck.config;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,87 +17,75 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableWebMvc
-@ComponentScan("kr.co.duck.dao")
-@ComponentScan("kr.co.duck.controller")
-@ComponentScan("kr.co.duck.service")
+@ComponentScan("kr.co.duck")
 @PropertySource("/WEB-INF/properties/db.properties")
+@MapperScan(basePackages = "kr.co.duck.dao") // Mapper ÀÎÅÍÆäÀÌ½º°¡ ÀÖ´Â ÆĞÅ°Áö ½ºÄµ
 public class ServletAppContext implements WebMvcConfigurer {
 
-	@Value("${db.classname}")
-	private String db_classname;
+    @Value("${db.classname}")
+    private String db_classname;
 
-	@Value("${db.url}")
-	private String db_url;
+    @Value("${db.url}")
+    private String db_url;
 
-	@Value("${db.username}")
-	private String db_username;
+    @Value("${db.username}")
+    private String db_username;
 
-	@Value("${db.password}")
-	private String db_password;
-	
+    @Value("${db.password}")
+    private String db_password;
 
-	// Controllerì˜ ë©”ì„œë“œê°€ ë°˜í™˜í•˜ëŠ” jspì˜ ì´ë¦„ ì•ë’¤ì— ê²½ë¡œì™€ í™•ì¥ìë¥¼ ë¶™í˜€ì£¼ë„ë¡ ì„¤ì •
-	@Override
-	public void configureViewResolvers(ViewResolverRegistry registry) {
-		WebMvcConfigurer.super.configureViewResolvers(registry);
-		registry.jsp("/WEB-INF/views/", ".jsp");
-	}
+    // View Resolver ¼³Á¤
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        WebMvcConfigurer.super.configureViewResolvers(registry);
+        registry.jsp("/WEB-INF/views/", ".jsp");
+    }
 
-	// ì •ì  íŒŒì¼ ê²½ë¡œ ë§¤í•‘
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		WebMvcConfigurer.super.addResourceHandlers(registry);
-		registry.addResourceHandler("/**").addResourceLocations("/resources/");
-	}
+    // Á¤Àû ÆÄÀÏ °æ·Î ¸ÅÇÎ
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        WebMvcConfigurer.super.addResourceHandlers(registry);
+        registry.addResourceHandler("/**").addResourceLocations("/resources/");
+    }
 
-	// ë°ì´í„°ë² ì´ìŠ¤ ì ‘ì† ì •ë³´ë¥¼ ê´€ë¦¬í•˜ëŠ” Bean
-		@Bean
-		public BasicDataSource dataSource() {
-			BasicDataSource source = new BasicDataSource();
-			source.setDriverClassName(db_classname);
-			source.setUrl(db_url);
-			source.setUsername(db_username);
-			source.setPassword(db_password);
+    // µ¥ÀÌÅÍº£ÀÌ½º Á¢¼Ó Á¤º¸¸¦ °ü¸®ÇÏ´Â Bean
+    @Bean
+    public BasicDataSource dataSource() {
+        BasicDataSource source = new BasicDataSource();
+        source.setDriverClassName(db_classname);
+        source.setUrl(db_url);
+        source.setUsername(db_username);
+        source.setPassword(db_password);
 
-			return source;
-		}
-	
-	// ì¿¼ë¦¬ë¬¸ê³¼ ì ‘ì† ì •ë³´ë¥¼ ê´€ë¦¬í•˜ëŠ” ê°ì²´
-	@Bean
-	public SqlSessionFactory factory(BasicDataSource source) throws Exception {
-		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-		factoryBean.setDataSource(source);
-		SqlSessionFactory factory = factoryBean.getObject();
-		return factory;
-	}
+        return source;
+    }
 
+    // SqlSessionFactoryBean ¼³Á¤
+    @Bean
+    public SqlSessionFactory factory(BasicDataSource source) throws Exception {
+        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        factoryBean.setDataSource(source);
+        return factoryBean.getObject();
+    }
 
-	
-	
-	//property ì •ë³´ë¥¼ ì½ì–´ë“¤ì´ëŠ” Bean ë“±ë¡
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
+    // Property Á¤º¸¸¦ ÀĞ¾îµéÀÌ´Â Bean µî·Ï
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
-	@Bean
-	public ReloadableResourceBundleMessageSource messageSource() {
-		ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
+    @Bean
+    public ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
+        res.setDefaultEncoding("utf-8");
+        res.setBasenames("/WEB-INF/properties/error_message");
+        return res;
+    }
 
-		res.setDefaultEncoding("utf-8");
-		res.setBasenames("/WEB-INF/properties/error_message");
-
-		return res;
-	}
-	
-	@Bean
-	public StandardServletMultipartResolver multipartResolver() {
-		return new StandardServletMultipartResolver();
-	}
-	
-	
-
+    @Bean
+    public StandardServletMultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
 }

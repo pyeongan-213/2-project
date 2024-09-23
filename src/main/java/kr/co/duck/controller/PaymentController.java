@@ -14,33 +14,33 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    // ê²°ì œ ì •ë³´ ì‚½ì…
+    // °áÁ¦ Á¤º¸ »ğÀÔ
     @PostMapping("/add")
     public String addPayment(@RequestBody Payment payment) {
         paymentService.insertPayment(payment);
         return "Payment added successfully!";
     }
 
-    // íŠ¹ì • ê²°ì œ ì •ë³´ ì¡°íšŒ
+    // Æ¯Á¤ °áÁ¦ Á¤º¸ Á¶È¸
     @GetMapping("/{paymentId}")
     public Payment getPayment(@PathVariable int paymentId) {
         return paymentService.getPayment(paymentId);
     }
 
-    // ëª¨ë“  ê²°ì œ ì •ë³´ ì¡°íšŒ
+    // ¸ğµç °áÁ¦ Á¤º¸ Á¶È¸
     @GetMapping("/all")
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();
     }
 
-    // ê²°ì œ ì •ë³´ ì—…ë°ì´íŠ¸
+    // °áÁ¦ Á¤º¸ ¾÷µ¥ÀÌÆ®
     @PutMapping("/update")
     public String updatePayment(@RequestBody Payment payment) {
         paymentService.updatePayment(payment);
         return "Payment updated successfully!";
     }
 
-    // ê²°ì œ ì •ë³´ ì‚­ì œ
+    // °áÁ¦ Á¤º¸ »èÁ¦
     @DeleteMapping("/delete/{paymentId}")
     public String deletePayment(@PathVariable int paymentId) {
         paymentService.deletePayment(paymentId);

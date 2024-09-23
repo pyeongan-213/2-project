@@ -10,31 +10,34 @@ import java.util.List;
 @Service
 public class PaymentService {
 
-    @Autowired
-    private PaymentMapper paymentMapper;
+	
+	
+	@Autowired
 
-    // ê²°ì œ ì •ë³´ ì‚½ì…
-    public void insertPayment(Payment payment) {
-        paymentMapper.insertPayment(payment);
-    }
+	private PaymentMapper paymentMapper;
 
-    // íŠ¹ì • ê²°ì œ ì •ë³´ ì¡°íšŒ
-    public Payment getPayment(int paymentId) {
-        return paymentMapper.getPayment(paymentId);
-    }
+	// °áÁ¦ Á¤º¸ »ğÀÔ
+	public void insertPayment(Payment payment) {
+		paymentMapper.insertPayment(payment);
+	}
 
-    // ëª¨ë“  ê²°ì œ ì •ë³´ ì¡°íšŒ
-    public List<Payment> getAllPayments() {
-        return paymentMapper.getAllPayments();
-    }
+	// Æ¯Á¤ °áÁ¦ Á¤º¸ Á¶È¸
+	public Payment getPayment(int paymentId) {
+		return paymentMapper.getPayment(paymentId);
+	}
 
-    // ê²°ì œ ì •ë³´ ì—…ë°ì´íŠ¸
-    public void updatePayment(Payment payment) {
-        paymentMapper.updatePayment(payment);
-    }
+	// ¸ğµç °áÁ¦ Á¤º¸ Á¶È¸
+	public List<Payment> getAllPayments() {
+		return paymentMapper.getAllPayments();
+	}
 
-    // ê²°ì œ ì •ë³´ ì‚­ì œ
-    public void deletePayment(int paymentId) {
-        paymentMapper.deletePayment(paymentId);
-    }
+	// °áÁ¦ Á¤º¸ ¾÷µ¥ÀÌÆ®
+	public void updatePayment(Payment payment) {
+		paymentMapper.updatePayment(payment);
+	}
+
+	// °áÁ¦ Á¤º¸ »èÁ¦
+	public void deletePayment(int paymentId) {
+		paymentMapper.deletePayment(paymentId);
+	}
 }
