@@ -1,0 +1,272 @@
+@charset "EUC-KR";
+
+* {
+	background-color: black;
+	color: white;
+}
+
+p {
+	background: white;
+	color: black;
+}
+
+body {
+	background: black;
+	display: flex;
+	justify-content: center;
+	min-height: 100vh; /* 화면 전체 높이를 사용 */
+	margin: 0 55px 0 90px;
+}
+
+.container {
+	flex-direction: column; /* 수직 방향으로 정렬 */
+	width: 80%; /* 원하는 너비 설정 */
+	max-width: 1200px; /* 최대 너비 설정 */
+	background: black; /* 배경 색상 추가 (선택 사항) */
+	padding: 20px; /* 패딩 추가 */
+}
+
+button.c_btn {
+	margin: 10px;
+	border: none; /* 테두리 제거 */
+	border-radius: 20px; /* 모서리 둥글게 */
+	padding: 10px 20px; /* 안쪽 여백 */
+	font-weight: bolder;
+	font-size: 18px; /* 글자 크기 */
+	cursor: pointer; /* 커서 모양 */
+	transition: background-color 0.3s, transform 0.3s; /* 효과 전환 */
+}
+
+button.c_btn:hover {
+	background: white;
+	color: black;
+}
+
+input {
+	border: none;
+	border-bottom: 1px solid gray;
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+
+input:focus {
+	outline: none;
+	border-bottom-color: #33FF33;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+thead {
+	position: relative;
+	border-top: 1px solid white;
+}
+
+thead th {
+	padding: 10px;
+}
+
+.on-table {
+	display: flex;
+}
+
+span {
+	margin-left: auto;
+	margin-right: 20px;
+	margin-bottom: 12px;
+}
+
+.write-btn {
+	background: #74E885;
+	color: black;
+	border: none;
+	border-radius: 3px;
+	padding: 5px 20px;
+	font-size: 14px;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.3s
+}
+
+.write-btn:hover {
+	background: #BC5ADC;
+}
+
+.pagination {
+	display: flex; /* Flexbox를 사용하여 수평 정렬 */
+	justify-content: center; /* 중앙 정렬 */
+	padding-left: 0; /* 기본 여백 제거 */
+	margin: 0; /* 기본 여백 제거 */
+	margin-top: 10px;
+	list-style: none; /* 기본 리스트 스타일 제거 */
+}
+
+.pagination .page-item {
+	margin: 0 5px; /* 페이지 항목 간의 간격 조정 */
+	text-decoration: none;
+}
+
+.page-link {
+text-decoration: none;
+}
+
+/* .fixed-section: 페이지의 우측 하단에 고정된 섹션 */
+.fixed-section {
+    position: fixed; /* 페이지 스크롤과 관계없이 화면에 고정됨 */
+    bottom: 0; /* 화면 하단에 위치 */
+    right: 0; /* 화면 우측에 위치 */
+    margin: 30px 50px; 
+    z-index: 1000; /* 다른 요소들 위에 표시되도록 설정 (높은 값일수록 위에 표시됨) */
+}
+
+.showBest{
+	width: 200px;
+	margin: 0 20px; /* 좌우 여백을 20px로 설정 */
+    padding: 10px;
+	display: flex;
+    flex-direction: column; /* 수직 방향으로 정렬 */
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 전체 높이 사용 (부모 요소에 따라 조정 필요) */
+}
+.bestContent{
+	font-size: 14px;
+}
+/* .fixed-button: 고정 섹션 내의 버튼 스타일 */
+.fixed-button {
+    display: block; /* 블록 요소로 설정 (flexbox 관련 속성은 사용하지 않음) */
+    width: 65px; /* 버튼의 너비를 40px로 설정 */
+    height: 65px; /* 버튼의 높이를 40px로 설정 */
+    /* 
+    background-image: url('path/to/button-image.png');  이미지 파일의 경로 
+    background-size: cover; 버튼 크기에 맞게 이미지 조절
+    background-repeat: no-repeat; 이미지 반복 방지 
+    */
+    background-color: #007BFF; /* 버튼의 배경색을 파란색으로 설정 */
+    border: none; /* 버튼의 테두리를 제거 */
+    border-radius: 50%; /* 버튼을 원형으로 만듦 */
+    font-size: 40px;
+    cursor: pointer; /* 버튼 위에 마우스를 올렸을 때 손 모양의 커서 표시 */
+    outline: none; /* 버튼의 포커스 아웃라인을 제거 */
+}
+
+/* .fixed-content: 버튼 클릭 시 표시될 고정된 콘텐츠 */
+.fixed-content {
+    display: none; /* 기본적으로 콘텐츠를 숨김 */
+    position: absolute; /* 버튼의 절대 위치에 상대적으로 위치 설정 */
+    bottom: 100px; /* 버튼 위 50px 거리에서 시작 */
+    right: 0; /* 버튼과 같은 우측에 위치 */
+    width: 300px; /* 콘텐츠의 너비를 200px로 설정 */
+    background-color: #fff; /* 콘텐츠 배경색을 흰색으로 설정 */
+    border: 1px solid #ddd; /* 콘텐츠 테두리를 연한 회색으로 설정 */
+    border-radius: 4px; /* 콘텐츠의 모서리를 둥글게 설정 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 콘텐츠에 그림자를 추가하여 입체감을 줌 */
+    padding: 10px; /* 콘텐츠 내부에 10px의 여백 추가 */
+}
+
+.fixed-content h3 {
+	color: black;
+	background: white;
+	margin: 10px 5px;
+}
+
+.fixed-content p {
+    color: black; /* 글자 색상 설정 */
+    background: white; /* 배경색 설정 (필요한 경우) */
+    margin-top: 0px;
+    margin-bottom: 2px; /* 단락 간의 여백 조정 */
+}
+
+.fixed-content textarea {
+    color: black; /* 글자 색상 설정 */
+    background: white; /* 배경색 설정 */
+    border: 1px solid gray; /* 테두리 설정 */
+    padding: 5px; /* 안쪽 여백 추가 */
+    width: 100%; /* 입력창 너비를 100%로 설정 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 너비 설정 */
+    resize: none;
+}
+
+.fixed-content a{
+	background: #74E885;
+	color: black;
+	border: none;
+	border-radius: 3px;
+	padding: 5px 20px;
+	font-size: 14px;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	
+}
+
+.fixed-content a:hover {
+	background: #BC5ADC;
+}
+
+select option {
+    background-color: white;
+}
+
+.ck-content {
+    background: white;
+    color: black;
+}
+
+.main-container, .editor > p {
+    background: white;
+    color: black;
+}
+
+select {
+	width: 150px;
+	outline: none;
+	padding: 4px 3px;
+	border: none;
+	border-bottom: 1px solid gray;
+	appearance: none;
+	font-size: 16px;
+	margin-right: 4px;
+}
+
+select:focus {
+	outline: none;
+}
+
+option:hover {
+	background-color: blue;
+	color: inherit;
+}
+
+select option {
+	background-color: white;
+	font-size: 14px;
+}
+
+.custom-select {
+	position: relative;
+	width: 200px; /* 원하는 너비 설정 */
+}
+
+.custom-select div {
+	border: none; /* 테두리 없음 */
+	border-bottom: 1px solid gray; /* 아래쪽 테두리 */
+	padding: 10px; /* 안쪽 여백 */
+	margin-bottom: 10px; /* 아래쪽 여백 */
+	background-color: white; /* 배경색 흰색 */
+	color: #333; /* 글자 색상 */
+	cursor: pointer; /* 커서 변경 */
+}
+
+.custom-select::after {
+	content: '▼'; /* 화살표 */
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none; /* 클릭 방지 */
+	font-size: 16px; /* 화살표 크기 조정 */
+	color: gray; /* 화살표 색상 */
+}

@@ -7,9 +7,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/board")
 public class BoardController {
-
-	@GetMapping("/board")
+	
+	@GetMapping("/main")
 	public String goToBoard() {
-		return "board/board";
+		return "board/main";
+	}
+	
+	@GetMapping("/read")
+	public String read() {
+		return "board/read";
+	}
+	
+	@GetMapping("/write")
+	public String write() {
+		return "board/write";
 	}
 }
