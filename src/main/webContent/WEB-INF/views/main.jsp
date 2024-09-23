@@ -1,6 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR" pageEncoding="EUC-KR"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
+
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -17,7 +20,7 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#!">¼Öµ¥½ºÅ©</a>
+                <a class="navbar-brand" href="#!">ï¿½Öµï¿½ï¿½ï¿½Å©</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
@@ -43,18 +46,18 @@
                     <ul class="navbar-nav ml-auto">
 				<c:choose>
 					<c:when test="${loginUserBean.userLogin == true }">
-						<!-- ·Î±×ÀÎ µÇ¾îÀÖÀ»¶§ -->
+						<!-- ï¿½Î±ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -->
 						<li class="nav-item"><a href="${root }user/modify"
-							class="nav-link">Á¤º¸¼öÁ¤</a></li>
+							class="nav-link">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
 						<li class="nav-item"><a href="${root }user/logout"
-							class="nav-link">·Î±×¾Æ¿ô</a></li>
+							class="nav-link">ï¿½Î±×¾Æ¿ï¿½</a></li>
 					</c:when>
 					<c:otherwise>
-						<!-- ·Î±×¾Æ¿ô µÇ¾îÀÖÀ»¶§ -->
+						<!-- ï¿½Î±×¾Æ¿ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -->
 						<li class="nav-item"><a href="${root }user/login"
-							class="nav-link">·Î±×ÀÎ</a></li>
+							class="nav-link">ï¿½Î±ï¿½ï¿½ï¿½</a></li>
 						<li class="nav-item"><a href="${root }user/join"
-							class="nav-link">È¸¿ø°¡ÀÔ</a></li>
+							class="nav-link">È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
 					</c:otherwise>
 				</c:choose>
 			</ul>
@@ -282,4 +285,5 @@
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
     </body>
+
 </html>
