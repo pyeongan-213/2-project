@@ -8,12 +8,13 @@
 <head>
 <meta charset="UTF-8">
   <title>Insert title here</title>
-  <link href="${root}css/top_menu.css" rel="stylesheet" type="text/css" />
   
   <!-- jQuery 라이브러리 추가 -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
-  <script>
+  
+</head>
+<script>
 	function checkMemberNameExist(){
 		var membername = $("#membername").val()
 		
@@ -27,23 +28,76 @@
 			type : 'get',
 			dataType : 'text',
 			success : function(result){
-				console.log(result);
 				if(result.trim() == 'true'){
 					alert('사용할 수 있는 아이디 입니다')
 					$("#memberNameExist").val('true')
-				}else {
+				}else if(result.trim() == 'false') {
 					alert('사용할 수 없는 아이디 입니다')
 					$("#memberNameExist").val('false')
 				}
 			}
-		});		
+		})		
 	}
 	function resetMemberNameExist(){
 		$("#memberNameExist").val('false')
 	}	
 	
+	//사용자가 입력한 비밀번호 실시간으로 받아서 검증
+	function checkPasswordSecGrade(){
+		var password = document.getElementById("password").value;
+		var gradeElement = document.querySelector('.checkOutGrade');
+		
+		if(password.length === 0){
+			gradeElement.textContent = "보안 등급 : ";
+			return;
+		}
+		
+		var grade = calculatePasswordGrade(password);
+		
+		switch(grade){
+		
+		case "weak":
+			gradeElement.textContent = "보안 등급 : 낮음";
+			break;
+		case "medium":
+			gradeElement.textContent = "보안 등급 : 중간";
+			break;
+		case "strong":
+			gradeElement.textContent = "보안 등급 : 높음";
+			break;
+		case "very strong":
+			gradeElement.textContent = "보안 등급 : 매우 높음";
+			break;
+		default:
+			gradeElement.textContent = "보안 등급 : "
+		}
+		
+	}
+	
+    function calculatePasswordGrade(password) {
+        var grade = "weak";
+
+        if (password.length < 5) {
+            return grade;
+        }
+
+        var hasUpperCase = /[A-Z]/.test(password);
+        var hasLowerCase = /[a-z]/.test(password);
+        var hasNumber = /\d/.test(password);
+        var hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+
+        if (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChars) {
+            grade = "very strong";
+        } else if (hasUpperCase && hasLowerCase && hasNumber || (hasSpecialChars && hasLowerCase && hasNumber)) {
+            grade = "strong";
+        } else if ((hasUpperCase && hasLowerCase) || (hasNumber && hasSpecialChars)) {
+            grade = "medium";
+        }
+
+        return grade;
+    }
+	
 </script>
-</head>
 <body>
 
 <c:import url="/WEB-INF/views/include/top_menu.jsp"/>
@@ -63,8 +117,12 @@
 						</div>
 						<div class="form-group">
 							<form:label path="membername">아이디</form:label>
+							<div class="input-group">
 								<form:input path="membername" class='form-control' onkeypress="resetMemberNameExist()"/>
-									<button type="button" class="btn btn-primary" onclick="checkMemberNameExist()">중복확인</button> 
+								<div class="input-group-append">
+									<button type="button" class="btn btn-primary" onclick="checkMemberNameExist()">중복확인</button>
+								</div>
+							</div> 
 							<form:errors path="membername" style='color:red'/>
 						</div>
 						<div class="form-group">
@@ -82,10 +140,14 @@
 							<form:input path="real_name" class="form-control"/>
 							<form:errors path="real_name" style='color:red'/>
 						</div>
-						<div class="form-group">
+						
+						<div class="form-group">						
 							<form:label path="password">비밀번호</form:label>
-							<form:password path="password" class="form-control"/>
+							<form:password path="password" class="form-control" oninput="checkPasswordSecGrade(); checkPasswordEquals();"/>							
 							<form:errors path="password" style='color:red'/>
+						</div>
+						<div class="checkOutGrade">
+								보안 등급 : 
 						</div>
 						<div class="form-group">
 							<form:label path="password2">비밀번호 확인</form:label>

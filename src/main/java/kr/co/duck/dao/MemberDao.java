@@ -13,7 +13,7 @@ public class MemberDao {
 	private MemberMapper memberMapper;
 	
 	public String checkMemberNameExist(String membername) {
-		return memberMapper.checkMemberIdExist(membername);
+		return memberMapper.checkMemberNameExist(membername);
 	}
 	
 	public void addMemberInfo(MemberBean joinMemberBean) {

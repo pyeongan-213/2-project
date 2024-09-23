@@ -90,7 +90,6 @@ public class MemberController {
 		binder.addValidators(validator1);
 	}
 	
-	asd
 	
 	/*
 	 * @GetMapping("/checkMemberNameExist")
@@ -100,15 +99,16 @@ public class MemberController {
 	 * return true; }
 	 */
 	
-	 // 아이디 중복 체크
-    @GetMapping("/checkMemberNameExist/{membername}")
-    @ResponseBody
-    public String checkMemberNameExist(@PathVariable("membername") String membername) {
-        // 아이디 중복 확인 로직 (서비스 호출 등)
-        boolean isExist = memberService.checkMemberNameExist(membername);               
-        
-        // 중복 여부에 따라 "true" 또는 "false" 반환
-        return isExist ? "true" : "false";
-    }
+	/*
+	 * // 아이디 중복 체크
+	 * 
+	 * @GetMapping("/checkMemberNameExist/{membername}")
+	 * 
+	 * @ResponseBody public String checkMemberNameExist(@PathVariable("membername")
+	 * String membername) { // 아이디 중복 확인 로직 (서비스 호출 등) boolean isExist =
+	 * memberService.checkMemberNameExist(membername);
+	 * 
+	 * // 중복 여부에 따라 "true" 또는 "false" 반환 return isExist ? "true" : "false"; }
+	 */
 	
 }

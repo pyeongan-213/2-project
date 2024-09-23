@@ -40,6 +40,9 @@
 								<form:button class='btn btn-primary'>로그인</form:button>
 								<a href="${root }member/join" class="btn btn-danger">회원가입</a>
 							</div>
+							<div class="social-login-buttons">
+								<button type ="button" onclick="location.href='${root}member/getGoogleAuthUrl'"></button>
+							</div>
 						</form:form>
 					</div>
 				</div>

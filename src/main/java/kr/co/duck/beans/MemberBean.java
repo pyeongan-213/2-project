@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 public class MemberBean {
 	
+
 	private boolean memberNameExist;
 	private boolean memberLogin;	
 	
@@ -24,7 +25,7 @@ public class MemberBean {
 	@Pattern(regexp = "[가-힣a-zA-Z0-9]*")
 	private String nickname;	//닉네임
 	
-	@Size(min = 2, max = 20)
+	@Size(min = 5, max = 20)
 	@Pattern(regexp = "[a-zA-Z0-9!@#$%^&*()_+=\\-`~]*")
 	private String password;	//유저 비밀번호
 	
@@ -40,8 +41,6 @@ public class MemberBean {
 	private String email;	//유저 이메일
 	
 	private String join_date; 
-	private String provider;
-	private String provider_id;
 	
 	@Pattern(regexp = "[가-힣a-zA-Z]*")
 	private String real_name; 
@@ -109,18 +108,6 @@ public class MemberBean {
 	}
 	public void setJoin_date(String join_date) {
 		this.join_date = join_date;
-	}
-	public String getProvider() {
-		return provider;
-	}
-	public void setProvider(String provider) {
-		this.provider = provider;
-	}
-	public String getProvider_id() {
-		return provider_id;
-	}
-	public void setProvider_id(String provider_id) {
-		this.provider_id = provider_id;
 	}
 	public String getReal_name() {
 		return real_name;

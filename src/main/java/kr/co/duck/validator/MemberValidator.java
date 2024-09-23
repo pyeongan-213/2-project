@@ -20,21 +20,48 @@ public class MemberValidator implements Validator{
 		String beanName = errors.getObjectName();
 		System.out.println(beanName);
 
-		//비밀번호 확인 또는 수정시
-		if (beanName.equals("joinMemberBean") || beanName.equals("modifyMemberBean")) {
-			if (memberBean.getPassword().equals(memberBean.getPassword2()) == false) {
+		/*
+		 * //비밀번호 확인 또는 수정시 if (beanName.equals("joinMemberBean") ||
+		 * beanName.equals("modifyMemberBean")) { if
+		 * (memberBean.getPassword().equals(memberBean.getPassword2()) == false) {
+		 * errors.rejectValue("password", "NotEquals"); errors.rejectValue("password2",
+		 * "NotEquals"); }
+		 * 
+		 * 
+		 * //회원가입시 if (beanName.equals("joinMemberBean")) {
+		 * 
+		 * if (memberBean.isMemberNameExist() == false) {
+		 * errors.rejectValue("membername", "DontCheckMemberNameExist"); } } }
+		 */
+		
+		if (beanName.equals("joinMemberBean")) {
+			if (memberBean.getPassword().equals(" ") || memberBean.getPassword().trim().isEmpty()) {
+				errors.rejectValue("password", "pwIsEmpty");
+			}  else if (memberBean.getPassword().equals(memberBean.getPassword2()) == false) {
 				errors.rejectValue("password", "NotEquals");
 				errors.rejectValue("password2", "NotEquals");
 			}
-		
 
-			//회원가입시
-			if (beanName.equals("joinMemberBean")) {
+			/*
+			 * if (userBean.getAuthCode1() != null) { if
+			 * (userBean.getAuthCode1().equals(userBean.getAuthCode2()) == false) {
+			 * errors.rejectValue("authCode2", "CodeNotEquals"); } }
+			 */
 
-				if (memberBean.isMemberNameExist() == false) {
-					errors.rejectValue("membername", "DontCheckMemberNameExist");
-				}
+			// 아이디 유효성검사 및 중복체크 검사
+			if (memberBean.getMembername().equals(" ") || memberBean.getMembername().trim().isEmpty()) {
+				errors.rejectValue("membername", "nameIsEmpty");
+			} else if (memberBean.isMemberNameExist() == false) {
+				errors.rejectValue("membername", "DontCheckMemberNameExist");
 			}
+			
+
+			/*
+			 * if (userBean.getUser_email().contains(" ") ||
+			 * userBean.getUser_email().trim().isEmpty()) { errors.rejectValue("user_email",
+			 * "VNotEmpty"); } else if (userBean.isUserEmailExit() == false) {
+			 * errors.rejectValue("user_email", "DontcheckedEmail"); }
+			 */
 		}
 		
 	}
