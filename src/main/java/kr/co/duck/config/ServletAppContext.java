@@ -1,8 +1,9 @@
 package kr.co.duck.config;
 
-import org.apache.commons.dbcp2.BasicDataSource; 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +25,7 @@ import kr.co.duck.service.ManiaDBService; // 추가한 서비스
 @ComponentScan("kr.co.duck.dao")
 @ComponentScan("kr.co.duck.controller")
 @ComponentScan("kr.co.duck.service")
+@MapperScan("kr.co.duck.mapper")
 @PropertySource("/WEB-INF/properties/db.properties")
 public class ServletAppContext implements WebMvcConfigurer {
 
