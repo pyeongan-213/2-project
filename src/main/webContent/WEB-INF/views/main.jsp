@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<c:set var='root' value="${pageContext.request.contextPath}/" />
 <!DOCTYPE html>
-
 <html>
 <head>
 <meta charset="utf-8" />
@@ -10,14 +11,20 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<link rel="icon" type="image/x-icon"
-	href="${pageContext.request.contextPath}/assets/favicon.ico" />
+
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet" />
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/css/styles.css">
 <title>Shop Homepage - Start Bootstrap Template</title>
+
+
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="${root }assets/favicon.ico" />
+<!-- Bootstrap icons-->
+
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="${root}css/styles.css" rel="stylesheet" type="text/css" />
+
 </head>
 <body>
 	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
@@ -318,8 +325,7 @@
 	<!-- Core theme JS-->
 	<script src="js/scripts.js"></script>
 
-<<<<<<< HEAD
-=======
+
 	<h2>
 		<a href="${root }temp/tempMain">To tempMain</a>
 	</h2>
@@ -330,6 +336,6 @@
 	<h2>
 		<a href="${root }quiz/quizMain">To quizMain</a>
 	</h2>
->>>>>>> refs/heads/JIhwan
+
 </body>
 </html>
