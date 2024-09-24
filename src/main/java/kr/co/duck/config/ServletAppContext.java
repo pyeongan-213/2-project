@@ -23,7 +23,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 import kr.co.duck.service.PlaylistService;
 import kr.co.duck.service.ManiaDBService; // 추가한 서비스
 
@@ -36,11 +35,13 @@ import kr.co.duck.service.TopMenuService;
 
 @Configuration
 @EnableWebMvc
+
+
 @ComponentScan("kr.co.duck.dao")
 @ComponentScan("kr.co.duck.controller")
 @ComponentScan("kr.co.duck.service")
 @MapperScan("kr.co.duck.mapper")
-@PropertySource("/WEB-INF/properties/db.properties")
+@PropertySource("/WEB-INF/properties/db.properties") 
 public class ServletAppContext implements WebMvcConfigurer {
 
     @Value("${db.classname}")
@@ -138,6 +139,7 @@ public class ServletAppContext implements WebMvcConfigurer {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
+
     @Bean
     public ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
@@ -151,6 +153,7 @@ public class ServletAppContext implements WebMvcConfigurer {
         return new StandardServletMultipartResolver();
     }
 
+
     // PlaylistService Bean
     @Bean
     public PlaylistService playlistService() {
@@ -162,5 +165,6 @@ public class ServletAppContext implements WebMvcConfigurer {
     public ManiaDBService maniaDBService() {
         return new ManiaDBService();
     }
+
 
 }
