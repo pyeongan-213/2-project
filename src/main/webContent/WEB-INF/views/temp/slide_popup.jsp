@@ -23,16 +23,35 @@
 
     <!-- 슬라이드 팝업 -->
     <div id="monthly-popup" class="popup">
-        <h2>월 정기구독 9,900원/월</h2>
-        <p>오리궁둥이 월 정기구독 9,900원/월</p>
-        <button onclick="closePopup('monthly-popup')">닫기</button>
+    <h2 align="center">선택한 구독 상품</h2>
+    <div class="product-info">
+        <div class="product-text">
+            <h3>오리궁둥이 월 정기구독</h3>
+            <p>9,900원/월</p>
+        </div>
+        <button class="close-button" onclick="closePopup('monthly-popup')">X</button>
     </div>
+</div>
 
-    <div id="yearly-popup" class="popup">
-        <h2>연 정기구독 99,000원/연</h2>
-        <p>오리궁둥이 연 정기구독 99,000원/년</p>
-        <button onclick="closePopup('yearly-popup')">닫기</button>
+	<div id="yearly-popup" class="popup">
+    <h2 align="center">선택한 구독 상품</h2>
+    <div class="product-info">
+        <div class="product-text">
+            <h3>오리궁둥이 년 정기구독</h3>
+            <p>99,000원/년</p>
+        </div>
+        <button class="close-button" onclick="closePopup('yearly-popup')">X</button>
     </div>
+</div>
+
+
+   <!--  <div id="yearly-popup" class="popup">
+        <h2 align="center">선택한 구독 상품</h2>
+        <h3 align="left">오리궁둥이 년 정기구독</h3>
+        <p style="text-align: left; line-height: -15px;">99,000원/년</p>
+        
+        <button onclick="closePopup('yearly-popup')">닫기</button>
+    </div> -->
 
     <script src="${root}/js/popup.js"></script>
 </body>
