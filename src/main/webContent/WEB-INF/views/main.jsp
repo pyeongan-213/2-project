@@ -336,6 +336,16 @@
 	<h2>
 		<a href="${root }quiz/quizMain">To quizMain</a>
 	</h2>
+	
+	
+	
+	
+	
+	
+	<h1>popup</h1>
+	<h2>
+		<a href="${root }temp/slide_popup">popup</a>
+	</h2>
 
 </body>
 </html>
