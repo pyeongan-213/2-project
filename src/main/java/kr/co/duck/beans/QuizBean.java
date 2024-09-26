@@ -1,142 +1,112 @@
 package kr.co.duck.beans;
 
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "quiz")
 public class QuizBean {
 
-	@Id
-	@Column(name = "quiz_id")
-	private int quizId; // 퀴즈 식별 아이디
+	private int quiz_id; // 퀴즈 장르?유형?의 식별아이디
+	private String quiz_title; // 퀴즈 제목
+	private String quiz_text; // 퀴즈에 대한 설명?
+	private String quiz_question_type; // 퀴즈 유형(노래 가사맞추기)
+	private String quiz_answer; // 퀴즈 정답, 정답에 대한 내용
+	private List<SongBean> song_id; // 퀴즈에 사용할 노래정보
+	private List<Integer> quiz_join_id; // 퀴즈에 참가한 사람
+	private int quiz_score; // 퀴즈 정답 점수
+	private String quiz_hint; // 퀴즈 힌트
+	private int join_user; // 첫번재 들어온 사람이 host
+	private int user_id; // 유저 식별번호
 
-	@Column(name = "quiz_title")
-	private String quizTitle; // 퀴즈 제목
-
-	@Column(name = "quiz_text")
-	private String quizText; // 퀴즈 설명
-
-	@Column(name = "quiz_question_type")
-	private String quizQuestionType; // 퀴즈 유형 (예: 노래 가사 맞추기)
-
-	@Column(name = "quiz_answer")
-	private String quizAnswer; // 퀴즈 정답
-
-	// Assuming songIds is a list of SongBeans and not directly stored in the quiz
-	// table
-	private List<SongBean> songIds; // 퀴즈에 사용할 노래 정보 식별자 목록
-
-	private List<Integer> quizJoinIds; // 퀴즈에 참가한 사람들의 식별자 목록
-
-	@Column(name = "quiz_score")
-	private int quizScore; // 퀴즈 정답 점수
-
-	@Column(name = "quiz_hint")
-	private String quizHint; // 퀴즈 힌트
-
-	@Column(name = "join_user")
-	private int joinUser; // 첫 번째로 입장한 사람 (방장) 식별자
-
-	@Column(name = "user_id")
-	private int userId; // 유저 식별번호
-
-	// Getter 및 Setter
-	public int getQuizId() {
-		return quizId;
+	public int getQuiz_id() {
+		return quiz_id;
 	}
 
-	public void setQuizId(int quizId) {
-		this.quizId = quizId;
+	public void setQuiz_id(int quiz_id) {
+		this.quiz_id = quiz_id;
 	}
 
-	public String getQuizTitle() {
-		return quizTitle;
+	public String getQuiz_title() {
+		return quiz_title;
 	}
 
-	public void setQuizTitle(String quizTitle) {
-		this.quizTitle = quizTitle;
+	public void setQuiz_title(String quiz_title) {
+		this.quiz_title = quiz_title;
 	}
 
-	public String getQuizText() {
-		return quizText;
+	public String getQuiz_text() {
+		return quiz_text;
 	}
 
-	public void setQuizText(String quizText) {
-		this.quizText = quizText;
+	public void setQuiz_text(String quiz_text) {
+		this.quiz_text = quiz_text;
 	}
 
-	public String getQuizQuestionType() {
-		return quizQuestionType;
+	public String getQuiz_question_type() {
+		return quiz_question_type;
 	}
 
-	public void setQuizQuestionType(String quizQuestionType) {
-		this.quizQuestionType = quizQuestionType;
+	public void setQuiz_question_type(String quiz_question_type) {
+		this.quiz_question_type = quiz_question_type;
 	}
 
-	public String getQuizAnswer() {
-		return quizAnswer;
+	public String getQuiz_answer() {
+		return quiz_answer;
 	}
 
-	public void setQuizAnswer(String quizAnswer) {
-		this.quizAnswer = quizAnswer;
+	public void setQuiz_answer(String quiz_answer) {
+		this.quiz_answer = quiz_answer;
 	}
 
-	public List<SongBean> getSongIds() {
-		return songIds;
+	public List<SongBean> getSong_id() {
+		return song_id;
 	}
 
-	public void setSongIds(List<SongBean> songIds) {
-		this.songIds = songIds;
+	public void setSong_id(List<SongBean> song_id) {
+		this.song_id = song_id;
 	}
 
-	public List<Integer> getQuizJoinIds() {
-		return quizJoinIds;
+	public List<Integer> getQuiz_join_id() {
+		return quiz_join_id;
 	}
 
-	public void setQuizJoinIds(List<Integer> quizJoinIds) {
-		this.quizJoinIds = quizJoinIds;
+	public void setQuiz_join_id(List<Integer> quiz_join_id) {
+		this.quiz_join_id = quiz_join_id;
 	}
 
-	public int getQuizScore() {
-		return quizScore;
+	public int getQuiz_score() {
+		return quiz_score;
 	}
 
-	public void setQuizScore(int quizScore) {
-		this.quizScore = quizScore;
+	public void setQuiz_score(int quiz_score) {
+		this.quiz_score = quiz_score;
 	}
 
-	public String getQuizHint() {
-		return quizHint;
+	public String getQuiz_hint() {
+		return quiz_hint;
 	}
 
-	public void setQuizHint(String quizHint) {
-		this.quizHint = quizHint;
+	public void setQuiz_hint(String quiz_hint) {
+		this.quiz_hint = quiz_hint;
 	}
 
-	public int getJoinUser() {
-		return joinUser;
+	public int getJoin_user() {
+		return join_user;
 	}
 
-	public void setJoinUser(int joinUser) {
-		this.joinUser = joinUser;
+	public void setJoin_user(int join_user) {
+		this.join_user = join_user;
 	}
 
-	public int getUserId() {
-		return userId;
+	public int getUser_id() {
+		return user_id;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
 	}
 
 	@Override
 	public String toString() {
-		return "QuizBean [quizId=" + quizId + ", quizTitle=" + quizTitle + ", quizText=" + quizText
-				+ ", quizQuestionType=" + quizQuestionType + ", quizAnswer=" + quizAnswer + ", quizScore=" + quizScore
-				+ ", quizHint=" + quizHint + ", joinUser=" + joinUser + ", userId=" + userId + "]";
+		return "QuizBean [quiz_id=" + quiz_id + ", quiz_title=" + quiz_title + ", quiz_text=" + quiz_text + "]";
 	}
+
 }
