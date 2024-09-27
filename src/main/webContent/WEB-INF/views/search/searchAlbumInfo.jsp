@@ -7,26 +7,59 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>앨범 상세페이지</title>
+<link href="${root}css/searchInfo.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+	<!-- sidebar -->
+	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
+	<!-- top_menu-->
+	<%-- <c:import url="/WEB-INF/views/include/top_menu.jsp" /> --%>
+	<div class=container-box>
 
-	
-	
-	<p>앨범명 : ${result.albumName }</p>
-	<p>아티스트 : ${result.artistName}</p>
-	<br />
-	<p>설명 : ${result.description}</p>
-	<hr />
-	<img src="${result.image}" alt="이미지를 불러올 수 없습니다." />
-	<br />
- 
+		<div class="background"></div>
+		<section>
+			<div class="album-info">
+				<div class="album-art">
+					<img src="${result.image}" alt="이미지를 불러올 수 없습니다." />
+					<div class="actions">
+						<div class="play">Play</div>
+						<div class="bookmark">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="#faa800"
+								height="24" viewbox="0 0 24 24" width="24">
+            <path
+									d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"></path>
+            <path d="M0 0h24v24H0z" fill="none"></path>
+          </svg>
+						</div>
+					</div>
+				</div>
+				<div class="album-details">
+					<h2>
+						<img src="https://68.media.tumblr.com/avatar_edbd71e8c8ac_128.png" />${result.artistName}
+					</h2>
+					<h1>${result.albumName}</h1>
+					<br />
+					<br />
+					 <span> <c:forEach var="track"
+							items="${result.albumRelease}" varStatus="status">
+							<span>${track}</span>
+						</c:forEach>
+					</span>
+					<p>${result.description}</p>
+				</div>
+			</div>
+			<div class="album-tracks">
+				<ol>
+					<c:forEach var="track" items="${result.trackList}"
+						varStatus="status">
+						<li><span>${track}</span><span>${result.runningTimeList[status.index]}</span></li>
 
-	<!-- 앨범 이미지 리스트 출력 -->
-	<c:forEach var="track" items="${result.trackList}" varStatus="status">
-		<p>${track}</p> <br />
-	</c:forEach>
+					</c:forEach>
 
-
+				</ol>
+			</div>
+		</section>
+	</div>
 </body>
 </html>

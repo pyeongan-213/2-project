@@ -7,6 +7,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="${root}css/styles.css" rel="stylesheet" type="text/css" />
+
+
 </head>
 <body>
 	<!-- Navigation-->
@@ -61,5 +65,10 @@
 			</div>
 		</div>
 	</nav>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Core theme JS-->
+	<script src="js/scripts.js"></script>
+	
 </body>
 </html>
