@@ -59,13 +59,12 @@
  --%>
 
 
+
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <c:set var='root' value="${pageContext.request.contextPath}/" />
-
-
 
 <!DOCTYPE html>
 <html>
@@ -74,76 +73,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>결제 옵션</title>
 <link rel="stylesheet" href="${root}/css/popup.css">
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 </head>
 
 <body>
-
-	<h3 class="title"><b>Mocean</b> SliderModals</h3>
-
-<div class="btn-group">
-
-  <button class="mocean-modal-button" data-mocean-type="slide-in-top">Slide In (top)</button>
-  <button class="mocean-modal-button" data-mocean-type="slide-in-right">Slide In (right)</button>
-  <button class="mocean-modal-button" data-mocean-type="slide-in-bottom">Slide In (bottom)</button>
-  <button class="mocean-modal-button" data-mocean-type="slide-in-left">Slide In (left)</button>
-  <button class="mocean-modal-button" data-mocean-type="slide-in-top" data-mocean-out-type="slide-out-bottom">From Top to Bottom</button>
-  <button class="mocean-modal-button" data-mocean-type="slide-in-bottom" data-mocean-out-type="slide-out-top">From Bottom to Top</button>
-  <button class="mocean-modal-button" data-mocean-type="slide-in-left" data-mocean-out-type="slide-out-right">From Left to Right</button>
-  <button class="mocean-modal-button" data-mocean-type="slide-in-right" data-mocean-out-type="slide-out-left">From Right to Left</button>
-
-</div>
+	<h3 class="title">
+		<b>오리둥둥이</b> 멤버가 되어보세요
+	</h3>
 
 
-<div class="mocean-wrap mocean-modal-wrap" id="mocean-modal-wrap">
-  <div class="mocean-content mocean-modal" id="mocean-modal">
-    <h3>The Mocean Modal</h3>
-    <div class="mocean-modal-content">
-      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Aenean lacinia bibendum nulla sed consectetur. Nullam quis risus eget urna mollis ornare vel eu leo. Nullam quis risus eget urna mollis ornare vel eu leo.</p>
-      <button class="mocean-modal-close">Close me!</button>
-    </div>
-  </div>
-</div>
 
-<<<<<<< junjunjun
+
+
 	<div class="btn-group">
+		<!-- <button class="mocean-modal-button" data-mocean-type="slide-in-bottom">월간결제</button> -->
 		<button class="mocean-modal-button" data-mocean-type="slide-in-bottom"
-			data-mocean-out-type="slide-out-top">월간결제</button>
-			
+			data-mocean-out-type="slide-out-top">연간결제</button>
+		<!-- 추가된 버튼: 2번 바뀐 모달을 위한 버튼 -->
 		<button class="mocean-modal-button" data-mocean-type="slide-in-bottom"
-			data-target="#mocean-modal-2">연간결제</button>
+			data-target="#mocean-modal-2">Slide In (2번 바뀐 것)</button>
+
+
 	</div>
+
+
+
+
 
 	<div class="mocean-wrap mocean-modal-wrap" id="mocean-modal-wrap">
 		<div class="mocean-content mocean-modal" id="mocean-modal">
 			<h3>The Mocean Modal</h3>
 			<div class="mocean-modal-content">
 				<p>Modal content goes here. Customize it as needed.</p>
-				<button class="mocean-modal-close">&times;</button> <!-- 엑스 아이콘 -->
+				<button class="mocean-modal-close">Close me!</button>
 			</div>
 		</div>
 	</div>
 
+
+
 	<div class="mocean-wrap mocean-modal-wrap" id="mocean-modal-2">
+		<!-- ID 변경 -->
 		<div class="mocean-content mocean-modal">
 			<h3>2번 바뀐것</h3>
 			<div class="mocean-modal-content">
 				<p>완도 청산도는 더딘 풍경으로 삶의 쉼표가 되는 섬이다. 푸른 바다와 돌담길, 구들장논, 해녀의 미소 등은
 					슬로시티 청산도를 단장하는 주요 매개다.</p>
-				<button class="mocean-modal-close">&times;</button> <!-- 엑스 아이콘 -->
+				<button class="mocean-modal-close">Close me!</button>
 			</div>
 		</div>
 	</div>
 
+
+
+
+
+
 	<script src="${root}js/popup.js"></script>
-=======
-
-
-<script src="${root}js/popup.js"></script>
-
->>>>>>> 347fcd0 버튼 2개로 바꾸고 템플릿대로 팝업 창이 뜨도록 바꿈
 </body>
 </html>
 
@@ -153,7 +139,6 @@
 
 
 
-<<<<<<< junjunjun
 
 
 
@@ -176,7 +161,3 @@
 
 
 
-
-
-=======
->>>>>>> 347fcd0 버튼 2개로 바꾸고 템플릿대로 팝업 창이 뜨도록 바꿈
