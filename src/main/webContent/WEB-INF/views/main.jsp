@@ -342,10 +342,14 @@
 	
 	
 	
-	<h1>popup</h1>
+	<h1>결제</h1>
 	<h2>
-		<a href="${root }temp/slide_popup">popup</a>
+		<a href="${root }temp/slide_popup">구독 상품</a>
 	</h2>
+	
+	
+	
+	
 
 </body>
 </html>
