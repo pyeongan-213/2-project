@@ -81,6 +81,10 @@
 // Mocean Modal Effects v1.0.0
 // ========================================
 
+
+
+
+
 ; (function(window) {
 
     var Mocean = window.Mocean;
@@ -221,5 +225,42 @@
     };
 
     window.Mocean.Modal = MoceanModal();
+    
+    
+    // 추가된 팝업 관리 코드
+    document.addEventListener('DOMContentLoaded', () => {
+        const closeAllPopups = () => {
+            const popups = document.querySelectorAll('.mocean-wrap');
+            popups.forEach(popup => {
+                popup.classList.remove('mocean-show');
+            });
+        };
+
+        // 월간결제 버튼 클릭 시 팝업 열기
+        document.querySelector('.mocean-modal-button[data-mocean-type="slide-in-bottom"]').addEventListener('click', () => {
+            closeAllPopups(); // 다른 팝업 닫기
+            document.getElementById('mocean-modal-wrap').classList.add('mocean-show');
+        });
+
+        // 연간결제 버튼 클릭 시 팝업 열기
+        document.querySelector('.mocean-modal-button[data-target="#mocean-modal-2"]').addEventListener('click', () => {
+            closeAllPopups(); // 다른 팝업 닫기
+            document.getElementById('mocean-modal-2').classList.add('mocean-show');
+        });
+
+        
+    });
+    
 
 })(this);
+
+
+
+
+
+
+
+
+
+
+
