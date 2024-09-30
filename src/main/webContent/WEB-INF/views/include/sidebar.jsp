@@ -56,7 +56,8 @@
 		<a href="${root }quiz/quizMain">QUIZ</a> <br />
 		<a href="${root }temp/maniadbSearch">ManiaDB SEARCH</a><br />
 		<a href="${root }temp/SCSStest">SCSStest</a><br />
-		<a href="${root }temp/modalUI">modalUI</a>
+		<a href="${root }temp/modalUI">modalUI</a> <br />
+		<a href="${root }playlist/playlist">playlist</a>
 	</div>
 <script>
 	let lastToggleTime = 0; // 마지막 토글 시간

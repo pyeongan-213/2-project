@@ -178,12 +178,28 @@
 			<artifactId>spring-security-oauth2-client</artifactId>
 			<version>6.0.2</version>
 		</dependency>
-			<!--  https://mvnrepository.com/artifact/org.slf4j/slf4j-api  -->
+		<!--  https://mvnrepository.com/artifact/org.slf4j/slf4j-api  -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${org.slf4j-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.32.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-youtube</artifactId>
+			<version>v3-rev222-1.25.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-jetty</artifactId>
+			<version>1.32.1</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

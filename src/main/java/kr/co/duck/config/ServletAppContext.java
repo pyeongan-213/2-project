@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.lang.NonNull;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
@@ -24,14 +23,12 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import kr.co.duck.service.PlaylistService;
-import kr.co.duck.service.ManiaDBService; // 추가한 서비스
-
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.interceptor.CheckLoginInterceptor;
 import kr.co.duck.interceptor.TopMenuInterceptor;
 import kr.co.duck.mapper.MemberMapper;
 import kr.co.duck.mapper.TopMenuMapper;
+import kr.co.duck.service.ManiaDBService; // 추가한 서비스
 import kr.co.duck.service.TopMenuService;
 
 @Configuration
@@ -154,12 +151,6 @@ public class ServletAppContext implements WebMvcConfigurer {
         return new StandardServletMultipartResolver();
     }
 
-
-    // PlaylistService Bean
-    @Bean
-    public PlaylistService playlistService() {
-        return new PlaylistService();
-    }
 
     // ManiaDBService Bean 추가
     @Bean

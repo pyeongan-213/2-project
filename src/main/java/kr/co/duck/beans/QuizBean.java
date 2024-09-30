@@ -9,7 +9,7 @@ public class QuizBean {
 	private String quiz_text; // 퀴즈에 대한 설명?
 	private String quiz_question_type; // 퀴즈 유형(노래 가사맞추기)
 	private String quiz_answer; // 퀴즈 정답, 정답에 대한 내용
-	private List<SongBean> song_id; // 퀴즈에 사용할 노래정보
+	private List<MusicBean> song_id; // 퀴즈에 사용할 노래정보
 	private List<Integer> quiz_join_id; // 퀴즈에 참가한 사람
 	private int quiz_score; // 퀴즈 정답 점수
 	private String quiz_hint; // 퀴즈 힌트
@@ -56,11 +56,11 @@ public class QuizBean {
 		this.quiz_answer = quiz_answer;
 	}
 
-	public List<SongBean> getSong_id() {
+	public List<MusicBean> getSong_id() {
 		return song_id;
 	}
 
-	public void setSong_id(List<SongBean> song_id) {
+	public void setSong_id(List<MusicBean> song_id) {
 		this.song_id = song_id;
 	}
 
