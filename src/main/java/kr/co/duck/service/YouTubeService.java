@@ -105,10 +105,42 @@ public class YouTubeService {
         }
     }
     
+ // YouTube Videos API로 동영상 ID로 정보를 가져오는 메서드
     public MusicBean getSongByVideoId(String videoId) {
-        // YouTube API로 동영상 ID를 사용하여 동영상 정보 가져오기
-        // YouTube.Videos API 호출
-        // 동영상 정보에서 MusicBean을 생성하여 반환
-        return new MusicBean("Sample Title", "Sample Artist", "3:30", "https://www.youtube.com/watch?v=" + videoId, "https://sampleurl.com/thumbnail.jpg");
+        try {
+            // YouTube API 클라이언트 생성
+            YouTube youtubeService = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
+
+            // Videos API를 통해 동영상 정보 가져오기
+            YouTube.Videos.List videoRequest = youtubeService.videos().list("snippet,contentDetails");
+            videoRequest.setId(videoId);
+            videoRequest.setKey(API_KEY);
+
+            // API 요청 실행 및 결과 가져오기
+            VideoListResponse videoResponse = videoRequest.execute();
+            List<Video> videoList = videoResponse.getItems();
+
+            if (!videoList.isEmpty()) {
+                Video video = videoList.get(0);  // 첫 번째 동영상 정보 가져오기
+
+                // 동영상 정보를 MusicBean으로 변환
+                String title = video.getSnippet().getTitle();  // 동영상 제목
+                String channelTitle = video.getSnippet().getChannelTitle();  // 채널 이름 (아티스트)
+                String duration = video.getContentDetails().getDuration();  // ISO 8601 형식의 동영상 길이
+                String formattedDuration = formatDuration(duration);  // 형식을 변환한 동영상 길이
+                String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();  // 썸네일 URL
+                String videoUrl = "https://www.youtube.com/watch?v=" + videoId;  // YouTube 동영상 URL
+
+                // MusicBean 생성 및 반환
+                return new MusicBean(title, channelTitle, formattedDuration, videoUrl, thumbnailUrl);
+            }
+        } catch (GeneralSecurityException | IOException e) {
+            e.printStackTrace();
+        }
+
+        // 오류가 발생하거나 동영상이 없을 경우 null 반환
+        return null;
     }
 }
