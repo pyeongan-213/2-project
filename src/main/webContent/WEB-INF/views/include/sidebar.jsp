@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var='root' value="${pageContext.request.contextPath}/" />
-    
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,40 +43,38 @@
 
 </head>
 <body>
-	<div class="sidebar-trigger" 
-		onmouseenter="toggleSidebar(true)"
-		onmouseleave="toggleSidebar(false)">
-	</div>
-	
+	<div class="sidebar-trigger" onmouseenter="toggleSidebar(true)"
+		onmouseleave="toggleSidebar(false)"></div>
+
 	<div class="sidebar">
 		<div class="close_sidebar" onclick="toggleSidebar(false)">◀</div>
 		<div>홈</div>
 		<div>커뮤니티</div>
 		<div>퀴즈</div>
-		<a href="${root }temp/tempMain">To tempMain</a> <br />
-		<a href="${root }quiz/quizMain">QUIZ</a> <br />
-		<a href="${root }temp/maniadbSearch">ManiaDB SEARCH</a><br />
-		<a href="${root }temp/SCSStest">SCSStest</a><br />
-		<a href="${root }temp/modalUI">modalUI</a> <br />
-		<a href="${root }playlist/playlist">playlist</a>
+		<a href="${root }temp/tempMain">To tempMain</a> <br /> <a
+			href="${root }quiz/quizMain">QUIZ</a> <br /> <a
+			href="${root }temp/maniadbSearch">ManiaDB SEARCH</a><br /> <a
+			href="${root }temp/SCSStest">SCSStest</a><br /> <a
+			href="${root }temp/modalUI">modalUI</a> <br /> <a
+			href="${root}youtubeSearch">playlist</a>
 	</div>
-<script>
-	let lastToggleTime = 0; // 마지막 토글 시간
-	const cooldownTime = 500; // 쿨타임 500ms
+	<script>
+		let lastToggleTime = 0; // 마지막 토글 시간
+		const cooldownTime = 500; // 쿨타임 500ms
 
-	function toggleSidebar(visible) {
-		const sidebar = document.querySelector('.sidebar');
-		const currentTime = new Date().getTime();
+		function toggleSidebar(visible) {
+			const sidebar = document.querySelector('.sidebar');
+			const currentTime = new Date().getTime();
 
-		if (currentTime - lastToggleTime > cooldownTime) {
-			lastToggleTime = currentTime;
-			if (visible) {
-				sidebar.classList.add('visible');
-			} else {
-				sidebar.classList.remove('visible');
+			if (currentTime - lastToggleTime > cooldownTime) {
+				lastToggleTime = currentTime;
+				if (visible) {
+					sidebar.classList.add('visible');
+				} else {
+					sidebar.classList.remove('visible');
+				}
 			}
 		}
-	}
-</script>
+	</script>
 </body>
 </html>
