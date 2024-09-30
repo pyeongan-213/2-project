@@ -104,4 +104,11 @@ public class YouTubeService {
             return String.format("%02d:%02d", minutes, seconds);
         }
     }
+    
+    public MusicBean getSongByVideoId(String videoId) {
+        // YouTube API로 동영상 ID를 사용하여 동영상 정보 가져오기
+        // YouTube.Videos API 호출
+        // 동영상 정보에서 MusicBean을 생성하여 반환
+        return new MusicBean("Sample Title", "Sample Artist", "3:30", "https://www.youtube.com/watch?v=" + videoId, "https://sampleurl.com/thumbnail.jpg");
+    }
 }
