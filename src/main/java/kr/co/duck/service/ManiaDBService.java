@@ -146,9 +146,9 @@ public class ManiaDBService {
 				String description = item.select("description").text();
 				
 				String guid = item.select("guid").text();
-				System.out.println(guid);
+				
 				guid = guid.replace("?s=0", "");
-				System.out.println(guid);
+				
 				// 트랙 리스트를 '/' 단위로 분할하여 배열로 저장
 				String[] trackListArray = trackListRaw.split(" / ");
 				List<String> trackList = Arrays.asList(trackListArray);

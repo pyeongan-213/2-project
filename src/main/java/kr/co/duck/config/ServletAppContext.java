@@ -23,10 +23,15 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.youtube.YouTube;
+
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.interceptor.CheckLoginInterceptor;
 import kr.co.duck.interceptor.TopMenuInterceptor;
 import kr.co.duck.mapper.MemberMapper;
+import kr.co.duck.mapper.MusicMapper;
 import kr.co.duck.mapper.TopMenuMapper;
 import kr.co.duck.service.ManiaDBService; // 추가한 서비스
 import kr.co.duck.service.TopMenuService;
@@ -158,5 +163,23 @@ public class ServletAppContext implements WebMvcConfigurer {
         return new ManiaDBService();
     }
 
+    @Bean
+	public MapperFactoryBean<MusicMapper> getMusicMapper(SqlSessionFactory factory) throws Exception {
+		MapperFactoryBean<MusicMapper> factoryBean = new MapperFactoryBean<MusicMapper>(MusicMapper.class);
+		factoryBean.setSqlSessionFactory(factory);
+		return factoryBean;
+	}
+    
+ // YouTube API에 필요한 구성
+    private static final GsonFactory GSON_FACTORY = GsonFactory.getDefaultInstance();
 
+    @Bean
+    public YouTube youtube() throws Exception {
+        return new YouTube.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                GSON_FACTORY,
+                request -> {}  // 인증 처리를 추가하려면 이곳에서 처리 가능
+        ).setApplicationName("YourApplicationName").build();
+    }
+	
 }

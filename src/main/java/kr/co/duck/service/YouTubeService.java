@@ -1,146 +1,171 @@
 package kr.co.duck.service;
 
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import kr.co.duck.beans.MusicBean;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class YouTubeService {
 
-    private static final String API_KEY = "AIzaSyBLzIORdM8y-Clju3H0X7lVciqTLMKJ7eg";  // YouTube API 키
-    private static final String APPLICATION_NAME = "YOUR_APP_NAME";
-    private static final long MAX_RESULTS = 5;  // 최대 검색 결과 개수
-    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+	
+	@Autowired
+	private YouTube youtube;
 
-    // YouTube 검색 및 동영상 정보 가져오기
-    public List<MusicBean> searchYouTube(String queryTerm) throws GeneralSecurityException, IOException {
-        // YouTube 검색 결과 가져오기
-        List<SearchResult> searchResults = getSearchResults(queryTerm);
+	
 
-        // 동영상 ID 목록 만들기
-        List<String> videoIds = new ArrayList<>();
-        for (SearchResult result : searchResults) {
-            videoIds.add(result.getId().getVideoId());
-        }
+    // YouTube API 키 (Google API 콘솔에서 발급받은 API 키)
+    private final String apiKey = "AIzaSyBLzIORdM8y-Clju3H0X7lVciqTLMKJ7eg";
 
-        // 동영상 길이 포함한 동영상 정보 가져오기
-        List<Video> videoDetails = getVideoDetails(videoIds);
-
-        // 검색 결과와 동영상 정보를 MusicBean으로 변환
+    // YouTube에서 검색 쿼리로 결과 가져오기
+    public List<MusicBean> searchYouTube(String query) {
         List<MusicBean> musicBeans = new ArrayList<>();
-        for (int i = 0; i < searchResults.size(); i++) {
-            SearchResult result = searchResults.get(i);
-            Video video = videoDetails.get(i);
+        try {
+        	if (youtube == null) {
+        	    System.out.println("YouTube 객체가 주입되지 않았습니다.");
+        	    throw new IllegalStateException("YouTube 객체가 null 상태입니다.");
+        	}
 
-            MusicBean musicBean = new MusicBean();
-            musicBean.setMusicName(result.getSnippet().getTitle());  // 동영상 제목
-            musicBean.setArtist(result.getSnippet().getChannelTitle());  // 채널 이름
-            musicBean.setMusicLength(formatDuration(video.getContentDetails().getDuration()));  // 동영상 길이
-            musicBean.setVideoUrl("https://www.youtube.com/watch?v=" + result.getId().getVideoId());  // 비디오 URL
-            musicBean.setThumbnailUrl(result.getSnippet().getThumbnails().getDefault().getUrl());  // 썸네일 URL
+        	
+            // 로그 추가: 검색 시작 전
+            System.out.println("YouTube 검색 요청 시작: " + query);
 
-            musicBeans.add(musicBean);
+            // YouTube 검색 요청 구성
+            YouTube.Search.List search = youtube.search().list("snippet");
+            search.setKey(apiKey);
+            search.setQ(query);
+            search.setType("video");
+            search.setMaxResults(5L); // 최대 5개의 결과만 가져옴
+
+            // 로그 추가: API 요청 실행 전
+            System.out.println("YouTube API 요청 실행 중...");
+            
+            // YouTube 검색 실행
+            SearchListResponse response = search.execute();
+            
+            // 로그 추가: 응답 수신 후
+            System.out.println("YouTube API 요청 성공, 결과 수: " + response.getItems().size());
+
+            List<SearchResult> results = response.getItems();
+
+            // 검색 결과를 MusicBean 리스트로 변환
+            for (SearchResult result : results) {
+                MusicBean musicBean = new MusicBean();
+                musicBean.setMusicName(result.getSnippet().getTitle());
+                musicBean.setArtist(result.getSnippet().getChannelTitle());
+                musicBean.setThumbnailUrl(result.getSnippet().getThumbnails().getDefault().getUrl());
+                musicBean.setVideoUrl("https://www.youtube.com/watch?v=" + result.getId().getVideoId());
+
+                // YouTube API는 동영상 길이를 직접 반환하지 않으므로 추가 API 요청이 필요할 수 있음
+                String videoId = result.getId().getVideoId();
+                String videoLength = getVideoDurationByVideoId(videoId);
+                musicBean.setMusicLength(videoLength);
+
+                // 로그 추가: 결과마다 정보 출력
+                System.out.println("노래 제목: " + musicBean.getMusicName() + ", 아티스트: " + musicBean.getArtist());
+
+                musicBeans.add(musicBean);
+            }
+
+        } catch (IOException e) {
+            // 로그 추가: 예외 발생 시 출력
+            e.printStackTrace();
+            System.out.println("YouTube API 호출 중 오류 발생: " + e.getMessage());
         }
 
         return musicBeans;
     }
 
-    // YouTube 검색 결과 가져오기
-    private List<SearchResult> getSearchResults(String queryTerm) throws GeneralSecurityException, IOException {
-        YouTube youtubeService = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
 
-        YouTube.Search.List searchRequest = youtubeService.search().list("snippet");
-        searchRequest.setQ(queryTerm);
-        searchRequest.setType("video");
-        searchRequest.setKey(API_KEY);
-        searchRequest.setMaxResults(MAX_RESULTS);
-
-        // 검색 결과 실행
-        return searchRequest.execute().getItems();
-    }
-
-    // Videos API로 동영상 정보 가져오기
-    private List<Video> getVideoDetails(List<String> videoIds) throws IOException, GeneralSecurityException {
-        YouTube youtubeService = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        YouTube.Videos.List videoRequest = youtubeService.videos().list("contentDetails");
-        videoRequest.setId(String.join(",", videoIds));
-        videoRequest.setKey(API_KEY);
-
-        // 동영상 정보 실행
-        VideoListResponse videoResponse = videoRequest.execute();
-        return videoResponse.getItems();
-    }
-
-    // ISO 8601 형식의 동영상 길이를 변환하는 메서드
-    private String formatDuration(String isoDuration) {
-        Duration duration = Duration.parse(isoDuration);
-        long hours = duration.toHours();
-        long minutes = duration.toMinutesPart();
-        long seconds = duration.toSecondsPart();
-
-        if (hours > 0) {
-            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        } else {
-            return String.format("%02d:%02d", minutes, seconds);
-        }
-    }
-    
- // YouTube Videos API로 동영상 ID로 정보를 가져오는 메서드
-    public MusicBean getSongByVideoId(String videoId) {
+    // videoId로 동영상의 길이를 가져오는 메서드
+    private String getVideoDurationByVideoId(String videoId) {
         try {
-            // YouTube API 클라이언트 생성
-            YouTube youtubeService = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null)
-                    .setApplicationName(APPLICATION_NAME)
-                    .build();
+            // 로그 추가: 동영상 길이 요청 시작
+            System.out.println("동영상 길이 요청 시작: videoId = " + videoId);
 
-            // Videos API를 통해 동영상 정보 가져오기
-            YouTube.Videos.List videoRequest = youtubeService.videos().list("snippet,contentDetails");
+            // YouTube 비디오 정보 요청 구성
+            YouTube.Videos.List videoRequest = youtube.videos().list("contentDetails");
             videoRequest.setId(videoId);
-            videoRequest.setKey(API_KEY);
+            videoRequest.setKey(apiKey);
 
-            // API 요청 실행 및 결과 가져오기
+            // YouTube 비디오 정보 실행
             VideoListResponse videoResponse = videoRequest.execute();
-            List<Video> videoList = videoResponse.getItems();
 
-            if (!videoList.isEmpty()) {
-                Video video = videoList.get(0);  // 첫 번째 동영상 정보 가져오기
+            // 로그 추가: 응답 수신 후
+            System.out.println("비디오 응답 수신: " + videoResponse.getItems().size() + "개");
 
-                // 동영상 정보를 MusicBean으로 변환
-                String title = video.getSnippet().getTitle();  // 동영상 제목
-                String channelTitle = video.getSnippet().getChannelTitle();  // 채널 이름 (아티스트)
-                String duration = video.getContentDetails().getDuration();  // ISO 8601 형식의 동영상 길이
-                String formattedDuration = formatDuration(duration);  // 형식을 변환한 동영상 길이
-                String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();  // 썸네일 URL
-                String videoUrl = "https://www.youtube.com/watch?v=" + videoId;  // YouTube 동영상 URL
+            Video video = videoResponse.getItems().get(0); // 첫 번째 결과 사용
 
-                // MusicBean 생성 및 반환
-                return new MusicBean(title, channelTitle, formattedDuration, videoUrl, thumbnailUrl);
-            }
-        } catch (GeneralSecurityException | IOException e) {
+            // 로그 추가: 동영상 길이 출력
+            System.out.println("동영상 길이: " + video.getContentDetails().getDuration());
+
+            // 동영상 길이 반환
+            return parseYouTubeDuration(video.getContentDetails().getDuration());
+        } catch (IOException e) {
+            // 로그 추가: 예외 발생 시 출력
             e.printStackTrace();
+            System.out.println("동영상 길이 가져오기 중 오류 발생: " + e.getMessage());
         }
 
-        // 오류가 발생하거나 동영상이 없을 경우 null 반환
-        return null;
+        return "Unknown"; // 오류 시 기본 값
     }
+
+
+    // ISO 8601 형식의 동영상 길이를 포맷팅하는 메서드
+    private String parseYouTubeDuration(String duration) {
+        // ISO 8601 형식 (예: PT1H2M3S)을 적절히 파싱하여 읽을 수 있는 형식으로 변환
+        // 간단한 변환 예시 (여기서는 시간, 분, 초만 사용)
+        duration = duration.replace("PT", "").replace("H", ":").replace("M", ":").replace("S", "");
+        return duration;
+    }
+
+    // videoId로 곡 정보 가져오기
+    public MusicBean getSongByVideoId(String videoId) {
+        MusicBean musicBean = new MusicBean();
+        try {
+            // 로그 추가: videoId로 곡 정보 요청 시작
+            System.out.println("곡 정보 요청 시작: videoId = " + videoId);
+
+            // YouTube 비디오 정보를 가져오는 API 호출 구성
+            YouTube.Videos.List videoRequest = youtube.videos().list("snippet,contentDetails");
+            videoRequest.setId(videoId);
+            videoRequest.setKey(apiKey);
+
+            // YouTube 비디오 정보 실행
+            VideoListResponse videoResponse = videoRequest.execute();
+
+            // 로그 추가: 응답 수신 후
+            System.out.println("곡 정보 응답 수신: " + videoResponse.getItems().size() + "개");
+
+            Video video = videoResponse.getItems().get(0); // 첫 번째 결과를 사용
+
+            // MusicBean에 데이터 설정
+            musicBean.setMusicName(video.getSnippet().getTitle());
+            musicBean.setArtist(video.getSnippet().getChannelTitle());
+            musicBean.setThumbnailUrl(video.getSnippet().getThumbnails().getDefault().getUrl());
+            musicBean.setVideoUrl("https://www.youtube.com/watch?v=" + videoId);
+
+            // 동영상 길이 설정 (ISO 8601 형식)
+            String duration = video.getContentDetails().getDuration();
+            musicBean.setMusicLength(parseYouTubeDuration(duration));
+
+            // 로그 추가: 곡 정보 출력
+            System.out.println("곡 정보: 제목 = " + musicBean.getMusicName() + ", 아티스트 = " + musicBean.getArtist());
+
+        } catch (Exception e) {
+            // 로그 추가: 예외 발생 시 출력
+            e.printStackTrace();
+            System.out.println("곡 정보 가져오기 중 오류 발생: " + e.getMessage());
+        }
+        return musicBean;
+    }
+
 }
