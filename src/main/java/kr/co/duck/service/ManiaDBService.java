@@ -146,9 +146,9 @@ public class ManiaDBService {
 				String description = item.select("description").text();
 				
 				String guid = item.select("guid").text();
-				System.out.println(guid);
+				
 				guid = guid.replace("?s=0", "");
-				System.out.println(guid);
+				
 				// 트랙 리스트를 '/' 단위로 분할하여 배열로 저장
 				String[] trackListArray = trackListRaw.split(" / ");
 				List<String> trackList = Arrays.asList(trackListArray);
@@ -232,8 +232,11 @@ public class ManiaDBService {
 		AlbumDetail albumDetail = new AlbumDetail();
 		albumDetail.setAlbumName(doc.select("div.album-title").first().text());
 		albumDetail.setArtistName(doc.select("div.album-artist a").text());
-		albumDetail.setDescription(doc.select("meta[property=og:description]").attr("content"));
-		albumDetail.setImage(doc.select("div#body img").first().attr("src"));
+		String description = doc.select("meta[property=og:description]").attr("content");
+		if (description.length() > 1300) {
+		    description = description.substring(0, 1300); // 최대 200자까지 자르기
+		}
+		albumDetail.setDescription(description);albumDetail.setImage(doc.select("div#body img").first().attr("src"));
 		// 트랙 리스트 가져오기
 		Elements trackElements = doc.select("table.album-tracks div.song a");
 		List<String> trackList = new ArrayList<String>();
@@ -249,6 +252,37 @@ public class ManiaDBService {
 		}
 		albumDetail.setTrackList(trackList);
 
+		List<String> runningTimeList = new ArrayList<String>();
+		Elements runningTimeElements = doc.select("td.runningtime");
+		// 최대 30개의 src 속성 값 출력
+		count = 0;
+		for (Element runningTime : runningTimeElements) {
+			String src = runningTime.text();
+			runningTimeList.add(src);
+			count++;
+			if (count >= 30)
+				break; // 최대 30개까지만 가져오기
+		}
+		
+		albumDetail.setRunningTimeList(runningTimeList);
+		
+		List<String> albumReleaseList = new ArrayList<String>();
+		Elements albumReleaseElements = doc.select("table.album-release td.release td");
+		// 최대 30개의 src 속성 값 출력
+		count = 0;
+		for (Element albumRelease : albumReleaseElements) {
+			String src = albumRelease.text();
+			albumReleaseList.add(src);
+			count++;
+			if (count >= 4)
+				break; // 최대 2개까지만 가져오기
+		}
+		
+		albumDetail.setAlbumRelease(albumReleaseList);
+		
+		
+		
+		
 		return albumDetail;
 	}
 
@@ -327,11 +361,33 @@ public class ManiaDBService {
 		private String description;
 		private String image;
 		private List<String> trackList;
+		private List<String> runningTimeList;
+		private List<String> albumRelease;
 
 		// Getters and setters
 
+		
 		public String getArtistName() {
 			return artistName;
+		}
+
+		
+		public List<String> getAlbumRelease() {
+			return albumRelease;
+		}
+
+
+		public void setAlbumRelease(List<String> albumRelease) {
+			this.albumRelease = albumRelease;
+		}
+
+
+		public List<String> getRunningTimeList() {
+			return runningTimeList;
+		}
+
+		public void setRunningTimeList(List<String> runningTimeList) {
+			this.runningTimeList = runningTimeList;
 		}
 
 		public List<String> getTrackList() {

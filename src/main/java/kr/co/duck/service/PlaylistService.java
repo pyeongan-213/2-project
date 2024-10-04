@@ -3,47 +3,71 @@ package kr.co.duck.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.co.duck.beans.Song;
+import kr.co.duck.beans.MusicBean;
+import kr.co.duck.dao.MusicDAO;
+import kr.co.duck.dao.PlaylistDAO;
 
 @Service
 public class PlaylistService {
-	private List<Song> playlist;
 
-	public PlaylistService() {
-		this.playlist = new ArrayList<>();
-		// 예시 데이터
-		playlist.add(new Song(1,"Song 1", "Artist 1", "/music/song1.mp3"));
-		playlist.add(new Song(2,"Song 2", "Artist 2", "/music/song2.mp3"));
-		playlist.add(new Song(3,"Song 3", "Artist 3", "/music/song3.mp3"));
-		playlist.add(new Song(4,"Song 4", "Artist 4", "/music/song4.mp3"));
-		playlist.add(new Song(5,"Song 5", "Artist 5", "/music/song5.mp3"));
-		playlist.add(new Song(6,"Song 6", "Artist 6", "/music/song6.mp3"));
-		playlist.add(new Song(7,"Song 7", "Artist 7", "/music/song7.mp3"));
-		playlist.add(new Song(8,"Song 8", "Artist 8", "/music/song8.mp3"));
-		playlist.add(new Song(9,"Song 9", "Artist 9", "/music/song9.mp3"));
-		playlist.add(new Song(10,"Song 10", "Artist 10", "/music/song10.mp3"));
+	@Autowired
+	private YouTubeService youtubeService;
+
+	@Autowired
+	private MusicDAO musicDAO;
+
+	@Autowired
+	private PlaylistDAO playlistDAO;
+
+	// 예시 플레이리스트
+	private List<MusicBean> playlist = new ArrayList<>();
+
+	// YouTube 검색 후 플레이리스트에 추가 (검색 결과만 반환)
+	public List<MusicBean> searchAndAddToPlaylist(String query) {
+		List<MusicBean> searchResults = new ArrayList<>();
+		try {
+			// YouTube API로 검색한 결과 가져오기
+			searchResults = youtubeService.searchYouTube(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return searchResults;
 	}
 
-	// 곡 순서 업데이트 로직
-	public void updateSongOrder(List<Integer> orderedIds) {
-		// 새로 받은 orderedIds 순서대로 플레이리스트를 재정렬
-		playlist.sort((song1, song2) -> {
-			int index1 = orderedIds.indexOf(song1.getId());
-			int index2 = orderedIds.indexOf(song2.getId());
-			return Integer.compare(index1, index2);
-		});
+	// YouTube 동영상을 ID로 플레이리스트에 추가
+	public void addSongToPlaylistByVideoId(String videoId) {
+		try {
+			// 동영상 ID로 곡 검색 후 플레이리스트에 추가
+			MusicBean song = youtubeService.getSongByVideoId(videoId);
+			playlist.add(song);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public List<Song> getPlaylist() {
+	// 특정 곡을 제목으로 삭제
+	public boolean removeSongByTitle(String title) {
+		return playlist.removeIf(song -> song.getMusicName().equalsIgnoreCase(title));
+	}
+
+
+	// MusicBean 정보를 DB에 저장하고 Playlist에 추가
+	public void addMusicToPlaylist(MusicBean musicBean, int playOrder) {
+		int musicId = musicDAO.saveMusic(musicBean); // 음악 정보를 저장하고 ID를 받음
+		playlistDAO.addMusicToPlaylist(musicId, playOrder); // 재생목록에 추가
+	}
+
+	// Playlist에서 음악을 순서대로 가져오기
+	public List<MusicBean> getPlaylist() {
+		List<Integer> musicIds = playlistDAO.getPlaylistMusicIds();
+		List<MusicBean> playlist = new ArrayList<>();
+		for (int musicId : musicIds) {
+			MusicBean musicBean = musicDAO.getMusicById(musicId);
+			playlist.add(musicBean);
+		}
 		return playlist;
 	}
-
-	public void addSong(Song song) {
-		playlist.add(song);
-	}
-
-
-
 }

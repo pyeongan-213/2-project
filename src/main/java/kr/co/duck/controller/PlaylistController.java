@@ -1,67 +1,63 @@
 package kr.co.duck.controller;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import kr.co.duck.beans.Song;
+import kr.co.duck.beans.MusicBean;
 import kr.co.duck.service.PlaylistService;
-import kr.co.duck.service.YouTubeService;
+import kr.co.duck.service.YouTubeService; // YouTubeService를 import
 
 @Controller
-@RequestMapping("/temp")
 public class PlaylistController {
 
-    private final PlaylistService playlistService;
-    private final YouTubeService youTubeService;
+    @Autowired
+    private PlaylistService playlistService;
 
     @Autowired
-    public PlaylistController(PlaylistService playlistService, YouTubeService youTubeService) {
-        this.playlistService = playlistService;
-        this.youTubeService = youTubeService;
-    }
+    private YouTubeService youtubeService; // YouTubeService를 Autowired로 주입
 
-    @RequestMapping("/playlist")
-    public String getPlaylist(Model model) {
-        model.addAttribute("songs", playlistService.getPlaylist());
-        return "temp/playlist"; // temp/playlist.jsp 경로
-    }
-
-    @PostMapping("/addSongFromYouTube")
-    public String addSongFromYouTube(@RequestParam String query, Model model) {
+    // YouTube 검색 요청 처리
+    @GetMapping("/youtubeSearch")
+    public String searchYouTube(@RequestParam("query") String query, Model model) {
         try {
-            JSONArray videos = youTubeService.searchVideos(query);
-            if (videos.length() > 0) {
-                JSONObject video = videos.getJSONObject(0); // 첫 번째 검색 결과를 가져옴
-                String title = video.getJSONObject("snippet").getString("title");
-                String artist = "YouTube"; // 아티스트 정보를 직접 가져오기 어려우므로 기본값 사용
-
-                // id 객체에서 videoId 또는 playlistId를 가져오기
-                String url;
-                if (video.getJSONObject("id").has("videoId")) {
-                    String videoId = video.getJSONObject("id").getString("videoId");
-                    url = "https://www.youtube.com/watch?v=" + videoId;
-                } else if (video.getJSONObject("id").has("playlistId")) {
-                    String playlistId = video.getJSONObject("id").getString("playlistId");
-                    url = "https://www.youtube.com/playlist?list=" + playlistId;
-                } else {
-                    // videoId나 playlistId가 없으면 기본 URL 설정
-                    url = "#";
-                }
-
-                Song newSong = new Song(0, title, artist, url); // ID는 나중에 데이터베이스에서 설정
-                playlistService.addSong(newSong);
-            }
+            // YouTube 검색 결과 가져오기
+        	List<MusicBean> musicBeans = playlistService.searchAndAddToPlaylist(query);
+        	System.out.println("검색된 결과 수: " + musicBeans.size());  // 결과 개수 출력
+        	for (MusicBean musicBean : musicBeans) {
+        	    System.out.println("제목: " + musicBean.getMusicName());
+        	}
+        	model.addAttribute("searchResults", musicBeans);
         } catch (Exception e) {
             e.printStackTrace();
+            model.addAttribute("errorMessage", "YouTube 검색 중 오류가 발생했습니다.");
         }
-        model.addAttribute("songs", playlistService.getPlaylist());
-        return "temp/playlist"; // JSP로 결과 반환
+        return "playlist/youtubeSearch"; 
+    }
+
+    // 플레이리스트 페이지로 이동
+    @GetMapping("/playlist")
+    public String showPlaylist(Model model) {
+        List<MusicBean> playlist = playlistService.getPlaylist();
+        model.addAttribute("playlist", playlist);
+        return "playlist/playlist"; // 플레이리스트를 playlist.jsp로 전달
+    }
+
+    @PostMapping("/addToPlaylist")
+    public String addToPlaylist(@RequestParam("videoId") String videoId, @RequestParam("musicName") String musicName) {
+        // YouTube API에서 videoId로 음악 정보를 가져옴
+        MusicBean musicBean = youtubeService.getSongByVideoId(videoId);
+
+        // 순서값을 계산해서 재생목록에 추가 (예: 현재 목록 크기에 +1)
+        int playOrder = playlistService.getPlaylist().size() + 1;
+        playlistService.addMusicToPlaylist(musicBean, playOrder);
+
+        return "redirect:/playlist"; // 곡 추가 후 플레이리스트로 리다이렉트
     }
 
 }
