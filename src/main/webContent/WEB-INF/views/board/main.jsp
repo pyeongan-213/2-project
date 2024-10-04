@@ -32,19 +32,17 @@
 	
 		<h1>커뮤니티</h1>
 		<div>
-			<button class="c_btn">전체</button>
-			<button class="c_btn">자유게시판</button>
-			<button class="c_btn">소식/정보</button>
-			<button class="c_btn">음악 추천</button>
+			<button class="c_btn" ><a href="${root }board/main">전체</a></button>
+			<button class="c_btn" ><a href="${root }board/main_sort?board_id=1">자유게시판</a></button>
+			<button class="c_btn" ><a href="${root }board/main_sort?board_id=2">소식/정보</a></button>
+			<button class="c_btn" ><a href="${root }board/main_sort?board_id=3">음악 추천</a></button>
 			<p></p>
 		</div>
+		<form:form action="${root}board/write_reply_pro" method="post"
+				modelAttribute="writeReplyBean"></form:form>
 		<div class="on-table">
-			<input placeholder="search">
-			<%-- <form:input path="title"/> --%>
-			<span class="right-align"> <a
-				href="${root }board/write"
-				class="write-btn">글쓰기</a>
-			</span>
+			<input id="searchInput" placeholder="search" onkeydown="if(event.key === 'Enter') searchPosts()">
+    		<span class="right-align"> <a href="${root }board/write" class="write-btn">글쓰기</a> </span>
 		</div>
 		
 			<div>
@@ -59,38 +57,18 @@
 						</tr>
 					</thead>
 					<tbody align="center">
-						<tr>
-							<td>자유게시판</td>
-							<td><a href="${root }board/read">제목1~~~~~~~~~~~~~~~~~</a></td>
-							<td>글쓴이1</td>
-							<td>2024-09-13</td>
-							<td>5</td>
-						</tr>
-						<tr>
-							<td>소식/정보</td>
-							<td>제목2</td>
-							<td>글쓴이2</td>
-							<td>2024-09-13</td>
-							<td>9</td>
-						</tr>
-						<tr>
-							<td>음악추천</td>
-							<td>제목3</td>
-							<td>글쓴이3</td>
-							<td>2024-09-13</td>
-							<td>8</td>
-						</tr>
-						<%-- <c:forEach var='obj' items="${contentList }">
-		<tr>
-			<td class="text-center d-none d-md-table-cell">${obj.content_idx }</td>
-			<td><a href='${root }board/read?board_info_idx=${board_info_idx}&content_idx=${obj.content_idx}&page=${page}'>${obj.content_subject }</a></td>
-			<td class="text-center d-none d-md-table-cell">${obj.content_writer_name }</td>
-			<td class="text-center d-none d-md-table-cell">${obj.content_date }</td>
-		</tr>
-		</c:forEach> --%>
+						<c:forEach var='obj' items="${contentList}">
+							<tr>
+								<td>${obj.board_name }</td>
+								<td><a href="${root }board/read?boardpost_id=${obj.boardpost_id}">${obj.content_title}</a></td>
+								<td>${obj.membername }</td>
+								<td>${obj.writedate }</td>
+								<td>${obj.like_count }</td>
+								<td style="display: none;">${obj.content_text }</td>							
+							</tr>						
+						</c:forEach>
 					</tbody>
 				</table>
-
 
 			</div>
 
@@ -145,10 +123,12 @@
 	<div class="showBest">
 		<h3 style="margin-right: 120px;">BEST</h3>
 		<div class="bestContent">
+		<c:forEach var='obj' items="${bestList}">
 			<div>
-			<span>제목2123123</span>
-			<span style="margin-left: auto; margin-right: 10px;">♡9 ⊙47</span>
+			<span style="margin: 0 20px 0 0;">${obj.content_title}</span>
+			<span style="margin: 0;">♡${obj.like_count }</span>
 			</div>
+		</c:forEach>
 		</div>
 	</div>
 	<div class="fixed-section">
@@ -170,5 +150,41 @@
 	<footer>
 		<!-- ========== -->
 	</footer>
+
+<script>
+    function searchPosts() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase(); // 소문자로 변환하여 대소문자 구분 없이 검색
+        const table = document.querySelector('table tbody');
+        const rows = table.getElementsByTagName('tr'); // 모든 행 가져오기
+
+        for (let i = 0; i < rows.length; i++) {
+            const titleCell = rows[i].cells[1]; // 제목이 있는 셀
+            const contentCell = rows[i].cells[5]; // 내용이 있는 셀
+            let showRow = false; // 해당 행을 표시할지 여부
+
+            if (titleCell) {
+                const titleText = titleCell.textContent || titleCell.innerText; // 셀의 텍스트 가져오기
+                // 제목에 입력된 문자열이 포함되는지 확인
+                if (titleText.toLowerCase().indexOf(filter) > -1) {
+                    showRow = true; // 제목이 일치하는 경우
+                }
+            }
+
+            if (contentCell) {
+                const contentText = contentCell.textContent || contentCell.innerText; // 내용 셀의 텍스트 가져오기
+                // 내용에 입력된 문자열이 포함되는지 확인
+                if (contentText.toLowerCase().indexOf(filter) > -1) {
+                    showRow = true; // 내용이 일치하는 경우
+                }
+            }
+
+            // 일치 여부에 따라 행 표시 또는 숨김
+            rows[i].style.display = showRow ? "" : "none";
+        }
+    }
+
+</script>
+
 </body>
 </html>

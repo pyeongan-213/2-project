@@ -1,43 +1,64 @@
 package kr.co.duck.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.*;
 import kr.co.duck.beans.QuizBean;
 import kr.co.duck.service.QuizService;
+import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/quiz")
 public class QuizController {
+	private final QuizService quizService;
 
-	@Autowired
-	private QuizService quizService;
-
-
-	// 퀴즈 목록을 보여주는 메서드
-	@GetMapping("/quizMain")
-	public String getQuizList(Model model) {
-		List<QuizBean> quizzes = quizService.getAllQuizzes();
-		System.out.println("퀴즈 목록: " + quizzes); // 퀴즈목록 출력확인
-		model.addAttribute("quizzes", quizzes);
-		return "quiz/quizMain"; // 퀴즈 목록 페이지
+	public QuizController(QuizService quizService) {
+		this.quizService = quizService;
 	}
 
-	// 특정 퀴즈 시작
-	@GetMapping("/{quizId}")
-	public String startQuiz(@PathVariable int quizId, Model model) {
-		QuizBean quiz = quizService.getQuizById(quizId);
-		if (quiz == null) {
-			model.addAttribute("errorMessage", "퀴즈를 찾을 수 없습니다.");
-			return "error/quizNotFound"; // 에러 페이지로 이동
-		}
-		model.addAttribute("quiz", quiz);
-		return "quiz/startQuiz"; // 퀴즈 시작 페이지
+	@PostMapping("/create")
+	public String createQuiz(@RequestBody QuizBean quizBean) {
+		quizService.createQuiz(quizBean);
+		return "퀴즈가 생성되었습니다.";
 	}
+
+	@GetMapping("/list")
+	public List<QuizBean> getAllQuizzes() {
+		return quizService.getAllQuizzes();
+	}
+
+	// 퀴즈 ID로 퀴즈 가져오기
+	@GetMapping("/details/{quizId}")
+	public QuizBean getQuiz(@PathVariable String quizId) {
+	    try {
+	        int id = Integer.parseInt(quizId);
+	        QuizBean quiz = quizService.getQuiz(id);
+	        if (quiz != null) {
+	            return quiz;
+	        } else {
+	            throw new IllegalArgumentException("해당 ID의 퀴즈를 찾을 수 없습니다: " + id);
+	        }
+	    } catch (NumberFormatException e) {
+	        throw new IllegalArgumentException("잘못된 퀴즈 ID입니다: " + quizId);
+	    }
+	}
+
+
+	@PutMapping("/update/{quizId}")
+	public String updateQuiz(@PathVariable int quizId, @RequestBody QuizBean quizBean) {
+		quizService.updateQuiz(quizId, quizBean);
+		return "퀴즈가 업데이트되었습니다.";
+	}
+
+	@DeleteMapping("/delete/{quizId}")
+	public String deleteQuiz(@PathVariable int quizId) {
+		quizService.deleteQuiz(quizId);
+		return "퀴즈가 삭제되었습니다.";
+	}
+
+	@PostMapping("/answer")
+	public String submitAnswer(@RequestBody QuizBean quizBean) {
+		boolean isCorrect = quizService.submitAnswer(quizBean);
+		return isCorrect ? "정답입니다!" : "오답입니다!";
+	}
+	
+
 }
