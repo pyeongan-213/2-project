@@ -3,27 +3,31 @@ package kr.co.duck.dao;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import kr.co.duck.beans.Playlist;
 import kr.co.duck.mapper.PlaylistMapper;
+import kr.co.duck.mapper.PlaylistRowMapper;
 
 @Repository
 public class PlaylistDAO {
 
     @Autowired
-    private PlaylistMapper playlistMapper;
+    private JdbcTemplate jdbcTemplate;
 
-    // 재생목록에 음악 추가
-    public void addMusicToPlaylist(int musicId, int playOrder) {
-        playlistMapper.insertMusicToPlaylist(musicId, playOrder);
+    // 새로운 플레이리스트 생성
+    public int createPlaylist(String playlistName, String createdBy) {
+        String sql = "INSERT INTO Playlist (playlistName, createdBy) VALUES (?, ?)";
+        jdbcTemplate.update(sql, playlistName, createdBy);
+        
+        // 새로 생성된 playlistId 반환
+        return jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
     }
 
-    // 재생목록 조회 (순서대로)
-    public List<Integer> getPlaylistMusicIds() {
-        return playlistMapper.getPlaylistMusicIds();
-    }
-
-    // 특정 곡을 재생목록에서 삭제
-    public void removeMusicFromPlaylist(int musicId) {
-        playlistMapper.deleteMusicFromPlaylist(musicId);
+    // 특정 사용자의 모든 플레이리스트 조회
+    public List<Playlist> getPlaylistsByUser(String createdBy) {
+        String sql = "SELECT * FROM Playlist WHERE createdBy = ?";
+        return jdbcTemplate.query(sql, new Object[]{createdBy}, new PlaylistRowMapper());
     }
 }

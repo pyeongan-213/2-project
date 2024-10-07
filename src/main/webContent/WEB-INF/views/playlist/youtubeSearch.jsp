@@ -16,10 +16,9 @@
 		<table border="1">
 			<thead>
 				<tr>
-					<th>Thumbnail</th>
 					<th>Title</th>
 					<th>Artist</th>
-					<th>Duration</th>
+					<th>Thumbnail</th>
 					<th>Video</th>
 					<th>Add to Playlist</th>
 				</tr>
@@ -27,32 +26,24 @@
 			<tbody>
 				<c:forEach var="song" items="${searchResults}">
 					<tr>
-						<!-- 썸네일 이미지 출력 -->
-						<td><img src="${song.thumbnailUrl}" alt="Thumbnail"
-							width="120" height="90" /></td>
-						<!-- 노래 제목 출력 -->
 						<td>${song.musicName}</td>
-						<!-- 아티스트 이름 출력 -->
 						<td>${song.artist}</td>
-						<!-- 동영상 길이 출력 -->
-						<td>${song.musicLength}</td>
-						<!-- 비디오 링크 출력 -->
+						<td><img src="${song.thumbnailUrl}" alt="Thumbnail" /></td>
 						<td><a href="${song.videoUrl}" target="_blank">Watch</a></td>
-						<!-- playlist에 추가하는 폼 -->
 						<td>
 							<form action="${pageContext.request.contextPath}/addToPlaylist"
 								method="post">
-								<!-- YouTube URL에서 videoId 추출 -->
 								<input type="hidden" name="videoId"
-									value="${fn:substringAfter(song.videoUrl, 'v=')}"> <input
+									value="${song.videoUrl.split('=')[1]}"> <input
 									type="hidden" name="musicName" value="${song.musicName}">
-								<button type="submit">Add to Playlist</button>
+								<button type="submit">플레이리스트에 추가</button>
 							</form>
 						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
+
 	</c:if>
 	<c:if test="${empty searchResults}">
 		<p>No search results found.</p>
