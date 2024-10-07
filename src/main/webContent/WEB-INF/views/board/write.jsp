@@ -29,7 +29,7 @@
 	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
 	<div class="container">
 		<div style="font-size: 13px; margin: 20px 0;">
-			<div>(현재 로그인중인 유저)</div>
+			<div>${loginMemberBean.nickname }</div>
 		</div>
 		<div style="margin-left: 30px">
 		<form:form action="${root}board/write_pro" method="post" modelAttribute="writeContentBean" enctype="multipart/form-data">

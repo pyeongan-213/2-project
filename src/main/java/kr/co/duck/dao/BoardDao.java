@@ -2,6 +2,7 @@ package kr.co.duck.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,16 +24,16 @@ public class BoardDao {
 		boardMapper.addReply(writeReplyBean);
 	}
 	
-	public List<ContentBean> getContentList(){
-		return boardMapper.getContentList();
+	public List<ContentBean> getContentList(RowBounds rowBounds){
+		return boardMapper.getContentList(rowBounds);
 	}
 
 	public List<ContentBean> getBestList(){
 		return boardMapper.getBestList();
 	}
 
-	public List<ContentBean> getsortedList(int board_id){
-		return boardMapper.getsortedList(board_id);
+	public List<ContentBean> getsortedList(int board_id, RowBounds rowBounds){
+		return boardMapper.getsortedList(board_id, rowBounds);
 	}
 
 	public ContentBean getContentInfo(int boardpost_id) {
@@ -43,6 +44,10 @@ public class BoardDao {
 		return boardMapper.getReplyList(boardpost_id);
 	}
 
+	public void modifyContentInfo(ContentBean modifyContentBean) {
+		boardMapper.modifyContentInfo(modifyContentBean);
+	}
+	
 	public void deleteContent(int boardpost_id) {
 		boardMapper.deleteContent(boardpost_id);
 	}
@@ -67,4 +72,11 @@ public class BoardDao {
         return boardMapper.getLikeCount(boardpost_id);
     }
 
+    public int getContentCnt() {
+		return boardMapper.getContentCnt();
+	}
+
+    public int getSortedContentCnt(int board_id) {
+		return boardMapper.getSortedContentCnt(board_id);
+	}
 }

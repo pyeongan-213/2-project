@@ -1,32 +1,46 @@
 @charset "EUC-KR";
 
-* {
-	background-color: black;
-	color: white;
-}
-
 p {
 	background: white;
 	color: black;
 }
 
+a {
+	text-decoration: none;
+	color: white;
+}
+
 body {
+	color: white;
+	background-color: black;
+	margin: auto;
+    padding: 0;
 	background: black;
 	display: flex;
 	justify-content: center;
 	min-height: 100vh; /* 화면 전체 높이를 사용 */
-	margin: 0 55px 0 90px;
+	width: 100%;
+	max-width: 1200px;
+	overflow-x: hidden; 
 }
 
 .container {
+	display: flex;
 	flex-direction: column; /* 수직 방향으로 정렬 */
-	width: 80%; /* 원하는 너비 설정 */
-	max-width: 1200px; /* 최대 너비 설정 */
+	width: 70%; /* 원하는 너비 설정 */
 	background: black; /* 배경 색상 추가 (선택 사항) */
-	padding: 20px; /* 패딩 추가 */
+	margin: 0 10px;
+	justify-content: center;
+}
+
+.content_title{
+	font-weight: bold;
+	font-size: 22px;
 }
 
 button.c_btn {
+	color: white;
+	background-color: black;
 	margin: 10px;
 	border: none; /* 테두리 제거 */
 	border-radius: 20px; /* 모서리 둥글게 */
@@ -38,11 +52,13 @@ button.c_btn {
 }
 
 button.c_btn:hover {
-	background: white;
+	border: 1px solid #33FF33;
 	color: black;
 }
 
 input {
+	background: black;
+	color: white;
 	border: none;
 	border-bottom: 1px solid gray;
 	margin-bottom: 10px;
@@ -94,22 +110,39 @@ span {
 	background: #BC5ADC;
 }
 
-.pagination {
-	display: flex; /* Flexbox를 사용하여 수평 정렬 */
-	justify-content: center; /* 중앙 정렬 */
-	padding-left: 0; /* 기본 여백 제거 */
-	margin: 0; /* 기본 여백 제거 */
-	margin-top: 10px;
-	list-style: none; /* 기본 리스트 스타일 제거 */
+.pagination > ul{
+   list-style-type: none;
 }
 
-.pagination .page-item {
-	margin: 0 5px; /* 페이지 항목 간의 간격 조정 */
-	text-decoration: none;
+.page-item{
+   display: inline;
+   margin-right: 10px;   
 }
 
-.page-link {
-text-decoration: none;
+.page-item > a{
+   text-decoration: none;
+}
+
+.page-item-disabled{
+   display: inline;
+   margin-right: 10px;
+}
+
+.page-item-disabled > a{
+   text-decoration: none;
+   color: gray;
+   pointer-events: none;
+   cursor: default;
+}
+
+.page-item-active{
+   display: inline;
+   margin-right: 10px;
+}
+
+.page-item-active > a{
+   text-decoration: none;
+   color: aqua;
 }
 
 /* .fixed-section: 페이지의 우측 하단에 고정된 섹션 */
@@ -122,9 +155,8 @@ text-decoration: none;
 }
 
 .showBest{
-	width: 200px;
-	margin: 0 20px; /* 좌우 여백을 20px로 설정 */
-    padding: 10px;
+	width: 230px;
+	margin: 0 10px; /* 좌우 여백을 20px로 설정 */
 	display: flex;
     flex-direction: column; /* 수직 방향으로 정렬 */
     align-items: center;
@@ -133,6 +165,11 @@ text-decoration: none;
 }
 .bestContent{
 	font-size: 14px;
+}
+.bestContent > div {
+    margin-bottom: 10px; /* 항목 간 간격 설정 */
+    width: 100%; /* 부모 요소에 맞게 넓이 설정 */
+    display: flex;
 }
 /* .fixed-button: 고정 섹션 내의 버튼 스타일 */
 .fixed-button {
@@ -204,6 +241,11 @@ text-decoration: none;
 
 .fixed-content a:hover {
 	background: #BC5ADC;
+}
+
+.content_text{
+	text-align: center; 
+	margin: 20px 0;
 }
 
 select option {

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert; 
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.session.RowBounds;
 
 import kr.co.duck.beans.ContentBean;
 import kr.co.duck.beans.ReplyBean;
@@ -25,7 +26,7 @@ public interface BoardMapper {
 			+ "join board b on c.board_id = b.board_id "
 			+ "join member m on c.member_id = m.member_id "
 			+ "order by c.boardpost_id desc")
-	List<ContentBean> getContentList();
+	List<ContentBean> getContentList(RowBounds rowBounds);
 
 	@Select("select content_title, like_count "
 			+ "from boardpost "
@@ -39,7 +40,7 @@ public interface BoardMapper {
 			+ "join member m on c.member_id = m.member_id "
 			+ "where c.board_id = #{board_id} "
 			+ "order by c.boardpost_id desc")
-	List<ContentBean> getsortedList(int board_id);
+	List<ContentBean> getsortedList(int board_id, RowBounds rowBounds);
 	
 	@Select("select r.reply_id, r.member_id, m.membername as reply_writer_name, to_char(r.reply_date, 'yyyy-mm-dd') as reply_date, r.reply_text "
 			+ "from reply r "
@@ -54,6 +55,13 @@ public interface BoardMapper {
 			+ "join member m on c.member_id = m.member_id "
 			+ "where c.boardpost_id=#{boardpost_id}")
 	ContentBean getContentInfo(int boardpost_id);
+	
+	@Update("update boardpost "
+			+ "set content_title = #{content_title}, "
+			+ "content_text = #{content_text, jdbcType=CLOB}, "
+			+ "writedate = sysdate "
+			+ "where boardpost_id = #{boardpost_id}")
+	void modifyContentInfo(ContentBean modifyContentBean);
 	
 	@Delete("delete from boardpost where boardpost_id = #{boardpost_id}")
 	void deleteContent(int boardpost_id);
@@ -74,8 +82,17 @@ public interface BoardMapper {
 	@Update("update boardpost "
 			+ "set like_count = like_count - 1 "
 			+ "where boardpost_id = #{boardpost_id}")
-	int decrementLikeCount(int boardpos_id);
+	int decrementLikeCount(int boardpost_id);
 
 	@Select("select like_count from boardpost where boardpost_id = #{boardpost_id}")
 	Integer getLikeCount(int boardpost_id);
+
+	@Select("select count(*) "
+			+ "from boardpost ")
+	int getContentCnt();
+
+	@Select("select count(*) "
+			+ "from boardpost "
+			+ "where board_id = #{board_id}")
+	int getSortedContentCnt(int board_id);
 }

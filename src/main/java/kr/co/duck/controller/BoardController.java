@@ -1,6 +1,6 @@
 package kr.co.duck.controller;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.duck.beans.ContentBean;
 import kr.co.duck.beans.MemberBean;
+import kr.co.duck.beans.PageBean;
 import kr.co.duck.beans.ReplyBean;
 import kr.co.duck.service.BoardService;
 
@@ -36,10 +37,14 @@ public class BoardController {
 	private MemberBean loginMemberBean;
 
 	@GetMapping("/main")
-	public String goToBoard(Model model) {
+	public String goToBoard(@RequestParam(value = "page", defaultValue = "1") int page,
+							Model model) {
 		
-		List<ContentBean> contentList = boardService.getContentList();
+		List<ContentBean> contentList = boardService.getContentList(page);
 		model.addAttribute("contentList",contentList);
+		
+		PageBean pageBean = boardService.getContentCnt(page);
+		model.addAttribute("pageBean",pageBean);
 		
 		List<ContentBean> bestList = boardService.getBestList();
 		model.addAttribute("bestList",bestList);
@@ -48,11 +53,18 @@ public class BoardController {
 	}
 
 	@GetMapping("/main_sort")
-	public String sortMain(@RequestParam("board_id")int board_id, Model model) {
+	public String sortMain(@RequestParam("board_id")int board_id,
+						   @RequestParam(value = "page", defaultValue = "1") int page,
+						   Model model) {
 		
-		List<ContentBean> sortedContentList = boardService.getsortedList(board_id);
+		model.addAttribute("board_id", board_id);
+		
+		List<ContentBean> sortedContentList = boardService.getsortedList(board_id, page);
 		model.addAttribute("contentList",sortedContentList);
 		
+		PageBean pageBean = boardService.getSortedContentCnt(board_id, page);
+		model.addAttribute("pageBean",pageBean);
+	
 		return "board/main";
 	}
 
@@ -76,7 +88,8 @@ public class BoardController {
 	}
 	
 	@GetMapping("/write")
-	public String write(@ModelAttribute("writeContentBean")ContentBean writeContentBean) {
+	public String write(@ModelAttribute("writeContentBean")ContentBean writeContentBean, Model model) {
+		model.addAttribute("loginMemberBean",loginMemberBean);
 		return "board/write";
 	}
 
@@ -105,17 +118,42 @@ public class BoardController {
 		return "redirect:/board/read?boardpost_id=" + boardpost_id;
 	}
 
-	//보류
 	@GetMapping("/modify")
 	public String modify(@RequestParam("boardpost_id")int boardpost_id,
+						 //@RequestParam("board_id")int board_id,
+						 //@RequestParam("page") int page,
 						 @Valid @ModelAttribute("modifyContentBean")ContentBean modifyContentBean,
 						 Model model) {
 		
+		//model.addAttribute("board_id",board_id);
+		//model.addAttribute("page",page);
 		model.addAttribute("boardpost_id",boardpost_id);
+		ContentBean tempContentBean = boardService.getContentInfo(boardpost_id);
+		
+		modifyContentBean.setMembername(tempContentBean.getMembername());
+		modifyContentBean.setWritedate(tempContentBean.getWritedate());
+		modifyContentBean.setContent_title(tempContentBean.getContent_title());
+		modifyContentBean.setContent_text(tempContentBean.getContent_text());
+		modifyContentBean.setMember_id(tempContentBean.getMember_id());
+		//modifyContentBean.setBoard_id(board_id);
+		modifyContentBean.setBoardpost_id(boardpost_id);
 		
 		return "board/modify";
 	}
 
+	@PostMapping("/modify_pro")
+	public String modify_pro(@Valid @ModelAttribute("modifyContentBean")ContentBean modifyContentBean,
+							 BindingResult result,
+			 				 Model model) {
+		
+		if(result.hasErrors()) {
+			return "board/modify";
+		}
+		
+		boardService.modifyContentInfo(modifyContentBean);
+		return "board/modify_success";
+	}
+	
 	@GetMapping("/delete")
 	public String delete(@RequestParam("boardpost_id")int boardpost_id,
 						 Model model) {

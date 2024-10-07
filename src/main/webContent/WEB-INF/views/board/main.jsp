@@ -72,50 +72,93 @@
 
 			</div>
 
-
 			<div class="pagination">
-				<ul class="pagination justify-content-center">
+				<ul>
+				<c:set var="URI_1" value="${requestScope['javax.servlet.forward.request_uri']}"/>
+				<c:set var="URI_2" value="${root}board/main"/>
+				<c:choose>
+				<c:when test="${URI_1 eq URI_2}">
 					<c:choose>
-
 						<c:when test="${pageBean.prevPage <= 0 }">
-							<li class="page-item disabled"><a href="#" class="page-link">←</a></li>
+							<li class="page-item-disabled"><a href="#" 
+								class="page-link">←</a></li>
 						</c:when>
 						<c:otherwise>
-							<li class="page-item"><a
-								href="${root }board/main?board_info_idx=${board_info_idx}&page=${pageBean.prevPage}"
+							<li class="page-item">
+							<a href="${root }board/main?page=${pageBean.prevPage}"
 								class="page-link">←</a></li>
 						</c:otherwise>
 					</c:choose>
 
-					<c:forEach var='idx' begin="${pageBean.min }"
-						end='${pageBean.max }'>
+					<c:forEach var='idx' begin="${pageBean.min }" end='${pageBean.max }'>
 						<c:choose>
 							<c:when test="${idx == pageBean.currentPage }">
-								<li class="page-item active"><a
-									href="${root }board/main?board_info_idx=${board_info_idx}&page=${idx}"
-									class="page-link">${idx+1 }</a></li>
+								<li class="page-item-active"><a
+									href="${root }board/main?page=${idx}"
+									class="page-link">${idx }</a></li>
 							</c:when>
 							<c:otherwise>
 								<li class="page-item"><a
-									href="${root }board/main?board_info_idx=${board_info_idx}&page=${idx}"
-									class="page-link">${idx+1 }</a></li>
+									href="${root }board/main?page=${idx}"
+									class="page-link">${idx }</a></li>
 							</c:otherwise>
 						</c:choose>
-
 					</c:forEach>
 
 					<c:choose>
-
 						<c:when test="${pageBean.max >= pageBean.pageCnt }">
-							<li class="page-item disabled"><a href="#" class="page-link">→</a></li>
+							<li class="page-item-disabled"><a href="#" 
+								class="page-link">→</a></li>
 						</c:when>
 						<c:otherwise>
 							<li class="page-item"><a
-								href="${root }board/main?board_info_idx=${board_info_idx}&page=${pageBean.nextPage}"
+								href="${root }board/main?page=${pageBean.nextPage}"
 								class="page-link">→</a></li>
 						</c:otherwise>
 					</c:choose>
+				</c:when>
+				
+				<c:otherwise><!-- 카테고리별로 볼때 -->
+					<c:choose>
+						<c:when test="${pageBean.prevPage <= 0 }">
+							<li class="page-item-disabled"><a href="#" 
+								class="page-link">←</a></li>
+						</c:when>
+						<c:otherwise>
+							<li class="page-item">
+							<a href="${root }board/main_sort?board_id=${board_id }&page=${pageBean.prevPage}"
+								class="page-link">←</a></li>
+						</c:otherwise>
+					</c:choose>
 
+					<c:forEach var='idx' begin="${pageBean.min }" end='${pageBean.max }'>
+						<c:choose>
+							<c:when test="${idx == pageBean.currentPage }">
+								<li class="page-item-active"><a
+									href="${root }board/main_sort?board_id=${board_id }&page=${idx}"
+									class="page-link">${idx }</a></li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-item"><a
+									href="${root }board/main_sort?board_id=${board_id }&page=${idx}"
+									class="page-link">${idx }</a></li>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+
+					<c:choose>
+						<c:when test="${pageBean.max >= pageBean.pageCnt }">
+							<li class="page-item-disabled"><a href="#" 
+								class="page-link">→</a></li>
+						</c:when>
+						<c:otherwise>
+							<li class="page-item"><a
+								href="${root }board/main_sort?board_id=${board_id }&page=${pageBean.nextPage}"
+								class="page-link">→</a></li>
+						</c:otherwise>
+					</c:choose>
+				</c:otherwise>
+				</c:choose>
 				</ul>
 			</div>
 		
