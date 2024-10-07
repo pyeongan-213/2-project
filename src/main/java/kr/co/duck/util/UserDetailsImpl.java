@@ -1,19 +1,28 @@
 package kr.co.duck.util;
 
 import kr.co.duck.domain.Member;
+import kr.co.duck.beans.MemberBean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 
-// 기능 : 유저 디테일 구현체
 public class UserDetailsImpl implements UserDetails {
-	private final Member member;
-	private final String nickname;
+	private static final long serialVersionUID = 1L; // serialVersionUID 추가
 
-	public UserDetailsImpl(Member member, String nickname) {
+	private final Member member;
+
+	// MemberBean을 받는 생성자 추가
+	public UserDetailsImpl(MemberBean memberBean) {
+		this.member = new Member();
+		this.member.setMemberId(memberBean.getMember_id());
+		this.member.setNickname(memberBean.getNickname());
+		this.member.setPassword(memberBean.getPassword());
+		this.member.setEmail(memberBean.getEmail());
+	}
+
+	// 기존 Member를 받는 생성자 유지
+	public UserDetailsImpl(Member member) {
 		this.member = member;
-		this.nickname = nickname;
 	}
 
 	public Member getMember() {
@@ -21,7 +30,7 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	public String getNickname() {
-		return nickname;
+		return member.getNickname(); // Member에서 닉네임 가져오기
 	}
 
 	@Override
