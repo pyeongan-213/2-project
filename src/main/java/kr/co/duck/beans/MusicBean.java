@@ -1,7 +1,7 @@
 package kr.co.duck.beans;
 
 public class MusicBean {
-    private int musicID; // MUSIC_id: 테이블의 기본 키
+    private int musicId; // MUSIC_id: 테이블의 기본 키
     private String musicName; // music_Name: 노래 제목
     private String artist; // artist: 아티스트 이름
     private String musicLength; // music_Length: 음악 길이
@@ -14,7 +14,7 @@ public class MusicBean {
 
     // 모든 필드를 초기화하는 생성자
     public MusicBean(int musicID, String musicName, String artist, String musicLength, String videoUrl, String thumbnailUrl) {
-        this.musicID = musicID;
+        this.musicId = musicID;
         this.musicName = musicName;
         this.artist = artist;
         this.musicLength = musicLength;
@@ -23,12 +23,12 @@ public class MusicBean {
     }
 
     // 음악 ID (MUSIC_id)
-    public int getMusicID() {
-        return musicID;
+    public int getMusicId() {
+        return musicId;
     }
 
-    public void setMusicID(int musicID) {
-        this.musicID = musicID;
+    public void setMusicId(int musicID) {
+        this.musicId = musicID;
     }
 
     // 노래 제목 (music_Name)
