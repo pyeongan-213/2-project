@@ -54,6 +54,7 @@
 		<div>퀴즈</div>
 		<a href="${root }temp/tempMain">To tempMain</a> <br />
 		<a href="${root }quiz/quizMain">QUIZ</a> <br />
+		
 		<a href="${root }temp/maniadbSearch">ManiaDB SEARCH</a><br />
 		<a href="${root }temp/SCSStest">SCSStest</a><br />
 		<a href="${root }temp/modalUI">modalUI</a>
