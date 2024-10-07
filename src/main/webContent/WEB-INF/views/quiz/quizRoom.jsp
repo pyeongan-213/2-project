@@ -25,7 +25,6 @@
 </head>
 <body>
 	<div class="quiz-room-container">
-
 		<!-- 퀴즈 방의 헤더 -->
 		<div class="header">
 			<h1>
