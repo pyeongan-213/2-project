@@ -6,8 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
 public class MemberBean implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L; // 새로 추가된 부분
 
 	private boolean memberNameExist;
 	private boolean memberLogin;

@@ -5,9 +5,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.service.MemberService;
-import kr.co.duck.util.UserDetailsImpl;
 import kr.co.duck.validator.MemberValidator;
 
 @Controller
@@ -57,17 +53,12 @@ public class MemberController {
 			return "member/login";
 		}
 
+		// 사용자 인증 처리
 		memberService.getLoginMemberInfo(tempLoginMemberBean);
 
 		if (loginMemberBean.isMemberLogin()) {
 			// 로그인 성공 시 세션에 사용자 정보를 저장
 			session.setAttribute("loginMemberBean", loginMemberBean);
-
-			// Spring Security를 사용 중이라면 인증 정보를 저장(이 부분 추가했어요)
-			UserDetailsImpl userDetails = new UserDetailsImpl(loginMemberBean);
-			Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-					userDetails.getAuthorities());
-			SecurityContextHolder.getContext().setAuthentication(authentication);
 
 			return "member/login_success";
 		} else {
