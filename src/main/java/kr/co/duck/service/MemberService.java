@@ -108,4 +108,9 @@ public class MemberService {
 		return savedPassword.equals(password);
 	}
 	
+	public void modifyMemberPassword(String password, int member_id) {
+		memberDao.modifyMemberPassword(password, member_id);
+	}
+	
+	
 }
