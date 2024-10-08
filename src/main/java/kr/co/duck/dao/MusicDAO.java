@@ -1,24 +1,30 @@
 package kr.co.duck.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+
+import org.apache.ibatis.annotations.*;
+
 import kr.co.duck.beans.MusicBean;
-import kr.co.duck.mapper.MusicMapper;
 
-@Repository
-public class MusicDAO {
+@Mapper
+public interface MusicDAO {
 
-    @Autowired
-    private MusicMapper musicMapper;
+	  // 음악 추가
+	@Insert("INSERT INTO MUSIC (music_id, music_name, artist, videourl, thumbnailurl) "
+	        + "VALUES (music_seq.NEXTVAL, #{musicName}, #{artist}, #{videoUrl}, #{thumbnailUrl})")
+	@SelectKey(statement = "SELECT music_seq.CURRVAL FROM dual", keyProperty = "musicId", before = false, resultType = int.class)
+	void insertMusic(MusicBean music);
 
-    // MusicBean 정보를 DB에 저장하는 메서드
-    public int saveMusic(MusicBean musicBean) {
-        musicMapper.insertMusic(musicBean);
-        return musicBean.getMusicID(); // MyBatis에서 자동으로 생성된 ID 값을 얻을 수 있습니다.
-    }
 
-    // MusicBean 정보를 ID로 조회하는 메서드
-    public MusicBean getMusicById(int musicId) {
-        return musicMapper.getMusicById(musicId);
-    }
+    // 모든 음악 조회 (SELECT)
+    @Select("SELECT music_id, music_name, artist, video_url, thumbnail_url FROM MUSIC")
+    List<MusicBean> getAllMusic();
+
+    // 특정 음악 조회 (SELECT)
+    @Select("SELECT music_id, music_name, artist, video_url, thumbnail_url FROM MUSIC WHERE music_id = #{musicId}")
+    MusicBean getMusicById(int musicId);
+
+    // 음악 삭제 (DELETE)
+    @Delete("DELETE FROM MUSIC WHERE music_id = #{musicId}")
+    void deleteMusic(int musicId);
 }

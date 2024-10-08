@@ -1,42 +1,56 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
-<title>Your Playlist</title>
+    <meta charset="UTF-8">
+    <title>Playlist View</title>
 </head>
 <body>
+    <form action="/playlist/create" method="POST">
+        <input type="text" name="playlistName" placeholder="Enter Playlist Name">
+        <button type="submit">Create Playlist</button>
+    </form>
 
-	<h2>Your Playlist</h2>
-	<table border="1">
-		<thead>
-			<tr>
-				<th>순서</th>
-				<th>제목</th>
-				<th>아티스트</th>
-				<th>동영상</th>
-				<th>삭제</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach var="song" items="${playlist}" varStatus="status">
-				<tr>
-					<td>${status.index + 1}</td>
-					<td>${song.musicName}</td>
-					<td>${song.artist}</td>
-					<td><a href="${song.videoUrl}" target="_blank">Watch</a></td>
-					<td>
-						<form
-							action="${pageContext.request.contextPath}/removeFromPlaylist"
-							method="post">
-							<input type="hidden" name="title" value="${song.musicName}">
-							<button type="submit">삭제</button>
-						</form>
-					</td>
-				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
+    <!-- Hidden field to store playlistId -->
+    <input type="hidden" id="playlistId" value="${playlistId}">
 
+    <table id="musicList">
+        <c:forEach var="music" items="${musicList}">
+            <tr id="${music.musicId}">
+                <td>${music.musicName}</td>
+                <td>
+                    <button type="button" onclick="removeMusic(${music.musicId})">Remove</button>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+
+    <script>
+        $(function() {
+            // Drag-and-drop 기능으로 음악 순서 변경
+            $("#musicList").sortable({
+                update: function(event, ui) {
+                    var musicOrder = $(this).sortable("toArray");
+                    $.post("/playlist/updateOrder", {
+                        playlistId: $("#playlistId").val(),
+                        musicOrder: musicOrder
+                    });
+                }
+            });
+
+            // 음악 삭제 기능
+            function removeMusic(musicId) {
+                $.post("/playlist/removeMusic", {
+                    playlistId: $("#playlistId").val(),
+                    musicId: musicId
+                }, function(response) {
+                    if (response === "success") {
+                        $("#" + musicId).remove();
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

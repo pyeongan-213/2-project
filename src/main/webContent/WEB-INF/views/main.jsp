@@ -278,6 +278,24 @@
 			</div>
 		</div>
 	</section>
+	
+	 <!-- 플레이리스트 생성 섹션 -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <h3>Create a New Playlist</h3>
+                    <form action="${root}playlist/create" method="post">
+                        <div class="mb-3">
+                            <label for="playlistName" class="form-label">Playlist Name</label>
+                            <input type="text" class="form-control" id="playlistName" name="playlistName" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Playlist</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 	<!-- Footer-->
 	<c:import url="/WEB-INF/views/include/bottom_info.jsp"/>
 	<!-- Bootstrap core JS-->
