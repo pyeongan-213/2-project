@@ -100,6 +100,7 @@
 					style="border: 1px solid gray; width: 100%; height: 100px; position: relative;">
 					<input type="text" name="reply_text"
 						style="border: none; outline: none; width: 100%; box-sizing: border-box; background: black; color: white;">
+					<form:errors path="reply_text" style="color:red"/>
 					<button class="write-btn"
 						style="position: absolute; right: 10px; bottom: 10px;">작성</button>
 				</div>

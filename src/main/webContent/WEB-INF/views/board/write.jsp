@@ -45,6 +45,7 @@
 				<span>
 				<form:input path="content_title" style="width: 400px; font-size: 16px; padding: 3px; margin-right: 20px;" 
 				placeholder="제목" />
+				<form:errors path="content_title" style='color:red'/>
 				</span>
 			</div>
 			
@@ -64,6 +65,7 @@
             $('#summernote').summernote({
                 height: 500,
                 lang: 'ko-KR',
+                placeholder: '내용을 입력해주세요.',
                 toolbar: [
                     ['fontsize', ['fontsize']],
                     ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -91,7 +93,16 @@
 
                 // textarea에 HTML 내용 설정
                 $('textarea[name="content_text"]').val(htmlContent);
-
+             	
+                // board_id 선택 여부 체크
+                var boardId = $('#drop-down').val();
+                if (boardId === "-1") {
+                    // 에러 메시지 표시
+                    alert("카테고리를 선택해 주세요."); // 알림 창 또는 특정 DOM 요소에 메시지 추가
+                    $(this).prop('disabled', false); // 버튼 활성화
+                    return; // 폼 제출 중단
+                }
+                
                 // 폼 제출
                 $(this).closest('form').submit();
             });

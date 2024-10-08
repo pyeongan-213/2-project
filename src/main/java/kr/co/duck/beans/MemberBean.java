@@ -50,6 +50,7 @@ public class MemberBean {
 		this.memberLogin = false;
 	}
 	
+	
     // 새로운 생성자
     public MemberBean(int member_id, String nickname, String email) {
         this.member_id = member_id;

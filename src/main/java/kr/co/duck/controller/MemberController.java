@@ -59,7 +59,11 @@ public class MemberController {
 		if(loginMemberBean.isMemberLogin() == true) {
 			 // 로그인 성공 시 세션에 사용자 정보를 저장
 	        session.setAttribute("loginMemberBean", loginMemberBean);
-	        
+	        MemberBean sessionmemberbean=(MemberBean)session.getAttribute("loginMemberBean");
+	        System.out.println("세션 유저 실명 : " + sessionmemberbean.getReal_name());
+			System.out.println("세션 유저 email : " + sessionmemberbean.getEmail());
+			System.out.println("세션 유저 닉네임 : " + sessionmemberbean.getNickname());
+			System.out.println("세션 유저 식별자 : " + sessionmemberbean.getMember_id());
 			return "member/login_success";
 		}else {
 			return "member/login_fail";

@@ -37,6 +37,7 @@
 				
 				<form:hidden path="boardpost_id"/>
 				<form:input path="content_title" style="font-size: 16px; padding: 3px; margin-right: 20px;"/>
+				<form:errors path="content_title" style='color:red'></form:errors>
 				
 			</div>
 			
@@ -56,6 +57,7 @@
             $('#summernote').summernote({
                 height: 500,
                 lang: 'ko-KR',
+                placeholder: '내용을 입력해주세요.',
                 toolbar: [
                     ['fontsize', ['fontsize']],
                     ['font', ['bold', 'italic', 'underline', 'clear']],

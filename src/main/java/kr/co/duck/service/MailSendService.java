@@ -1,6 +1,6 @@
 package kr.co.duck.service;
 
-import java.util.Random;
+import java.util.Random; 
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;

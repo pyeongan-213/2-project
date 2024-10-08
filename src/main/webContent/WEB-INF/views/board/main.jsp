@@ -83,7 +83,6 @@
 				<ul>
 				
 				<c:if test="${URI_1 eq URI_2}">
-				전체
 					<c:choose>
 						<c:when test="${pageBean.prevPage <= 0 }">
 							<li class="page-item-disabled"><a href="#" 
@@ -125,7 +124,6 @@
 				</c:if>
 				
 				<c:if test="${URI_1 eq URI_3}"> <!-- 카테고리별로 볼때 -->
-				카테고리
 					<c:choose>
 					
 						<c:when test="${pageBean.prevPage <= 0 }">
@@ -168,7 +166,6 @@
 				</c:if>
 				
 				<c:if test="${URI_1 eq URI_4}"> <!-- 검색했을때 -->
-					검색중
 					<c:choose>
 						<c:when test="${pageBean.prevPage <= 0 }">
 							<li class="page-item-disabled"><a href="#" 
@@ -213,6 +210,13 @@
 
 	</div>
 	<div class="showBest">
+	<%
+    String userId = (session.getAttribute("loginMemberBean") != null)
+        ? String.valueOf(((kr.co.duck.beans.MemberBean) session.getAttribute("loginMemberBean")).getMember_id())
+        : "null";
+    System.out.println("로그인된 사용자 ID: " + userId); // 로그로 출력
+    userId = userId.trim();
+	%>
 		<h3 style="margin-right: 120px;">BEST</h3>
 		<div class="bestContent">
 		<c:forEach var='obj' items="${bestList}">
@@ -231,9 +235,9 @@
         <form:form action=""></form:form>
             <h3>문의하기</h3>
             <p>이름</p>
-            <textarea rows="1" cols="1"></textarea>
+            <textarea rows="1" cols="1">${loginMemberBean.real_name }</textarea>
             <p>메일주소</p>
-            <textarea rows="1" cols="1"></textarea>
+            <textarea rows="1" cols="1">${loginMemberBean.email }</textarea>
             <p>문의내용</p>
 			<textarea style="width: 100%; height: 250px; padding: 0; line-height: normal; margin-bottom: 7px;"></textarea>
             <div style="background:white; display: grid; justify-content: end;"><a href="${root }board/sendMail_pro">메일 보내기</a></div>

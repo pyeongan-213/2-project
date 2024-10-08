@@ -40,6 +40,8 @@ public class BoardController {
 	public String goToBoard(@RequestParam(value = "page", defaultValue = "1") int page,
 							Model model) {
 		
+		model.addAttribute("loginMemberBean", loginMemberBean);
+		
 		List<ContentBean> contentList = boardService.getContentList(page);
 		model.addAttribute("contentList",contentList);
 		
@@ -48,7 +50,10 @@ public class BoardController {
 		
 		List<ContentBean> bestList = boardService.getBestList();
 		model.addAttribute("bestList",bestList);
-		
+		System.out.println("유저 실명 : " + loginMemberBean.getReal_name());
+		System.out.println("유저 email : " + loginMemberBean.getEmail());
+		System.out.println("유저 닉네임 : " + loginMemberBean.getNickname());
+		System.out.println("유저 식별자 : " + loginMemberBean.getMember_id());
 		return "board/main";
 	}
 
@@ -120,11 +125,10 @@ public class BoardController {
 
 	@GetMapping("/modify")
 	public String modify(@RequestParam("boardpost_id")int boardpost_id,
-						 @Valid @ModelAttribute("modifyContentBean")ContentBean modifyContentBean,
 						 Model model) {
 		
-		model.addAttribute("boardpost_id",boardpost_id);
 		ContentBean tempContentBean = boardService.getContentInfo(boardpost_id);
+		ContentBean modifyContentBean = new ContentBean();
 		
 		modifyContentBean.setMembername(tempContentBean.getMembername());
 		modifyContentBean.setWritedate(tempContentBean.getWritedate());
@@ -133,6 +137,8 @@ public class BoardController {
 		modifyContentBean.setMember_id(tempContentBean.getMember_id());
 		modifyContentBean.setBoardpost_id(boardpost_id);
 		
+		model.addAttribute("boardpost_id",boardpost_id);
+		model.addAttribute("modifyContentBean", modifyContentBean);
 		return "board/modify";
 	}
 
