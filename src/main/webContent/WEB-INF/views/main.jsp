@@ -88,6 +88,17 @@
                             </div>
                         </div>
                         
+                        <div class="artist">
+                            <img class="artist-img" src="${root}/img/newjeans.jpg" alt="NewJeans">
+                            <div class="artist-info">
+                                <h5>NewJeans</h5>
+                                <p>아티스트</p>
+                            </div>
+                            <div class="play-button">
+                                <i class="bi bi-play-fill"></i> <!-- 재생 버튼 -->
+                            </div>
+                        </div>
+                        
                          <div class="artist">
                             <img class="artist-img" src="${root}/img/newjeans.jpg" alt="NewJeans">
                             <div class="artist-info">
@@ -108,6 +119,17 @@
                         <a href="${root}/albums/all" class="see-all-link">모두 표시</a> <!-- 모두 표시 링크 추가 -->
                     </div>
                     <div class="albums-grid">
+                        <div class="album">
+                            <img class="card-img-top" src="${root}/img/지민.jpg" alt="Album">
+                            <div class="card-body">
+                                <h5 class="fw-bolder">MUSE</h5>
+                                <p>지민</p>
+                            </div>
+                            <div class="play-button">
+                                <i class="bi bi-play-fill"></i> <!-- 재생 버튼 -->
+                            </div>
+                        </div>
+                        
                         <div class="album">
                             <img class="card-img-top" src="${root}/img/지민.jpg" alt="Album">
                             <div class="card-body">

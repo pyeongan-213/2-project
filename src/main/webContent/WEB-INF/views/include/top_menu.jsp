@@ -15,14 +15,14 @@
     <div class="navbar fixed-top"> <!-- 고정된 상단 메뉴 -->
         <!-- 로고 영역 -->
         <div class="navbar-logo">
-            <a href="${root}/" class="logo-link">DuckMusic</a>
+            <a href="${root}/main" class="logo-link">DuckMusic</a>
         </div>
 
         <!-- 중앙 정렬: 홈 버튼 및 검색창 -->
         <div class="navbar-center">
             <!-- 홈 버튼 -->
             <div class="navbar-home">
-                <a href="${root}/"><i class="bi bi-house"></i></a>
+                <a href="${root}/main"><i class="bi bi-house"></i></a>
             </div>
             <!-- 검색창 -->
             <div class="navbar-search">
@@ -34,7 +34,7 @@
         <!-- 우측 로그인 및 구독 -->
         <div class="navbar-right">
             <a href="${root}/join" class="join-link">구독</a>
-            <a href="${root}/login" class="login-btn">로그인</a>
+            <a href="${root}/member/login" class="login-btn">로그인</a>
         </div>
     </div>
 </body>
