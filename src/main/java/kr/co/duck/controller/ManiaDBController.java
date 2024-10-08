@@ -2,6 +2,8 @@ package kr.co.duck.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import kr.co.duck.beans.MemberBean;
 import kr.co.duck.service.ManiaDBService;
 
 @Controller
@@ -18,6 +21,10 @@ public class ManiaDBController {
 	@Autowired
 	private ManiaDBService maniaDBService;
 
+	@Resource(name = "loginMemberBean")
+	private MemberBean loginMemberBean;
+	
+	
 	// 검색 화면을 표시하는 매핑
 	@GetMapping("/temp/maniadbSearch")
 	public String showSearchPage() {

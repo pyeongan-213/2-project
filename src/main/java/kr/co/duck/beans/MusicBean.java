@@ -4,7 +4,7 @@ public class MusicBean {
     private int musicId; // MUSIC_id: 테이블의 기본 키
     private String musicName; // music_Name: 노래 제목
     private String artist; // artist: 아티스트 이름
-    private String musicLength; // music_Length: 음악 길이
+
     private String videoUrl; // videoUrl: 유튜브 비디오 URL
     private String thumbnailUrl; // thumbnailUrl: 비디오 썸네일 URL
 
@@ -17,7 +17,7 @@ public class MusicBean {
         this.musicId = musicID;
         this.musicName = musicName;
         this.artist = artist;
-        this.musicLength = musicLength;
+
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;
     }
@@ -47,15 +47,6 @@ public class MusicBean {
 
     public void setArtist(String artist) {
         this.artist = artist;
-    }
-
-    // 음악 길이 (music_Length)
-    public String getMusicLength() {
-        return musicLength;
-    }
-
-    public void setMusicLength(String musicLength) {
-        this.musicLength = musicLength;
     }
 
     // 유튜브 비디오 URL (videoUrl)

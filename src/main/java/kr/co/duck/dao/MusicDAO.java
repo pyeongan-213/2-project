@@ -1,21 +1,28 @@
 package kr.co.duck.dao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.*;
 
 import kr.co.duck.beans.MusicBean;
 
-@Repository
-public class MusicDAO {
+@Mapper
+public interface MusicDAO {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+	  // 음악 추가
+    @Insert("INSERT INTO MUSIC (music_id, music_name, artist, video_url, thumbnail_url) "
+          + "VALUES (music_seq.NEXTVAL, #{musicName}, #{artist}, #{videoUrl}, #{thumbnailUrl})")
+    void insertMusic(MusicBean music);
 
-    // 인스턴스 메서드로 정의
-    public void saveMusic(MusicBean musicBean) {
-        String sql = "INSERT INTO Music (MUSIC_ID, music_Name, artist, music_Length, videoUrl, thumbnailUrl) "
-                   + "VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, musicBean.getMusicId(), musicBean.getMusicName(), musicBean.getArtist(),
-                            musicBean.getMusicLength(), musicBean.getVideoUrl(), musicBean.getThumbnailUrl());
-    }
+    // 모든 음악 조회 (SELECT)
+    @Select("SELECT music_id, music_name, artist, video_url, thumbnail_url FROM MUSIC")
+    List<MusicBean> getAllMusic();
+
+    // 특정 음악 조회 (SELECT)
+    @Select("SELECT music_id, music_name, artist, video_url, thumbnail_url FROM MUSIC WHERE music_id = #{musicId}")
+    MusicBean getMusicById(int musicId);
+
+    // 음악 삭제 (DELETE)
+    @Delete("DELETE FROM MUSIC WHERE music_id = #{musicId}")
+    void deleteMusic(int musicId);
 }
