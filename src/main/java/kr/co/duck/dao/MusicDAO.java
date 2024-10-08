@@ -10,9 +10,11 @@ import kr.co.duck.beans.MusicBean;
 public interface MusicDAO {
 
 	  // 음악 추가
-    @Insert("INSERT INTO MUSIC (music_id, music_name, artist, video_url, thumbnail_url) "
-          + "VALUES (music_seq.NEXTVAL, #{musicName}, #{artist}, #{videoUrl}, #{thumbnailUrl})")
-    void insertMusic(MusicBean music);
+	@Insert("INSERT INTO MUSIC (music_id, music_name, artist, videourl, thumbnailurl) "
+	        + "VALUES (music_seq.NEXTVAL, #{musicName}, #{artist}, #{videoUrl}, #{thumbnailUrl})")
+	@SelectKey(statement = "SELECT music_seq.CURRVAL FROM dual", keyProperty = "musicId", before = false, resultType = int.class)
+	void insertMusic(MusicBean music);
+
 
     // 모든 음악 조회 (SELECT)
     @Select("SELECT music_id, music_name, artist, video_url, thumbnail_url FROM MUSIC")

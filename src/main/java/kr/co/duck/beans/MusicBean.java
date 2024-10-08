@@ -17,7 +17,6 @@ public class MusicBean {
         this.musicId = musicID;
         this.musicName = musicName;
         this.artist = artist;
-
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;
     }

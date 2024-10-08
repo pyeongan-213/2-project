@@ -21,10 +21,6 @@ public class ManiaDBController {
 	@Autowired
 	private ManiaDBService maniaDBService;
 
-	@Resource(name = "loginMemberBean")
-	private MemberBean loginMemberBean;
-	
-	
 	// 검색 화면을 표시하는 매핑
 	@GetMapping("/temp/maniadbSearch")
 	public String showSearchPage() {

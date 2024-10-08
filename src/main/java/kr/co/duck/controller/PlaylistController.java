@@ -2,7 +2,7 @@ package kr.co.duck.controller;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,21 +24,24 @@ public class PlaylistController {
 	@Autowired
 	private PlaylistService playlistService;
 
-	@Resource(name = "loginMemberBean")
-	private MemberBean loginMemberBean;
-	
-	
 	@Autowired
 	private PlaylistManagementService playlistManagementService;
 
 	// YouTube 검색 요청 처리 및 플레이리스트 가져오기
 	@GetMapping("/youtubeSearch")
-	public String searchYouTube(@RequestParam("query") String query, Model model,
-			@SessionAttribute("loginMemberBean") MemberBean member) {
+	public String searchYouTube(@RequestParam("query") String query, Model model, HttpSession session) {
+		// 세션에서 loginMemberBean을 가져옴
+		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
+
+		// 로그인 정보가 없으면 로그인 페이지로 리다이렉트
+		if (member == null) {
+			return "redirect:/login";
+		}
+
 		// YouTube 검색 결과 가져오기
 		List<MusicBean> searchResults = playlistService.searchAndAddToPlaylist(query);
 
-		// 로그인한 사용자의 member_id로 플레이리스트 가져오기
+		// 로그인한 사용자의 플레이리스트 가져오기
 		List<PlaylistBean> userPlaylists = playlistService.getUserPlaylists(member.getMember_id());
 
 		model.addAttribute("searchResults", searchResults);
@@ -55,19 +58,47 @@ public class PlaylistController {
 		return "playlist/playlist"; // 플레이리스트를 playlist.jsp로 전달
 	}
 
+	// 플레이리스트 보기
+	@GetMapping("/playlist/view")
+	public String viewPlaylist(@RequestParam("playlistId") int playlistId, Model model, HttpSession session) {
+		// 세션에서 로그인된 사용자 정보 가져오기
+		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
+
+		if (member == null) {
+			return "redirect:/login"; // 로그인하지 않은 경우 리다이렉트
+		}
+
+		// 플레이리스트의 음악 목록 가져오기
+		List<MusicBean> musicList = playlistService.getMusicListForPlaylist(playlistId);
+
+		// 모델에 데이터를 추가하여 JSP로 전달
+		model.addAttribute("musicList", musicList);
+		model.addAttribute("playlistId", playlistId);
+
+		return "playlist/playlist"; // playlist.jsp로 이동
+	}
+
 	// 플레이리스트 목록 조회
 	@GetMapping("/playlist/list")
-	public String showPlaylistList(Model model, @SessionAttribute("loginMemberBean") MemberBean member) {
+	public String showPlaylistList(HttpSession session, Model model) {
+		// 세션에서 loginMemberBean을 가져옴
+		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
+
+		// 로그인된 사용자의 플레이리스트 가져오기
 		List<PlaylistBean> playlists = playlistService.getUserPlaylists(member.getMember_id());
-		model.addAttribute("playlists", playlists); // JSP에 전달
-		return "playlist/list"; // playlist/list.jsp로 이동
+		model.addAttribute("playlists", playlists);
+
+		return "playlist/list";
 	}
 
 	// 플레이리스트에 YouTube 동영상 추가
 	@PostMapping("/playlist/addToPlaylist")
 	public String addToPlaylist(@RequestParam("playlistId") int playlistId, @RequestParam("videoUrl") String videoUrl,
 			@RequestParam("musicName") String musicName, @RequestParam("artist") String artist,
-			@RequestParam("thumbnailUrl") String thumbnailUrl, @SessionAttribute("loginMemberBean") MemberBean member) {
+			@RequestParam("thumbnailUrl") String thumbnailUrl, HttpSession session) {
+
+		// 세션에서 loginMemberBean을 가져옴
+		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
 
 		// MusicBean 생성 및 정보 설정
 		MusicBean music = new MusicBean();
@@ -76,10 +107,13 @@ public class PlaylistController {
 		music.setArtist(artist);
 		music.setThumbnailUrl(thumbnailUrl);
 
+		// 음악 ID를 설정하는 부분이 빠졌을 수 있습니다.
+		// YouTube API 등을 통해 musicId를 제대로 가져오고 있는지 확인 필요
+		System.out.println("Music ID: " + music.getMusicId()); // 값이 0인지 출력 확인
+
 		// 플레이리스트에 음악 추가
 		playlistService.addMusicToPlaylist(playlistId, music, member.getMember_id());
 
-		// 플레이리스트 페이지로 리다이렉트
 		return "redirect:/playlist/view?playlistId=" + playlistId;
 	}
 

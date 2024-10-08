@@ -1,7 +1,7 @@
 package kr.co.duck.service;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,12 +37,14 @@ public class PlaylistService {
 
     // YouTube 동영상을 플레이리스트에 추가
     public void addMusicToPlaylist(int playlistId, MusicBean music, int memberId) {
-        // 1. MUSIC 테이블에 음악을 추가 (음악이 없는 경우에만 추가)
+        // MUSIC 테이블에 음악을 삽입하고, 자동 생성된 musicId를 얻음
         musicDAO.insertMusic(music);
 
-        // 2. PLAYLIST_MUSIC 테이블에 플레이리스트와 음악의 관계를 추가
+        // 생성된 musicId를 이용해 PLAYLIST_MUSIC 테이블에 음악 추가
         playlistDAO.addMusicToPlaylist(playlistId, music.getMusicId(), memberId);
     }
+
+
 
     // 전체 플레이리스트를 반환
     public List<MusicBean> getPlaylist() {
@@ -58,6 +60,11 @@ public class PlaylistService {
     public List<PlaylistBean> getUserPlaylists(int memberId) {
         // PlaylistDAO에서 member_id로 플레이리스트를 가져오는 메서드 호출
         return playlistDAO.getPlaylistsByMemberId(memberId);
+    }
+    
+ // 특정 플레이리스트의 음악 목록 가져오기
+    public List<MusicBean> getMusicListForPlaylist(int playlistId) {
+        return playlistDAO.getMusicListByPlaylistId(playlistId);
     }
 
 }
