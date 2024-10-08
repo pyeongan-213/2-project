@@ -121,7 +121,8 @@ public class MemberController {
 		        System.out.println("Error: " + error.getDefaultMessage());
 		    }); //bindingresult 객체 오류 확인용
 			*/
-			return "member/modify_fail";
+			//return "member/modify_fail"; //error_message 띄우려면 거치지 않고 바로 원래페이지로 넘어가야함
+			return "member/modify";
 		}
 		
 		memberService.modifyMemberInfo(modifyMemberBean);
@@ -164,6 +165,35 @@ public class MemberController {
 	        
 	    return "member/delete_account_success"; // 탈퇴 성공 화면으로 이동
 	}
+	
+	@GetMapping("/modifyPassword")
+    public String modifyPassword(@ModelAttribute("modifyPasswordBean") MemberBean modifyPasswordBean) {
+        //model.addAttribute("loginMemberBean", loginMemberBean); // 현재 로그인된 사용자 정보 전달
+		
+		modifyPasswordBean = memberService.getModifyMemberInfo(modifyPasswordBean);
+        return "member/modifyPassword"; // JSP 페이지로 이동
+    }
+    
+    // 비밀번호 변경 처리
+    @PostMapping("/modifyPassword_pro")
+    public String modifyPasswordPro(@Valid @ModelAttribute("modifyPasswordBean") MemberBean modifyPasswordBean, 
+                                    BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "member/modifyPassword"; // 유효성 검사 실패 시 다시 입력 페이지로
+        }
+        
+        // 새 비밀번호와 확인 비밀번호가 일치하는지 확인
+        if (!modifyPasswordBean.getPassword().equals(modifyPasswordBean.getPassword2())) {
+            model.addAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            return "member/modifyPassword";
+        }
+
+        // 비밀번호 변경 로직
+        memberService.modifyMemberPassword(modifyPasswordBean.getPassword(), loginMemberBean.getMember_id());
+
+        return "member/modifyPassword_success"; // 성공 시 이동할 페이지
+    }
+	
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {

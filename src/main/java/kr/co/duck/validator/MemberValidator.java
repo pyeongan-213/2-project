@@ -28,19 +28,21 @@ public class MemberValidator implements Validator{
 			}
 		}
 
-		/*
-		 * if (beanName.equals("modifyPasswordBean")) { if(memberBean.getAuthCode1() !=
-		 * null) { if (memberBean.getAuthCode1().equals(memberBean.getAuthCode2()) ==
-		 * false) { errors.rejectValue("authCode2", "CodeNotEquals"); } } if
-		 * (memberBean.getPassword().equals(" ") ||
-		 * memberBean.getPassword().trim().isEmpty()) { errors.rejectValue("user_pw",
-		 * "pwIsEmpty"); } else if (memberBean.getPassword().length() < 8 ||
-		 * memberBean.getPassword().length() > 21) { errors.rejectValue("user_pw",
-		 * "pwSizeWrong"); } else if
-		 * (memberBean.getPassword().equals(memberBean.getPassword2()) == false) {
-		 * errors.rejectValue("user_pw", "NotEquals"); errors.rejectValue("user_pw2",
-		 * "NotEquals"); } }
-		 */
+		if (beanName.equals("modifyPasswordBean")) {
+			if(memberBean.getAuthCode1() != null) {
+				if (memberBean.getAuthCode1().equals(memberBean.getAuthCode2()) == false) {
+					errors.rejectValue("authCode2", "CodeNotEquals");
+				}
+			}
+			if (memberBean.getPassword().equals(" ") || memberBean.getPassword().trim().isEmpty()) {
+				errors.rejectValue("password", "pwIsEmpty");
+			} /*else if (memberBean.getPassword().length() < 8 || memberBean.getPassword().length() > 21) {
+				errors.rejectValue("password", "pwSizeWrong");
+			}*/ else if (memberBean.getPassword().equals(memberBean.getPassword2()) == false) {
+				errors.rejectValue("password", "NotEquals");
+				errors.rejectValue("password2", "NotEquals");
+			}
+		}
 		
 		/*
 		 * //비밀번호 확인 또는 수정시 if (beanName.equals("joinMemberBean") ||
