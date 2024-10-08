@@ -120,13 +120,9 @@ public class BoardController {
 
 	@GetMapping("/modify")
 	public String modify(@RequestParam("boardpost_id")int boardpost_id,
-						 //@RequestParam("board_id")int board_id,
-						 //@RequestParam("page") int page,
 						 @Valid @ModelAttribute("modifyContentBean")ContentBean modifyContentBean,
 						 Model model) {
 		
-		//model.addAttribute("board_id",board_id);
-		//model.addAttribute("page",page);
 		model.addAttribute("boardpost_id",boardpost_id);
 		ContentBean tempContentBean = boardService.getContentInfo(boardpost_id);
 		
@@ -135,7 +131,6 @@ public class BoardController {
 		modifyContentBean.setContent_title(tempContentBean.getContent_title());
 		modifyContentBean.setContent_text(tempContentBean.getContent_text());
 		modifyContentBean.setMember_id(tempContentBean.getMember_id());
-		//modifyContentBean.setBoard_id(board_id);
 		modifyContentBean.setBoardpost_id(boardpost_id);
 		
 		return "board/modify";
@@ -210,5 +205,29 @@ public class BoardController {
 
 	    return response; // JSON 형태로 응답
 	}
-   
+
+	@GetMapping("/search")
+	public String searchPosts(@RequestParam("query") String query, 
+							  @RequestParam(value = "board_id", required = false) int boardId,
+							  @RequestParam(value = "page", defaultValue = "1") int page,
+							  Model model) {
+	    model.addAttribute("board_id",boardId);
+	    
+	    if (boardId == 0) {
+	    	PageBean pageBean = boardService.getAllSearchedContentCnt(query, page);
+			model.addAttribute("pageBean",pageBean);
+			
+		    List<ContentBean> searchResults = boardService.searchAllPosts(query, page);
+		    model.addAttribute("contentList", searchResults);
+	    } else {
+	    	PageBean pageBean = boardService.getSearchedContentCnt(boardId, query, page);
+			model.addAttribute("pageBean",pageBean);
+			
+		    List<ContentBean> searchResults = boardService.searchPosts(boardId, query, page);
+		    model.addAttribute("contentList", searchResults);
+	    }
+	    
+	    return "board/main";
+	}
+
 }

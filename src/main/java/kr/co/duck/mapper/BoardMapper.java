@@ -1,9 +1,10 @@
 package kr.co.duck.mapper;
 
-import java.util.List; 
+import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert; 
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
@@ -21,7 +22,7 @@ public interface BoardMapper {
 			+ "values (reply_seq.nextval, #{reply_text}, sysdate, #{boardpost_id}, #{member_id})")
 	void addReply(ReplyBean writeReplyBean);
 
-	@Select("select c.boardpost_id, b.board_name, c.content_title, c.content_text, m.membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.like_count "
+	@Select("select c.boardpost_id, b.board_name, c.content_title, c.content_text, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.like_count "
 			+ "from boardpost c "
 			+ "join board b on c.board_id = b.board_id "
 			+ "join member m on c.member_id = m.member_id "
@@ -34,7 +35,7 @@ public interface BoardMapper {
 			+ "fetch first 10 rows only")
 	List<ContentBean> getBestList();
 	
-	@Select("select b.board_id, c.boardpost_id, b.board_name, c.content_title, c.content_text, m.membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.like_count "
+	@Select("select b.board_id, c.boardpost_id, b.board_name, c.content_title, c.content_text, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.like_count "
 			+ "from boardpost c "
 			+ "join board b on c.board_id = b.board_id "
 			+ "join member m on c.member_id = m.member_id "
@@ -42,14 +43,14 @@ public interface BoardMapper {
 			+ "order by c.boardpost_id desc")
 	List<ContentBean> getsortedList(int board_id, RowBounds rowBounds);
 	
-	@Select("select r.reply_id, r.member_id, m.membername as reply_writer_name, to_char(r.reply_date, 'yyyy-mm-dd') as reply_date, r.reply_text "
+	@Select("select r.reply_id, r.member_id, m.nickname as reply_writer_name, to_char(r.reply_date, 'yyyy-mm-dd') as reply_date, r.reply_text "
 			+ "from reply r "
 			+ "join boardpost c on r.boardpost_id = c.boardpost_id "
 			+ "join member m on r.member_id = m.member_id "
 			+ "where c.boardpost_id=#{boardpost_id}")
 	List<ReplyBean> getReplyList(int boardpost_id);
 
-	@Select("select c.member_id, c.boardpost_id, c.content_title, m.membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.content_text, c.like_count "
+	@Select("select c.member_id, c.boardpost_id, c.content_title, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.content_text, c.like_count "
 			+ "from boardpost c "
 			+ "join board b on c.board_id = b.board_id "
 			+ "join member m on c.member_id = m.member_id "
@@ -95,4 +96,44 @@ public interface BoardMapper {
 			+ "from boardpost "
 			+ "where board_id = #{board_id}")
 	int getSortedContentCnt(int board_id);
+
+	@Select("select count(*) "
+			+ "from boardpost c "
+			+ "join board b on c.board_id = b.board_id "
+			+ "join member m on c.member_id = m.member_id "
+			+ "WHERE (LOWER(c.content_title) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(c.content_text) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(m.nickname) LIKE LOWER('%' || #{query} || '%'))")
+	int getAllSearchedContentCnt(@Param("query") String query);
+
+	@Select("select c.boardpost_id, b.board_name, c.content_title, c.content_text, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.like_count "
+			+ "from boardpost c "
+			+ "join board b on c.board_id = b.board_id "
+			+ "join member m on c.member_id = m.member_id "
+			+ "WHERE (LOWER(c.content_title) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(c.content_text) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(m.nickname) LIKE LOWER('%' || #{query} || '%')) "
+	        + "order by c.boardpost_id desc")
+	List<ContentBean> searchAllPosts(@Param("query") String query, RowBounds rowBounds);
+
+	@Select("select count(*) "
+			+ "from boardpost c "
+			+ "join board b on c.board_id = b.board_id "
+			+ "join member m on c.member_id = m.member_id "
+			+ "WHERE (LOWER(c.content_title) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(c.content_text) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(m.nickname) LIKE LOWER('%' || #{query} || '%')) "
+	        + "AND c.board_id = #{boardId}")
+	int getSearchedContentCnt(@Param("boardId") int boardId, @Param("query") String query);
+
+	@Select("select c.boardpost_id, b.board_name, c.content_title, c.content_text, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.like_count "
+			+ "from boardpost c "
+			+ "join board b on c.board_id = b.board_id "
+			+ "join member m on c.member_id = m.member_id "
+			+ "WHERE (LOWER(c.content_title) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(c.content_text) LIKE LOWER('%' || #{query} || '%') "
+	        + "OR LOWER(m.nickname) LIKE LOWER('%' || #{query} || '%')) "
+	        + "AND c.board_id = #{boardId} "
+	        + "order by c.boardpost_id desc")
+	List<ContentBean> searchPosts(@Param("boardId") int boardId, @Param("query") String query, RowBounds rowBounds);
 }

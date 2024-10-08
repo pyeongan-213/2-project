@@ -2,6 +2,7 @@ package kr.co.duck.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -79,4 +80,20 @@ public class BoardDao {
     public int getSortedContentCnt(int board_id) {
 		return boardMapper.getSortedContentCnt(board_id);
 	}
+
+    public int getAllSearchedContentCnt(@Param("query")String query) {
+		return boardMapper.getAllSearchedContentCnt(query);
+	}
+
+    public List<ContentBean> searchAllPosts(@Param("query") String query, RowBounds rowBounds) {
+        return boardMapper.searchAllPosts(query, rowBounds);
+    }
+
+    public int getSearchedContentCnt(@Param("boardId")int boardId, @Param("query")String query) {
+		return boardMapper.getSearchedContentCnt(boardId, query);
+	}
+
+    public List<ContentBean> searchPosts(@Param("boardId") int boardId, @Param("query") String query, RowBounds rowBounds) {
+        return boardMapper.searchPosts(boardId, query, rowBounds);
+    }
 }

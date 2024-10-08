@@ -85,8 +85,6 @@
 						${obj.reply_text }
 						<c:if test="${loginMemberBean.member_id == obj.member_id}">
 							<span style="float: right;"> 
-								<a href="${root }board/modify_rep?boardpost_id=${readContentBean.boardpost_id}&reply_id=${obj.reply_id}">수정</a>
-								| 
 								<a href="${root }board/delete_rep?boardpost_id=${readContentBean.boardpost_id}&reply_id=${obj.reply_id}">삭제</a>
 							</span>
 						</c:if>

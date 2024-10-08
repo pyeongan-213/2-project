@@ -119,4 +119,38 @@ public class BoardService {
 		
 		return pageBean;
 	}
+	
+	public PageBean getAllSearchedContentCnt(String query, int currentPage) {
+		
+		int contentCnt = boardDao.getAllSearchedContentCnt(query);
+		PageBean pageBean = new PageBean(contentCnt, currentPage, page_listcnt, page_paginationcnt);
+
+		return pageBean;
+	}
+
+	public List<ContentBean> searchAllPosts(String query, int page) {
+		
+		int start = (page-1)*page_listcnt;
+		
+		RowBounds rowBounds = new RowBounds(start, page_listcnt);
+	    
+		return boardDao.searchAllPosts(query, rowBounds);
+	}
+
+	public PageBean getSearchedContentCnt(int boardId, String query, int currentPage) {
+		
+		int contentCnt = boardDao.getSearchedContentCnt(boardId, query);
+		PageBean pageBean = new PageBean(contentCnt, currentPage, page_listcnt, page_paginationcnt);
+
+		return pageBean;
+	}
+	
+	public List<ContentBean> searchPosts(int boardId, String query, int page) {
+		
+		int start = (page-1)*page_listcnt;
+		
+		RowBounds rowBounds = new RowBounds(start, page_listcnt);
+	    
+		return boardDao.searchPosts(boardId, query, rowBounds);
+	}
 }
