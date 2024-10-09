@@ -6,6 +6,11 @@
     background-color: #1f1d2b;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    background-image: url("./../img/QuizLogo.webp"); /* 경로 수정 */
+    background-size: contain; /* 이미지의 비율을 유지하면서 배경에 맞춤 */
+    background-position: center; /* 배경을 가운데 정렬 */
+    background-repeat: no-repeat; /* 배경 이미지 반복 금지 */
+    background-color: rgba(31, 29, 43, 0.9); /* 반투명 배경색을 적용 */
 }
 
 /* 헤더 스타일 */
@@ -17,9 +22,16 @@
     padding: 20px;
 }
 
-.quiz-lobby .header h1 {
+/* 로고와 제목을 가로로 배치 */
+.quiz-lobby .header-left {
+    display: flex;
+    align-items: center;
+}
+
+.quiz-lobby .header-left h1 {
     font-size: 28px;
     font-weight: bold;
+    margin-left: 10px;
 }
 
 .quiz-lobby .header button {

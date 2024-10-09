@@ -81,7 +81,7 @@
     cursor: pointer;
 }
 
-/* 가입하기 및 로그인 버튼 스타일 */
+/* 가입하기, 로그인 및 로그아웃 버튼 스타일 */
 .navbar-right {
     display: flex;
     align-items: center;
@@ -89,7 +89,7 @@
     margin-left: auto;  /* 우측 끝으로 이동 */
 }
 
-.join-link, .login-btn {
+.join-link, .login-btn, .logout-btn {
     color: #fff;
     text-decoration: none;
     font-size: 14px;
@@ -100,7 +100,7 @@
     font-weight: 600;
 }
 
-.join-link:hover, .login-btn:hover {
+.join-link:hover, .login-btn:hover, .logout-btn:hover {
     background-color: #6c5ecf;
     border-color: #6c5ecf;
 }

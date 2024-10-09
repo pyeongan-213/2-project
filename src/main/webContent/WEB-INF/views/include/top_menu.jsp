@@ -34,7 +34,18 @@
         <!-- 우측 로그인 및 구독 -->
         <div class="navbar-right">
             <a href="${root}/join" class="join-link">구독</a>
-            <a href="${root}/member/login" class="login-btn">로그인</a>
+            
+            <!-- 로그인 여부에 따라 동적으로 버튼 변경 -->
+            <c:choose>
+                <c:when test="${sessionScope.loginMemberBean != null}">
+                    <!-- 로그인이 된 상태 -->
+                    <a href="${root}/member/logout" class="logout-btn">로그아웃</a>
+                </c:when>
+                <c:otherwise>
+                    <!-- 로그아웃 상태 -->
+                    <a href="${root}/member/login" class="login-btn">로그인</a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </body>

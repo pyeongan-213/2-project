@@ -9,7 +9,9 @@
         <div class="side-menu">
             <a class="sidebar-link" href="${root}/board/main">Board</a>
             <a class="sidebar-link" href="${root}/temp/tempMain">Temp</a>
+            <a class="sidebar-link" href="${root}/temp/maniadbSearch">maniadbSearch</a>
             <a class="sidebar-link" href="${root}/quiz/quizlobby">Quiz</a>
+            <a class="sidebar-link" href="${root}/temp/payment">payment</a>
         </div>
     </div>
 </div>

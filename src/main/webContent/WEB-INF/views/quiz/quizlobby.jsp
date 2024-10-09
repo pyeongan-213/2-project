@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var='root' value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
@@ -12,6 +11,8 @@
 
     <title>퀴즈 로비</title>
 
+   <!-- 탭 아이콘 추가 -->
+    <link rel="icon" type="image/png" sizes="48x48" href="${root}/img/tabicon.png">
     <!-- CSS 및 Bootstrap 아이콘 추가 -->
     <link rel="stylesheet" href="${root}/css/quizlobby.css">
     <link href="${root}/css/main.css" rel="stylesheet" type="text/css">
@@ -49,9 +50,10 @@
         <div class="main-content">
             <!-- Header -->
             <div class="header">
-                <h1>퀴즈 로비</h1>
+                <div class="header-left">
+                    <h1>퀴즈 로비</h1>
+                </div>
                 <button id="create-room-btn">방 생성</button>
-                <button id="home-btn">홈으로 돌아가기</button>
             </div>
 
             <!-- Section -->
@@ -63,7 +65,8 @@
                             <li>
                                 <div class="room-info">
                                     <div class="room-details">
-                                        <span class="room-name"><c:out value="${room.quizRoomName}" /></span>
+                                        <!-- 방장 이름을 "owner의 방" 형식으로 표시 -->
+                                        <span class="room-name"><c:out value="${room.owner}" />의 방</span>
                                         <span class="room-users">
                                             <c:out value="${room.memberCount}" /> / 10명
                                         </span>
@@ -83,12 +86,6 @@
     <jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
 
     <script src="${root}/js/quizlobby.js"></script>
-    <script>
-        // 홈으로 돌아가기 버튼 클릭 이벤트
-        document.getElementById('home-btn').addEventListener('click', () => {
-            window.location.href = `${root}/main`; // 홈 경로로 이동 (경로는 상황에 따라 변경)
-        });
-    </script>
 
 </body>
 </html>

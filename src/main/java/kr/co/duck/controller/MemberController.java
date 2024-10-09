@@ -1,6 +1,7 @@
 package kr.co.duck.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -71,9 +72,16 @@ public class MemberController {
 		return "member/not_login";
 	}
 
-	@GetMapping("/logout")
-	public String logout() {
-		loginMemberBean.setMemberLogin(false);
+	//Http 추가, 세션무효화 추가했어요
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        loginMemberBean.setMemberLogin(false);
+
+        // 세션 무효화
+        HttpSession session = request.getSession(false); // 기존 세션이 있으면 가져오고, 없으면 null
+        if (session != null) {
+            session.invalidate(); // 세션 무효화
+        }
 
 		return "member/logout";
 	}
