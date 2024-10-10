@@ -30,21 +30,22 @@ import kr.co.duck.util.StatusCode;
 
 @Service
 public class QuizRoomService {
-	private final QuizService quizService;
 	private final MemberCommand memberCommand;
 	private final QuizQuery quizQuery;
 	private final QuizCommand quizCommand;
 	private final SessionRepository sessionRepository;
 	private final QuizRoomRepository quizRoomRepository;
+	private final ChatService chatService; // ChatService 의존성 추가
 
-	public QuizRoomService(QuizService quizService, MemberCommand memberCommand, QuizQuery quizQuery,
-			QuizCommand quizCommand, SessionRepository sessionRepository, QuizRoomRepository quizRoomRepository) {
-		this.quizService = quizService;
+	public QuizRoomService(MemberCommand memberCommand, QuizQuery quizQuery,
+			QuizCommand quizCommand, SessionRepository sessionRepository, QuizRoomRepository quizRoomRepository, 
+			ChatService chatService) { // ChatService 추가
 		this.memberCommand = memberCommand;
 		this.quizQuery = quizQuery;
 		this.quizCommand = quizCommand;
 		this.sessionRepository = sessionRepository;
 		this.quizRoomRepository = quizRoomRepository;
+		this.chatService = chatService; // ChatService 초기화
 	}
 
 	// MemberGameStats가 null인 경우 생성하여 설정하는 메서드
@@ -202,6 +203,7 @@ public class QuizRoomService {
 		return roomInfo;
 	}
 
+
 	// 방 나가기
 	@Transactional
 	public void roomExit(int roomId, MemberBean memberBean) {
@@ -231,14 +233,14 @@ public class QuizRoomService {
 		contentSet.put("memberCount", existingAttendees.size());
 		contentSet.put("alert", member.getNickname() + " 님이 방을 나가셨습니다!");
 
-		quizService.sendQuizMessage(roomId, QuizMessage.MessageType.LEAVE, contentSet, null, member.getNickname());
+		chatService.sendQuizMessage(roomId, QuizMessage.MessageType.LEAVE, contentSet, member.getNickname()); // ChatService 호출
 
 		// 방 소유자가 방을 나갔고, 남아있는 참여자가 있으면 새 소유자를 할당
 		if (member.getNickname().equals(enterQuizRoom.getOwner()) && !existingAttendees.isEmpty()) {
 			String nextOwner = existingAttendees.get((int) (Math.random() * existingAttendees.size()))
 					.getMemberNickname();
 			enterQuizRoom.setOwner(nextOwner);
-			quizService.sendQuizMessage(roomId, QuizMessage.MessageType.NEWOWNER, null, null, nextOwner);
+			chatService.sendQuizMessage(roomId, QuizMessage.MessageType.NEWOWNER, null, nextOwner); // ChatService 호출
 		}
 	}
 }

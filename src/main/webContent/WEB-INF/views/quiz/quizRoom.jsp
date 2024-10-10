@@ -7,6 +7,11 @@
 <head>
     <meta charset="UTF-8">
     <title><c:out value="${room.quizRoomName}" /> - 퀴즈 방</title>
+      <!-- SockJS 및 STOMP 클라이언트 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <!-- 탭 아이콘 추가 -->
+    <link rel="icon" type="image/png" sizes="48x48" href="${root}/img/tabicon.png">
     <link rel="stylesheet" href="<c:out value='${root}/css/quizRoom.css'/>">
     <link rel="stylesheet" href="<c:out value='${root}/css/main.css'/>">
     <script>

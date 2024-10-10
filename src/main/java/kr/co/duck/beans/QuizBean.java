@@ -45,6 +45,7 @@ public class QuizBean {
 	@Column(name = "user_id")
 	private int userId; // 유저 식별번호
 
+	
 	// OneToMany 관계 설정
 	@OneToMany
 	@JoinColumn(name = "quiz_id") // song_ids 테이블에 외래 키로 저장됩니다.

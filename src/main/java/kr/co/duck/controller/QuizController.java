@@ -1,5 +1,6 @@
 package kr.co.duck.controller;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import kr.co.duck.beans.QuizBean;
 import kr.co.duck.service.QuizService;
@@ -9,9 +10,11 @@ import java.util.List;
 @RequestMapping("/quiz")
 public class QuizController {
 	private final QuizService quizService;
+	private final SimpMessagingTemplate messagingTemplate; // WebSocket 템플릿 추가
 
-	public QuizController(QuizService quizService) {
+	public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate) {
 		this.quizService = quizService;
+		this.messagingTemplate = messagingTemplate;
 	}
 
 	@PostMapping("/create")
@@ -25,22 +28,15 @@ public class QuizController {
 		return quizService.getAllQuizzes();
 	}
 
-	// 퀴즈 ID로 퀴즈 가져오기
 	@GetMapping("/details/{quizId}")
 	public QuizBean getQuiz(@PathVariable String quizId) {
 	    try {
 	        int id = Integer.parseInt(quizId);
-	        QuizBean quiz = quizService.getQuiz(id);
-	        if (quiz != null) {
-	            return quiz;
-	        } else {
-	            throw new IllegalArgumentException("해당 ID의 퀴즈를 찾을 수 없습니다: " + id);
-	        }
+	        return quizService.getQuiz(id);
 	    } catch (NumberFormatException e) {
 	        throw new IllegalArgumentException("잘못된 퀴즈 ID입니다: " + quizId);
 	    }
 	}
-
 
 	@PutMapping("/update/{quizId}")
 	public String updateQuiz(@PathVariable int quizId, @RequestBody QuizBean quizBean) {
@@ -54,11 +50,26 @@ public class QuizController {
 		return "퀴즈가 삭제되었습니다.";
 	}
 
-	@PostMapping("/answer")
-	public String submitAnswer(@RequestBody QuizBean quizBean) {
-		boolean isCorrect = quizService.submitAnswer(quizBean);
+	// 퀴즈 시작 (WebSocket 사용)
+	@PostMapping("/start/{roomId}")
+	public String quizStart(@PathVariable int roomId) {
+		// 퀴즈 시작 로직 처리
+		quizService.quizStart(roomId, new QuizBean());
+
+		// WebSocket 메시지 전송 (퀴즈 시작)
+		messagingTemplate.convertAndSend("/sub/quiz/" + roomId, "퀴즈가 시작되었습니다!");
+
+		return "퀴즈가 시작되었습니다!";
+	}
+
+	// 정답 제출 메서드 (WebSocket 사용 가능)
+	@PostMapping("/answer/{memberId}")
+	public String submitAnswer(@PathVariable int memberId, @RequestBody QuizBean quizBean) {
+		boolean isCorrect = quizService.submitAnswer(memberId, quizBean);
+
+		// WebSocket을 통해 실시간 정답 여부 전송
+		messagingTemplate.convertAndSend("/sub/quiz/answer/" + quizBean.getQuizId(), isCorrect);
+
 		return isCorrect ? "정답입니다!" : "오답입니다!";
 	}
-	
-
 }

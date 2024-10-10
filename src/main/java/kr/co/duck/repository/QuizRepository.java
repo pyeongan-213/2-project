@@ -9,4 +9,5 @@ import kr.co.duck.beans.QuizBean;
 public interface QuizRepository extends JpaRepository<QuizBean, Integer> {
 	// quizTitle에 특정 키워드가 포함된 퀴즈를 검색
 	List<QuizBean> findByQuizTitleContaining(String keyword);
+
 }
