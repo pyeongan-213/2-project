@@ -232,16 +232,24 @@
         +
         </button>
         <div class="fixed-content">
-        <form:form action=""></form:form>
-            <h3>문의하기</h3>
-            <p>이름</p>
-            <textarea rows="1" cols="1">${loginMemberBean.real_name }</textarea>
-            <p>메일주소</p>
-            <textarea rows="1" cols="1">${loginMemberBean.email }</textarea>
-            <p>문의내용</p>
-			<textarea style="width: 100%; height: 250px; padding: 0; line-height: normal; margin-bottom: 7px;"></textarea>
-            <div style="background:white; display: grid; justify-content: end;"><a href="${root }board/sendMail_pro">메일 보내기</a></div>
-        </div>
+			<form:form action="${root }board/receiveEmail/${loginMemberBean.email}" method="post">
+				<h3>문의하기</h3>
+								
+				<p><label for="name">이름</label></p>
+				<input type="text" id="name" value="${loginMemberBean.real_name}"readonly>
+
+				<p><label for="email">메일주소</label></p>
+				<input type="email" id="email" value="${loginMemberBean.email}"readonly>
+
+				<p><label for="subject">제목</label></p>
+				<input type="text" id="subject" name="subject" required>
+
+				<p><label for="body">문의내용</label></p>
+				<textarea id="body" name="body" style="width: 100%; height: 250px; padding: 5px; line-height: normal; margin-bottom: 7px;" required></textarea>
+				
+				<button type="submit" style="background: white; display: grid; justify-content: end;">메일 보내기</button>
+			</form:form>
+		</div>
     </div>
 	<footer>
 		<!-- ========== -->

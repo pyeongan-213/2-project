@@ -49,4 +49,26 @@ public class MailSendService {
 		}
 	}
 
+	public void receiveEmail(String email, String subject, String body) {
+		String setFrom = email;
+		String toMail = "haejin001228@naver.com";
+		String title = subject;
+		String content = body;
+		mailReceive(setFrom, toMail, title, content);
+	}
+
+	public void mailReceive(String setFrom, String toMail, String title, String content) {
+		MimeMessage message = mailSender.createMimeMessage();
+		try {
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
+			helper.setFrom(setFrom);
+			helper.setTo(toMail);
+			helper.setSubject(title);
+
+			helper.setText(content, true);
+			mailSender.send(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
