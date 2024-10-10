@@ -49,19 +49,21 @@ public class MailSendService {
 		}
 	}
 
+	//게시판에서 문의하는 기능(해진 추가)
 	public void receiveEmail(String email, String subject, String body) {
-		String setFrom = email;
+		String from = email;
 		String toMail = "haejin001228@naver.com";
 		String title = subject;
 		String content = body;
-		mailReceive(setFrom, toMail, title, content);
+		mailReceive(from, toMail, title, content);
 	}
-
-	public void mailReceive(String setFrom, String toMail, String title, String content) {
+	
+	//게시판에서 문의하는 기능(해진 추가)
+	public void mailReceive(String from, String toMail, String title, String content) {
 		MimeMessage message = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
-			helper.setFrom(setFrom);
+			helper.setFrom(from);
 			helper.setTo(toMail);
 			helper.setSubject(title);
 
