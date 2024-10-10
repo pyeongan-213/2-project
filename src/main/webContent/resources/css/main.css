@@ -46,6 +46,7 @@ body {
     flex-grow: 1;
     overflow: hidden;
 }
+
 /* 사이드바 구분선에 그림자 추가 */
 .sidebar {
     width: 220px;
@@ -98,18 +99,6 @@ body {
     overflow: auto;
 }
 
-/* Main container */
-.container {
-    background-color: var(--theme-bg);
-    height: auto;
-    display: flex;
-    overflow: hidden;
-    border-radius: 20px;
-    font-size: 15px;
-    font-weight: 500;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
 /* 인기 아티스트 및 앨범 항목 */
 .artist, .album {
     position: relative; /* 부모 요소를 relative로 설정 */
@@ -124,19 +113,7 @@ body {
     border-radius: 50%;
     transition: transform 0.3s ease;
 }
-/* 인기 아티스트 그리드 레이아웃 */
-.artists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 한 줄에 여러 항목이 나오도록 설정 */
-    gap: 20px; /* 항목 간 간격 */
-}
 
-/* 인기 아티스트 그리드 레이아웃 */
-.artists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 한 줄에 여러 항목이 나오도록 설정 */
-    gap: 20px; /* 항목 간 간격 */
-}
 /* 앨범 이미지 설정 */
 .album .card-img-top {
     width: 150px;
@@ -144,11 +121,13 @@ body {
     border-radius: 10px; /* 약간의 둥근 모서리 유지 */
 }
 
-/* 인기 앨범 그리드 레이아웃 */
-.albums-grid {
+/* 인기 아티스트 및 앨범 그리드 레이아웃 */
+.artists-grid, .albums-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 한 줄에 여러 항목이 나오도록 설정 */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
     gap: 20px; /* 항목 간 간격 */
+    justify-items: center; /* 그리드 항목 중앙 정렬 */
+    align-items: center;   /* 항목을 수직으로 중앙에 배치 */
 }
 
 /* 마우스 오버 시 확대 및 그림자 효과 */

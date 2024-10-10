@@ -25,4 +25,5 @@ public class TempController {
 	public String testmodalUI() {
 		return "temp/modalUI";
 	}
+	
 }
