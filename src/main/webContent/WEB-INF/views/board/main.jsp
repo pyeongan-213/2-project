@@ -1,303 +1,294 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+   pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<c:set var='root' value="${pageContext.request.contextPath}/" />
+<c:set var='root' value='${pageContext.request.contextPath }/'/>
+<c:set var="URI_1" value="${requestScope['javax.servlet.forward.request_uri']}"/>
+<c:set var="URI_2" value="${root}board/main"/>
+<c:set var="URI_3" value="${root}board/main_sort"/>
+<c:set var="URI_4" value="${root}board/search"/>
+<c:set var="URI_5" value="${root}board/search"/>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-<meta name="description" content="" />
-<meta name="author" content="" />
-
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
-	rel="stylesheet" />
-<title>Shop Homepage - Start Bootstrap Template</title>
-
-
-<!-- Favicon-->
-<link rel="icon" type="image/x-icon" href="${root }assets/favicon.ico" />
-<!-- Bootstrap icons-->
-
-<!-- Core theme CSS (includes Bootstrap)-->
-<link href="${root}css/styles.css" rel="stylesheet" type="text/css" />
-
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/board.css">
+<style>
+</style>
+<title>Board</title>
+<script>
+   /* 문의버튼js */
+   function toggleContent() {
+      var content = document.querySelector('.fixed-content');
+      if (content.style.display === 'block') {
+         content.style.display = 'none';
+      } else {
+         content.style.display = 'block';
+      }
+   }
+</script>
 </head>
-<body>
-	<!-- sidebar -->
-	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
-	<!-- top_menu-->
-	<c:import url="/WEB-INF/views/include/top_menu.jsp" />
-	<!-- Header-->
-	<header class="bg-dark py-5">
-		<div class="container px-4 px-lg-5 my-5">
-			<div class="text-center text-white">
-				<h1 class="display-4 fw-bolder">HOME</h1>
-				<p class="lead fw-normal text-white-50 mb-0">With this shop
-					hompeage template</p>
-			</div>
-		</div>
-	</header>
-	<!-- Section-->
-	<section class="py-5">
-		<div class="container px-4 px-lg-5 mt-5">
-			<div
-				class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Fancy Product</h5>
-								<!-- Product price-->
-								$40.00 - $80.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="board/main">Go
-									to Board</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Sale badge-->
-						<div class="badge bg-dark text-white position-absolute"
-							style="top: 0.5rem; right: 0.5rem">Sale</div>
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Special Item</h5>
-								<!-- Product reviews-->
-								<div
-									class="d-flex justify-content-center small text-warning mb-2">
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-								</div>
-								<!-- Product price-->
-								<span class="text-muted text-decoration-line-through">$20.00</span>
-								$18.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Sale badge-->
-						<div class="badge bg-dark text-white position-absolute"
-							style="top: 0.5rem; right: 0.5rem">Sale</div>
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Sale Item</h5>
-								<!-- Product price-->
-								<span class="text-muted text-decoration-line-through">$50.00</span>
-								$25.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Popular Item</h5>
-								<!-- Product reviews-->
-								<div
-									class="d-flex justify-content-center small text-warning mb-2">
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-								</div>
-								<!-- Product price-->
-								$40.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Sale badge-->
-						<div class="badge bg-dark text-white position-absolute"
-							style="top: 0.5rem; right: 0.5rem">Sale</div>
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Sale Item</h5>
-								<!-- Product price-->
-								<span class="text-muted text-decoration-line-through">$50.00</span>
-								$25.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Fancy Product</h5>
-								<!-- Product price-->
-								$120.00 - $280.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="#">View
-									options</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Sale badge-->
-						<div class="badge bg-dark text-white position-absolute"
-							style="top: 0.5rem; right: 0.5rem">Sale</div>
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Special Item</h5>
-								<!-- Product reviews-->
-								<div
-									class="d-flex justify-content-center small text-warning mb-2">
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-								</div>
-								<!-- Product price-->
-								<span class="text-muted text-decoration-line-through">$20.00</span>
-								$18.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col mb-5">
-					<div class="card h-100">
-						<!-- Product image-->
-						<img class="card-img-top"
-							src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-						<!-- Product details-->
-						<div class="card-body p-4">
-							<div class="text-center">
-								<!-- Product name-->
-								<h5 class="fw-bolder">Popular Item</h5>
-								<!-- Product reviews-->
-								<div
-									class="d-flex justify-content-center small text-warning mb-2">
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-									<div class="bi-star-fill"></div>
-								</div>
-								<!-- Product price-->
-								$40.00
-							</div>
-						</div>
-						<!-- Product actions-->
-						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-							<div class="text-center">
-								<a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Footer-->
-	<c:import url="/WEB-INF/views/include/bottom_info.jsp" />
-	<!-- Bootstrap core JS-->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- Core theme JS-->
-	<script src="${root }js/scripts.js"></script>
+<body onload="setCurrentBoardIdFromURL();">
+   <header>
+      <!-- ============ -->
+   </header>
+   <c:import url="/WEB-INF/views/include/sidebar.jsp"/>
+   <div class="container">
+   
+      <h1>커뮤니티</h1>
+      <div>
+         <button class="c_btn" onclick="setBoardId(0); setTimeout(() => { location.href='${root}board/main'; }, 100);">전체</button>
+         <button class="c_btn" onclick="setBoardId(1); setTimeout(() => { location.href='${root}board/main_sort?board_id=1'; }, 100);">자유게시판</button>
+          <button class="c_btn" onclick="setBoardId(2); setTimeout(() => { location.href='${root}board/main_sort?board_id=2'; }, 100);">소식/정보</button>
+         <button class="c_btn" onclick="setBoardId(3); setTimeout(() => { location.href='${root}board/main_sort?board_id=3'; }, 100);">음악 추천</button>
+         <p></p>
+      </div>
+      
+      <div class="on-table">
+      <form id="searchForm" action="${root}board/search" method="get" onsubmit="return searchPosts()">
+         <input id="searchInput" name="query" placeholder="search">
+           <input type="hidden" id="boardId" name="board_id" value="0">
+      </form>
+          <span class="right-align"> <a href="${root }board/write" class="write-btn">글쓰기</a> </span>
+      </div>
+      
+         <div>
+            <table>
+               <thead>
+                  <tr>
+                     <th>카테고리</th>
+                     <th>제목</th>
+                     <th>글쓴이</th>
+                     <th>작성일</th>
+                     <th>좋아요</th>
+                  </tr>
+               </thead>
+               <tbody align="center">
+                  <c:forEach var='obj' items="${contentList}">
+                     <tr>
+                        <td>${obj.board_name }</td>
+                        <td><a href="${root }board/read?boardpost_id=${obj.boardpost_id}">${obj.content_title}</a></td>
+                        <td>${obj.membername }</td>
+                        <td>${obj.writedate }</td>
+                        <td>${obj.like_count }</td>
+                        <td style="display: none;">${obj.content_text }</td>                     
+                     </tr>                  
+                  </c:forEach>
+               </tbody>
+            </table>
 
+         </div>
+            
+         <div class="pagination">
+            <ul>
+            
+            <c:if test="${URI_1 eq URI_2}">
+               <c:choose>
+                  <c:when test="${pageBean.prevPage <= 0 }">
+                     <li class="page-item-disabled"><a href="#" 
+                        class="page-link">←</a></li>
+                  </c:when>
+                  <c:otherwise>
+                     <li class="page-item">
+                     <a href="${root }board/main?page=${pageBean.prevPage}"
+                        class="page-link">←</a></li>
+                  </c:otherwise>
+               </c:choose>
 
-	<h2>
-		<a href="${root }temp/tempMain">To tempMain</a>
-	</h2>
-	<br />
-	<hr />
-	<br />
+               <c:forEach var='idx' begin="${pageBean.min }" end='${pageBean.max }'>
+                  <c:choose>
+                     <c:when test="${idx == pageBean.currentPage }">
+                        <li class="page-item-active"><a
+                           href="${root }board/main?page=${idx}"
+                           class="page-link">${idx }</a></li>
+                     </c:when>
+                     <c:otherwise>
+                        <li class="page-item"><a
+                           href="${root }board/main?page=${idx}"
+                           class="page-link">${idx }</a></li>
+                     </c:otherwise>
+                  </c:choose>
+               </c:forEach>
 
-	<h2>
-		<a href="${root }quiz/quizlobby">To quizMain</a>
-	</h2>
+               <c:choose>
+                  <c:when test="${pageBean.max >= pageBean.pageCnt }">
+                     <li class="page-item-disabled"><a href="#" 
+                        class="page-link">→</a></li>
+                  </c:when>
+                  <c:otherwise>
+                     <li class="page-item"><a
+                        href="${root }board/main?page=${pageBean.nextPage}"
+                        class="page-link">→</a></li>
+                  </c:otherwise>
+               </c:choose>
+            </c:if>
+            
+            <c:if test="${URI_1 eq URI_3}"> <!-- 카테고리별로 볼때 -->
+               <c:choose>
+               
+                  <c:when test="${pageBean.prevPage <= 0 }">
+                     <li class="page-item-disabled"><a href="#" 
+                        class="page-link">←</a></li>
+                  </c:when>
+                  <c:otherwise>
+                     <li class="page-item">
+                     <a href="${root }board/main_sort?board_id=${board_id }&page=${pageBean.prevPage}"
+                        class="page-link">←</a></li>
+                  </c:otherwise>
+               </c:choose>
+             
+               <c:forEach var='idx' begin="${pageBean.min }" end='${pageBean.max }'>
+                  <c:choose>
+                     <c:when test="${idx == pageBean.currentPage }">
+                        <li class="page-item-active"><a
+                           href="${root }board/main_sort?board_id=${board_id }&page=${idx}"
+                           class="page-link">${idx }</a></li>
+                     </c:when>
+                     <c:otherwise>
+                        <li class="page-item"><a
+                           href="${root }board/main_sort?board_id=${board_id }&page=${idx}"
+                           class="page-link">${idx }</a></li>
+                     </c:otherwise>
+                  </c:choose>
+               </c:forEach>
+
+               <c:choose>
+                  <c:when test="${pageBean.max >= pageBean.pageCnt }">
+                     <li class="page-item-disabled"><a href="#" 
+                        class="page-link">→</a></li>
+                  </c:when>
+                  <c:otherwise>
+                     <li class="page-item"><a
+                        href="${root }board/main_sort?board_id=${board_id }&page=${pageBean.nextPage}"
+                        class="page-link">→</a></li>
+                  </c:otherwise>
+               </c:choose>
+            </c:if>
+            
+            <c:if test="${URI_1 eq URI_4}"> <!-- 검색했을때 -->
+               <c:choose>
+                  <c:when test="${pageBean.prevPage <= 0 }">
+                     <li class="page-item-disabled"><a href="#" 
+                        class="page-link">←</a></li>
+                  </c:when>
+                  <c:otherwise>
+                     <li class="page-item">
+                     <a href="${root }board/search?query=${param.query }&board_id=${board_id}&page=${pageBean.prevPage}"
+                        class="page-link">←</a></li>
+                  </c:otherwise>
+               </c:choose>
+             
+               <c:forEach var='idx' begin="${pageBean.min }" end='${pageBean.max }'>
+                  <c:choose>
+                     <c:when test="${idx == pageBean.currentPage }">
+                        <li class="page-item-active"><a
+                           href="${root }board/search?query=${param.query }&board_id=${board_id}&page=${idx}"
+                           class="page-link">${idx }</a></li>
+                     </c:when>
+                     <c:otherwise>
+                        <li class="page-item"><a
+                           href="${root }board/search?query=${param.query }&board_id=${board_id}&page=${idx}"
+                           class="page-link">${idx }</a></li>
+                     </c:otherwise>
+                  </c:choose>
+               </c:forEach>
+
+               <c:choose>
+                  <c:when test="${pageBean.max >= pageBean.pageCnt }">
+                     <li class="page-item-disabled"><a href="#" 
+                        class="page-link">→</a></li>
+                  </c:when>
+                  <c:otherwise>
+                     <li class="page-item"><a
+                        href="${root }board/search?query=${param.query }&board_id=${board_id}&page=${pageBean.nextPage}"
+                        class="page-link">→</a></li>
+                  </c:otherwise>
+               </c:choose>
+            </c:if>
+            </ul>
+         </div>
+
+   </div>
+   <div class="showBest">
+   <%
+    String userId = (session.getAttribute("loginMemberBean") != null)
+        ? String.valueOf(((kr.co.duck.beans.MemberBean) session.getAttribute("loginMemberBean")).getMember_id())
+        : "null";
+    System.out.println("로그인된 사용자 ID: " + userId); // 로그로 출력
+    userId = userId.trim();
+   %>
+      <h3 style="margin-right: 120px;">BEST</h3>
+      <div class="bestContent">
+      <c:forEach var='obj' items="${bestList}">
+         <div>
+         <span style="margin: 0 20px 0 0;">${obj.content_title}</span>
+         <span style="margin: 0;">♡${obj.like_count }</span>
+         </div>
+      </c:forEach>
+      </div>
+   </div>
+   <div class="fixed-section">
+        <button class="fixed-button" onclick="toggleContent()">
+        +
+        </button>
+        <div class="fixed-content">
+         <form:form action="${root }board/receiveEmail/${loginMemberBean.email}" method="post">
+            <h3>문의하기</h3>
+                        
+            <p><label for="name">이름</label></p>
+            <input type="text" id="name" value="${loginMemberBean.real_name}"readonly>
+
+            <p><label for="email">메일주소</label></p>
+            <input type="email" id="email" value="${loginMemberBean.email}"readonly>
+
+            <p><label for="subject">제목</label></p>
+            <input type="text" id="subject" name="subject" required>
+
+            <p><label for="body">문의내용</label></p>
+            <textarea id="body" name="body" style="width: 100%; height: 250px; padding: 5px; line-height: normal; margin-bottom: 7px;" required></textarea>
+            
+            <button type="submit" style="background: white; display: grid; justify-content: end;">메일 보내기</button>
+         </form:form>
+      </div>
+    </div>
+   <footer>
+      <!-- ========== -->
+   </footer>
+
+<script>
+let currentBoardId = 0; // 전역 변수로 선언
+
+function setBoardId(boardId) {
+    currentBoardId = boardId;
+    document.getElementById('boardId').value = boardId;
+    console.log("Current Board ID set to:", boardId); // 로그 추가
+}
+
+function setCurrentBoardIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const boardId = urlParams.get('board_id');
+    if (boardId) {
+        currentBoardId = boardId;
+        document.getElementById('boardId').value = boardId; // hidden input에 설정
+        console.log("Current Board ID set from URL:", boardId); // 로그 추가
+    }
+}   
+
+function searchPosts() {
+    const input = document.getElementById('searchInput');
+    const query = input.value.trim();
+
+    console.log("Searching with query:", query, "and board ID:", currentBoardId); // 로그 추가
+
+    if (query) {
+        return true; 
+    } else {
+        alert("검색어를 입력해 주세요."); // 오류 메시지 추가
+        return false;
+    }
+}
+
+</script>
 
 </body>
 </html>

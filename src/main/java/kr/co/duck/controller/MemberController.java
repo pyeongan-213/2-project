@@ -33,38 +33,59 @@ public class MemberController {
 
 	@GetMapping("/login")
 	public String login(@ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean,
-			@RequestParam(value = "fail", defaultValue = "false") boolean fail, Model model) {
-		model.addAttribute("fail", fail);
+	                    @RequestParam(value = "fail", defaultValue = "false") boolean fail, 
+	                    HttpServletRequest request, HttpSession session, Model model) {
 
-		return "member/login";
+	    model.addAttribute("fail", fail);
+
+	    // 사용자가 로그인 페이지에 접근하기 전에 있었던 URL을 세션에 저장
+	    String referer = request.getHeader("Referer");
+
+	    // referer 값이 없거나, 로그인/회원 페이지에서 온 경우 기본적으로 메인 페이지로 리다이렉트
+	    if (referer == null || referer.contains("/login") || referer.contains("/member")) {
+	        referer = "/";
+	    } else {
+	        session.setAttribute("redirectURI", referer);  // 세션에 redirectURI 저장
+	    }
+
+	    System.out.println("RedirectURI set to: " + referer);  // 로그로 출력
+
+	    return "member/login";  // 로그인 페이지로 이동
 	}
 
-	@PostMapping("/login")
-	public String postlogin(@ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean,
-			@RequestParam(value = "fail", defaultValue = "false") boolean fail, Model model) {
-		model.addAttribute("fail", fail);
-
-		return "member/login";
-	}
 
 	@PostMapping("/login_pro")
 	public String login_pro(@Valid @ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean,
-			BindingResult result, HttpSession session) {
-		if (result.hasErrors()) {
-			return "member/login";
-		}
+	                        BindingResult result, HttpSession session, HttpServletRequest request) {
+	    if (result.hasErrors()) {
+	        return "member/login";
+	    }
 
-		// 사용자 인증 처리
-		memberService.getLoginMemberInfo(tempLoginMemberBean);
+	    // 사용자 인증 처리
+	    memberService.getLoginMemberInfo(tempLoginMemberBean);
 
-		if (loginMemberBean.isMemberLogin()) {
-			// 로그인 성공 시 세션에 사용자 정보를 저장
-			session.setAttribute("loginMemberBean", loginMemberBean);
+	    // 로그인 성공 여부 확인
+	    if (loginMemberBean.isMemberLogin()) {
+	        session.setAttribute("loginMemberBean", loginMemberBean);
 
-			return "member/login_success";
-		} else {
-			return "member/login_fail";
-		}
+	        // 세션에서 원래 페이지 URI 가져오기
+	        String redirectURI = (String) session.getAttribute("redirectURI");
+
+	        // 로그로 확인
+	        System.out.println("Redirect URI after login: " + redirectURI);
+
+	        // redirectURI가 "/"가 아니라면 해당 경로로 리다이렉트
+	        if (redirectURI != null && !redirectURI.equals("/") && !redirectURI.isEmpty()) {
+	            session.removeAttribute("redirectURI");  // 한 번 사용 후 세션에서 제거
+	            return "redirect:" + redirectURI;
+	        }
+
+	        // 리다이렉트 URI가 없을 경우 기본 페이지로 리다이렉트
+	        return "redirect:/";
+	    } else {
+	        // 로그인 실패 시 처리
+	        return "member/login_fail";
+	    }
 	}
 
 	@GetMapping("/not_login")

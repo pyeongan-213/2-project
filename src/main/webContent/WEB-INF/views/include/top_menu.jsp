@@ -33,13 +33,21 @@
 
         <!-- 우측 로그인 및 구독 -->
         <div class="navbar-right">
-            <a href="${root}/join" class="join-link">구독</a>
+            
             
             <!-- 로그인 여부에 따라 동적으로 버튼 변경 -->
             <c:choose>
                 <c:when test="${sessionScope.loginMemberBean != null}">
-                    <!-- 로그인이 된 상태 -->
-                    <a href="${root}/member/logout" class="logout-btn">로그아웃</a>
+                    <!-- 로그인이 된 상태: 드롭다운 메뉴 추가 -->
+                    <div class="dropdown">
+                        <a href="javascript:void(0)" class="nav-link nickname" style="text-decoration: none;">${loginMemberBean.nickname }</a>
+                        <div class="dropdown-content">
+                            <a href="${root}/member/info">내 정보</a>
+                            <a href="${root}/join" class="join-link">구독</a>
+                            <a href="${root }/board/main_sort?board_id=2">고객센터</a>
+                            <a href="${root}/member/logout">로그아웃</a>
+                        </div>
+                    </div>
                 </c:when>
                 <c:otherwise>
                     <!-- 로그아웃 상태 -->

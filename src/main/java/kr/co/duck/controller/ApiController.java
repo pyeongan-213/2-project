@@ -108,6 +108,17 @@ public class ApiController {
         String userPw = sub;
 		memberService.addGoogleMemberInfo(userEmail, userPw, userEmail, nickname);
         
+		// 소셜 로그인 플래그 설정
+	    loginMemberBean.setSocialLogin(true);  // 소셜 로그인 성공 플래그 설정
+	    session.setAttribute("loginMemberBean", loginMemberBean);  // 세션에 저장
+	    
+	 // 세션에서 원래 페이지 URI 가져오기
+	    String redirectURI = (String) session.getAttribute("redirectURI");
+	    if (redirectURI != null) {
+	        session.removeAttribute("redirectURI");  // 한 번 사용한 후 세션에서 제거
+	        return "redirect:" + redirectURI;
+	    }
+		
         return "redirect:/main";
     }
 }

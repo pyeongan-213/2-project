@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +50,23 @@ public class BoardController {
 	}
 
 	@GetMapping("/main_sort")
-	public String sortMain(@RequestParam("board_id")int board_id, Model model) {
-		
-		List<ContentBean> sortedContentList = boardService.getsortedList(board_id);
-		model.addAttribute("contentList",sortedContentList);
-		
-		return "board/main";
+	public String sortMain(@RequestParam("board_id") int board_id, HttpSession session, HttpServletRequest request, Model model) {
+		System.out.println("sortMain method called with board_id: " + board_id);  // 로그로 메서드 호출 확인
+
+	    // 로그인 여부 체크
+	    if (loginMemberBean == null || !loginMemberBean.isMemberLogin()) {
+	        // 현재 URL을 세션에 저장하여 로그인 후 돌아갈 수 있도록 설정
+	        String currentUrl = request.getRequestURI() + "?" + request.getQueryString(); // 현재 URL 가져오기
+	        session.setAttribute("redirectURI", currentUrl);  // 로그인 후 돌아올 URI 저장
+	        System.out.println("Saved redirectURI: " + currentUrl);  // 로그로 확인
+	        return "redirect:/member/login";
+	    }
+
+	    // 로그인 상태라면 게시글 리스트 가져오기
+	    List<ContentBean> sortedContentList = boardService.getsortedList(board_id);
+	    model.addAttribute("contentList", sortedContentList);
+
+	    return "board/main";
 	}
 
 	@GetMapping("/read")

@@ -10,6 +10,7 @@ public class MemberBean implements Serializable {
 
 	private boolean memberNameExist;
 	private boolean memberLogin;
+	private boolean socialLogin; //소셜로그인 여부 체크
 	private int member_id; // 로그인시 작성하는 id 아님 유저식별번호임
 
 	// @Size(min = 1, max = 10)
@@ -51,6 +52,7 @@ public class MemberBean implements Serializable {
 	public MemberBean() {
 		this.memberNameExist = false;
 		this.memberLogin = false;
+		this.socialLogin = false;
 	}
 
 	// 새로운 생성자
@@ -74,6 +76,14 @@ public class MemberBean implements Serializable {
 
 	public void setMemberLogin(boolean memberLogin) {
 		this.memberLogin = memberLogin;
+	}
+
+	public boolean isSocialLogin() {
+		return socialLogin;
+	}
+
+	public void setSocialLogin(boolean socialLogin) {
+		this.socialLogin = socialLogin;
 	}
 
 	public int getMember_id() {
