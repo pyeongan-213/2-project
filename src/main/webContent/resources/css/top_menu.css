@@ -11,7 +11,6 @@
     position: fixed;  /* 상단바를 고정 */
     top: 0;
     left: 0;
-    right: 0;
     z-index: 1000;  /* 다른 요소들보다 상단에 위치 */
 }
 
@@ -33,22 +32,7 @@
     gap: 20px; /* 홈 버튼과 검색창 사이의 간격 */
 }
 
-/* 홈 버튼 스타일 */
-.navbar-home {
-    display: flex;
-    align-items: center;
-}
 
-.navbar-home a {
-    color: #fff;
-    font-size: 24px;
-    text-decoration: none;
-}
-
-.navbar-home a i {
-    color: #fff;
-    font-size: 24px;
-}
 
 /* 검색창 스타일 */
 .navbar-search {
@@ -67,11 +51,11 @@
     background-color: #353340;
     color: #fff;
     font-size: 14px;
-    transition: width 0.4s ease; /* 너비 변경에 대한 트랜지션 추가 */
+    transition: width 0.85s ease; /* 너비 변경에 대한 트랜지션 추가 */
 }
 
 .search-input:focus {
-    width: 400px; /* 포커스될 때의 너비 */
+    width: 650px; /* 포커스될 때의 너비 */
 }
 
 .search-icon {
@@ -90,7 +74,7 @@
     margin-left: auto;  /* 우측 끝으로 이동 */
 }
 
-.join-link, .login-btn, .logout-btn {
+.login-btn{
     color: #fff;
     text-decoration: none;
     font-size: 14px;
@@ -101,74 +85,79 @@
     font-weight: 600;
 }
 
-.join-link:hover, .login-btn:hover, .logout-btn:hover {
+.login-btn:hover{
     background-color: #6c5ecf;
     border-color: #6c5ecf;
 }
 
-/* 드롭다운 컨테이너 스타일 */
+/* 닉네임 드롭다운 컨테이너 */
 .dropdown {
     position: relative;
     display: inline-block;
 }
 
-/* 기존의 navbar 스타일을 유지 */
-
-/* 더 구체적인 선택자 적용 */
-.navbar-right .dropdown .nickname {
+/* 닉네임 스타일 */
+.navbar-right .nickname {
     color: #fff;
-    text-decoration: none !important; /* 밑줄 제거 */
-    font-weight: bold; /* 텍스트를 굵게 */
-    font-size: 16px; /* 폰트 크기 */
-    padding: 5px 10px; /* 패딩 추가 */
-    border-radius: 20px; /* 둥근 모서리 */
-    background-color: transparent; /* 투명 배경 */
-    transition: background-color 0.3s ease, color 0.3s ease; /* 부드러운 전환 */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
-
-
 
 /* 닉네임 hover 시 스타일 */
 .navbar-right .nickname:hover {
-    background-color: #6c5ecf; /* hover 시 배경색을 변경 */
-    color: #fff; /* 텍스트 색상 유지 */
-    cursor: pointer; /* 클릭 가능한 상태임을 표시하기 위해 포인터 커서 적용 */
+    background-color: #6c5ecf;
+    color: #fff;
+    cursor: pointer;
 }
-
 
 /* 드롭다운 메뉴 스타일 */
 .dropdown-content {
-    display: none;
+    display: none; /* 기본적으로 숨김 */
     position: absolute;
+    right: 0;
     background-color: #353340;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1000;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    right: 0; /* 우측 정렬 */
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
+/* 드롭다운 메뉴 항목 */
 .dropdown-content a {
-    color: white; /* 텍스트 색상 설정 */
-    padding: 12px 16px; /* 패딩 추가로 항목을 여유롭게 배치 */
-    text-decoration: none; /* 텍스트 밑줄 제거 */
-    display: block;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 항목 사이에 구분선 추가 */
-    line-height: 1.6; /* 줄 높이를 설정하여 가독성 향상 */
-}
-
-.dropdown-content a:hover {
-    background-color: #6c5ecf; /* hover 시 배경색 변경 */
-}
-
-.dropdown:hover .dropdown-content {
-    display: block; /* hover 시 드롭다운 메뉴가 보이도록 설정 */
-}
-
-/* 모든 a 태그에서 기본 밑줄 제거 */
-a {
+    color: white;
+    padding: 12px 16px;
     text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
 }
 
-/* 기타 기존의 스타일 유지 */
+/* 드롭다운 메뉴 항목 hover 시 스타일 */
+.dropdown-content a:hover {
+    background-color: #6c5ecf; /* 항목 hover 시 배경색 변경 */
+}
+
+/* 드롭다운 hover 시 드롭다운 메뉴 표시 */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .navbar-search {
+        max-width: 300px;
+    }
+
+    .search-input {
+        width: 150px;
+    }
+
+    .search-input:focus {
+        width: 250px;
+    }
+}

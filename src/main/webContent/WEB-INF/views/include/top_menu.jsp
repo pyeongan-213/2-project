@@ -17,7 +17,6 @@
         <div class="navbar-logo">
             <a href="${root}/main" class="logo-link">DuckMusic</a>
         </div>
-
         <!-- 중앙 정렬: 홈 버튼 및 검색창 -->
         <div class="navbar-center">
             <!-- 홈 버튼 -->

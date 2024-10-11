@@ -1,4 +1,7 @@
 @charset "UTF-8";
+* {
+    box-sizing: border-box;
+}
 /* 전체 페이지 스타일 */
 body {
     background-color: #191414; /* 배경색: 검정 */
