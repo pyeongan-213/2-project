@@ -43,75 +43,53 @@ import kr.co.duck.beans.MemberBean;
 import kr.co.duck.interceptor.CheckLoginInterceptor;
 import kr.co.duck.interceptor.TopMenuInterceptor;
 import kr.co.duck.mapper.MemberMapper;
-import kr.co.duck.mapper.MusicMapper;
 import kr.co.duck.mapper.TopMenuMapper;
-import kr.co.duck.service.ManiaDBService; // 추가한 서비스
+import kr.co.duck.service.ManiaDBService;
+import kr.co.duck.service.PlaylistManagementService;
 import kr.co.duck.service.PlaylistService;
 import kr.co.duck.service.TopMenuService;
 
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "kr.co.duck")
-@MapperScan("kr.co.duck.mapper")
+@MapperScan("kr.co.duck.mapper") // MyBatis Mapper 인터페이스가 있는 패키지를 스캔
+@MapperScan("kr.co.duck.dao")
 @PropertySource("/WEB-INF/properties/db.properties")
 @EnableJpaRepositories(basePackages = "kr.co.duck.repository")
 public class ServletAppContext implements WebMvcConfigurer {
 
-	@Value("${db.classname}")
-	private String db_classname;
+    @Value("${db.classname}")
+    private String db_classname;
 
-	@Value("${db.url}")
-	private String db_url;
+    @Value("${db.url}")
+    private String db_url;
 
-	@Value("${db.username}")
-	private String db_username;
+    @Value("${db.username}")
+    private String db_username;
 
-	@Value("${db.password}")
-	private String db_password;
+    @Value("${db.password}")
+    private String db_password;
 
-	@Autowired
-	private TopMenuService topMenuService;
+    @Autowired
+    private TopMenuService topMenuService;
 
-	@Resource(name = "loginMemberBean")
-	private MemberBean loginMemberBean;
+    @Resource(name = "loginMemberBean")
+    private MemberBean loginMemberBean;
 
-	@Autowired
-	private ServletContext servletContext;
+    @Autowired
+    private ServletContext servletContext;
 
-	// Controller의 메서드가 반환하는 jsp의 이름 앞뒤에 경로와 확장자를 붙혀주도록 설정
-	@Override
-	public void configureViewResolvers(ViewResolverRegistry registry) {
-		WebMvcConfigurer.super.configureViewResolvers(registry);
-		registry.jsp("/WEB-INF/views/", ".jsp");
-	}
+    // View Resolver 설정
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        registry.jsp("/WEB-INF/views/", ".jsp");
+    }
 
-	// 정적 파일 경로 매핑
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		WebMvcConfigurer.super.addResourceHandlers(registry);
-		registry.addResourceHandler("/**").addResourceLocations("/resources/");
-	}
-
-	// 데이터베이스 접속 정보를 관리하는 Bean
-	@Bean
-	public BasicDataSource dataSource() {
-		BasicDataSource source = new BasicDataSource();
-		source.setDriverClassName(db_classname);
-		source.setUrl(db_url);
-		source.setUsername(db_username);
-		source.setPassword(db_password);
-
-		return source;
-	}
-
-	// 쿼리문과 접속 정보를 관리하는 객체
-	@Bean
-	public SqlSessionFactory factory(BasicDataSource source) throws Exception {
-		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-		factoryBean.setDataSource(source);
-		SqlSessionFactory factory = factoryBean.getObject();
-		return factory;
-	}
+    // 정적 파일 경로 매핑
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations("/resources/");
+    }
 
 	@Bean
 	public MapperFactoryBean<MemberMapper> getMemberMapper(SqlSessionFactory factory) throws Exception {
@@ -127,51 +105,16 @@ public class ServletAppContext implements WebMvcConfigurer {
 		return factoryBean;
 	}
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		WebMvcConfigurer.super.addInterceptors(registry);
-
-		TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService, loginMemberBean);
-
-		InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
-		reg1.addPathPatterns("/**");
-
-		CheckLoginInterceptor checkLoginInterceptor = new CheckLoginInterceptor(loginMemberBean);
-		InterceptorRegistration reg2 = registry.addInterceptor(checkLoginInterceptor);
-		reg2.addPathPatterns("/member/modify", "/member/logout", "/board/*");
-		reg2.excludePathPatterns("/board/main");
-
-	}
-
 	// property 정보를 읽어들이는 Bean 등록
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
-
-	@Bean
-	public ReloadableResourceBundleMessageSource messageSource() {
-		ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
-		res.setDefaultEncoding("utf-8");
-		res.setBasenames("/WEB-INF/properties/error_message");
-		return res;
-	}
-
-	@Bean
-	public StandardServletMultipartResolver multipartResolver() {
-		return new StandardServletMultipartResolver();
-	}
-
+	
 	// PlaylistService Bean
 	@Bean
 	public PlaylistService playlistService() {
 		return new PlaylistService();
-	}
-
-	// ManiaDBService Bean 추가
-	@Bean
-	public ManiaDBService maniaDBService() {
-		return new ManiaDBService();
 	}
 
 	// mail
@@ -199,43 +142,100 @@ public class ServletAppContext implements WebMvcConfigurer {
 
 		return properties;
 	}
-
-	//domain 관련
-	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(dataSource);
-		em.setPackagesToScan("kr.co.duck.beans", "kr.co.duck.domain"); // 엔티티 클래스의 패키지 경로
-
-		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-		em.setJpaVendorAdapter(vendorAdapter);
-
-		return em;
-	}
-
 	
+
+    // 데이터베이스 접속 정보를 관리하는 Bean
     @Bean
-	public MapperFactoryBean<MusicMapper> getMusicMapper(SqlSessionFactory factory) throws Exception {
-		MapperFactoryBean<MusicMapper> factoryBean = new MapperFactoryBean<MusicMapper>(MusicMapper.class);
-		factoryBean.setSqlSessionFactory(factory);
-		return factoryBean;
-	}
-	
-	@Bean
-	public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-		return new JpaTransactionManager(entityManagerFactory);
-	}
+    public BasicDataSource dataSource() {
+        BasicDataSource source = new BasicDataSource();
+        source.setDriverClassName(db_classname);
+        source.setUrl(db_url);
+        source.setUsername(db_username);
+        source.setPassword(db_password);
 
-	 // YouTube API에 필요한 구성
+        return source;
+    }
+
+    // SqlSessionFactory 설정 (MyBatis 관련 설정)
+    @Bean
+    public SqlSessionFactory factory(BasicDataSource source) throws Exception {
+        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        factoryBean.setDataSource(source);
+        return factoryBean.getObject();
+    }
+
+    // Interceptor 설정
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService, loginMemberBean);
+        registry.addInterceptor(topMenuInterceptor).addPathPatterns("/**");
+
+        CheckLoginInterceptor checkLoginInterceptor = new CheckLoginInterceptor(loginMemberBean);
+        registry.addInterceptor(checkLoginInterceptor)
+                .addPathPatterns("/member/modify", "/member/logout", "/board/*")
+                .excludePathPatterns("/board/main");
+    }
+
+    // Property 정보 읽어들이는 Bean 등록
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    // 메시지 소스 설정
+    @Bean
+    public ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
+        res.setDefaultEncoding("utf-8");
+        res.setBasenames("/WEB-INF/properties/error_message");
+        return res;
+    }
+
+    // 파일 업로드 처리
+    @Bean
+    public StandardServletMultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+
+    // PlaylistManagementService 추가
+    @Bean
+    public PlaylistManagementService playlistManagementService() {
+        return new PlaylistManagementService();
+    }
+
+    // ManiaDBService 추가
+    @Bean
+    public ManiaDBService maniaDBService() {
+        return new ManiaDBService();
+    }
+
+
+    // JPA 설정
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource);
+        em.setPackagesToScan("kr.co.duck.beans", "kr.co.duck.domain");
+
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        return em;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+
+    // YouTube API 설정
     private static final GsonFactory GSON_FACTORY = GsonFactory.getDefaultInstance();
 
     @Bean
     public YouTube youtube() throws Exception {
         return new YouTube.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GSON_FACTORY,
-                request -> {}  // 인증 처리를 추가하려면 이곳에서 처리 가능
+            GoogleNetHttpTransport.newTrustedTransport(),
+            GSON_FACTORY,
+            request -> {}
         ).setApplicationName("YourApplicationName").build();
     }
-	
 }

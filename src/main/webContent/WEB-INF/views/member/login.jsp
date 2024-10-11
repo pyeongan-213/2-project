@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>로그인</title>
 </head>
 <body>
 <!-- 상단 메뉴 부분 -->
@@ -25,6 +25,8 @@
 								<p>아이디 비밀번호를 확인해주세요</p>
 							</div>
 						</c:if>
+
+						<!-- 로그인 폼 -->
 						<form:form action="${root }member/login_pro" method='post'
 							modelAttribute="tempLoginMemberBean">
 							<div class="form-group">
@@ -37,12 +39,18 @@
 								<form:password path="password" class="form-control" />
 								<form:errors path="password" style="color:red" />
 							</div>
+
+							<!-- 숨겨진 필드로 redirectURI 추가 -->
+    						<input type="hidden" name="redirectURI" value="${param.redirectURI}" />
+
 							<div class="form-group text-right">
 								<form:button class='btn btn-primary'>로그인</form:button>
 								<a href="${root }member/join" class="btn btn-danger">회원가입</a>
 							</div>
+
+							<!-- 구글 로그인 -->
 							<div class="googleSignUp">
-								<button type ="button" onclick="location.href='${root}member/getGoogleAuthUrl'">구글로그인</button>
+								<button type="button" onclick="location.href='${root}member/getGoogleAuthUrl?redirectURI=${param.redirectURI}'">구글로그인</button>
 							</div>
 						</form:form>
 					</div>

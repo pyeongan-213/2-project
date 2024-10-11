@@ -1,6 +1,7 @@
 package kr.co.duck.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -26,151 +27,176 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberService;
-	
+
 	@Resource(name = "loginMemberBean")
 	private MemberBean loginMemberBean;
-	
+
 	@GetMapping("/login")
 	public String login(@ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean,
-						@RequestParam(value = "fail", defaultValue = "false") boolean fail,
-						Model model) {
-		model.addAttribute("fail", fail);
-		
-		return "member/login";
-	}
-	
-	@PostMapping("/login")
-	public String postlogin(@ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean,
-							@RequestParam(value = "fail", defaultValue = "false") boolean fail,
-							Model model) {
-		model.addAttribute("fail", fail);
-		
-		return "member/login";
-	}
-	
-	@PostMapping("/login_pro")
-	public String login_pro(@Valid @ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean, 
-							BindingResult result, HttpSession session) {
-		if(result.hasErrors()) {
-			return "member/login";
-		}
-		memberService.getLoginMemberInfo(tempLoginMemberBean);
-		
-		if(loginMemberBean.isMemberLogin() == true) {
-			 // 로그인 성공 시 세션에 사용자 정보를 저장
-	        session.setAttribute("loginMemberBean", loginMemberBean);
-	        MemberBean sessionmemberbean=(MemberBean)session.getAttribute("loginMemberBean");
+	                    @RequestParam(value = "fail", defaultValue = "false") boolean fail, 
+	                    HttpServletRequest request, HttpSession session, Model model) {
 
-			return "member/login_success";
-		}else {
-			return "member/login_fail";
-		}
-		
+	    model.addAttribute("fail", fail);
+
+	    // 사용자가 로그인 페이지에 접근하기 전에 있었던 URL을 세션에 저장
+	    String referer = request.getHeader("Referer");
+
+	    // referer 값이 없거나, 로그인/회원 페이지에서 온 경우 기본적으로 메인 페이지로 리다이렉트
+	    if (referer == null || referer.contains("/login") || referer.contains("/member")) {
+	        referer = "/";
+	    } else {
+	        session.setAttribute("redirectURI", referer);  // 세션에 redirectURI 저장
+	    }
+
+	    System.out.println("RedirectURI set to: " + referer);  // 로그로 출력
+
+	    return "member/login";  // 로그인 페이지로 이동
 	}
-	
+
+
+	@PostMapping("/login_pro")
+	public String login_pro(@Valid @ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean,
+	                        BindingResult result, HttpSession session, HttpServletRequest request) {
+	    if (result.hasErrors()) {
+	        return "member/login";
+	    }
+
+	    // 사용자 인증 처리
+	    memberService.getLoginMemberInfo(tempLoginMemberBean);
+
+	    // 로그인 성공 여부 확인
+	    if (loginMemberBean.isMemberLogin()) {
+	        session.setAttribute("loginMemberBean", loginMemberBean);
+
+	        // 세션에서 원래 페이지 URI 가져오기
+	        String redirectURI = (String) session.getAttribute("redirectURI");
+
+	        // 로그로 확인
+	        //System.out.println("Redirect URI after login: " + redirectURI);
+
+	        // redirectURI가 "/"가 아니라면 해당 경로로 리다이렉트
+	        if (redirectURI != null && !redirectURI.equals("/") && !redirectURI.isEmpty()) {
+	            session.removeAttribute("redirectURI");  // 한 번 사용 후 세션에서 제거
+	            return "redirect:" + redirectURI;
+	        }
+
+	        // 리다이렉트 URI가 없을 경우 기본 페이지로 리다이렉트
+	        return "redirect:/";
+	    } else {
+	        // 로그인 실패 시 처리
+	        return "member/login_fail";
+	    }
+	}
+
+
 	@GetMapping("/not_login")
 	public String not_login() {
 		return "member/not_login";
 	}
-	
-	@GetMapping("/logout")
-	public String logout() {
-		loginMemberBean.setMemberLogin(false);
-		
+
+	//Http 추가, 세션무효화 추가했어요
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        loginMemberBean.setMemberLogin(false);
+
+        // 세션 무효화
+        HttpSession session = request.getSession(false); // 기존 세션이 있으면 가져오고, 없으면 null
+        if (session != null) {
+            session.invalidate(); // 세션 무효화
+        }
+
 		return "member/logout";
 	}
-	
-	
+
 	@GetMapping("/join")
 	public String join(@ModelAttribute("joinMemberBean") MemberBean joinMemberBean) {
 		return "member/join";
 	}
-	
+
 	@PostMapping("/join_pro")
 	public String join_pro(@Valid @ModelAttribute("joinMemberBean") MemberBean joinMemberBean, BindingResult result) {
-		
-		if(result.hasErrors()) {
+
+		if (result.hasErrors()) {
 			return "member/join";
 		}
 		memberService.addMemberInfo(joinMemberBean);
 		return "member/join_success";
 	}
-	
+
 	@GetMapping("/info")
 	public String info(@ModelAttribute("infoMemberBean") MemberBean infoMemberBean) {
-		
+
 		infoMemberBean = memberService.getModifyMemberInfo(infoMemberBean);
-		
+
 		return "member/info";
 	}
-	
+
 	@PostMapping("/modify")
 	public String modify(@ModelAttribute("modifyMemberBean") MemberBean modifyMemberBean) {
-		
+
 		modifyMemberBean = memberService.getModifyMemberInfo(modifyMemberBean);
-		
+
 		return "member/modify";
 	}
-	
+
 	@PostMapping("/modify_pro")
-	public String modify_pro(@Valid @ModelAttribute("modifyMemberBean") MemberBean modifyMemberBean, BindingResult result,
-							HttpSession session) {
-		
-		if(result.hasErrors()) {
+	public String modify_pro(@Valid @ModelAttribute("modifyMemberBean") MemberBean modifyMemberBean,
+			BindingResult result, HttpSession session) {
+
+		if (result.hasErrors()) {
 			/*
-			result.getAllErrors().forEach(error -> {
-		        System.out.println("Error: " + error.getDefaultMessage());
-		    }); //bindingresult 객체 오류 확인용
-			*/
+			 * result.getAllErrors().forEach(error -> { System.out.println("Error: " +
+			 * error.getDefaultMessage()); }); //bindingresult 객체 오류 확인용
+			 */
 			return "member/modify_fail";
 		}
-		
+
 		memberService.modifyMemberInfo(modifyMemberBean);
-		
-		//세션에 있는 로그인 된 회원 정보 갱신
+
+		// 세션에 있는 로그인 된 회원 정보 갱신
 		loginMemberBean.setAge(modifyMemberBean.getAge());
 		loginMemberBean.setNickname(modifyMemberBean.getNickname());
 		loginMemberBean.setReal_name(modifyMemberBean.getReal_name());
-		
-		//세션에 갱신된 객체 설정
+
+		// 세션에 갱신된 객체 설정
 		session.setAttribute("loginMemberBean", loginMemberBean);
-		
+
 		return "member/modify_success";
 	}
-	
+
 	@GetMapping("/delete_account")
 	public String deleteAccount(@ModelAttribute("deleteMemberBean") MemberBean deleteMemberBean) {
-	    // 탈퇴 확인 화면을 렌더링 (비밀번호 입력 폼)
-	    return "member/delete_account";
+		// 탈퇴 확인 화면을 렌더링 (비밀번호 입력 폼)
+		return "member/delete_account";
 	}
-	
-	@PostMapping("/delete_pro")
-	public String deleteMember(@ModelAttribute("deleteMemberBean") MemberBean deleteMemberBean, 
-	                           Model model, HttpSession session) {
 
-	    // 입력한 비밀번호가 현재 로그인된 회원의 비밀번호와 일치하는지 확인
-	    boolean isPasswordCorrect = memberService.checkPassword(loginMemberBean.getMember_id(), deleteMemberBean.getPassword());
-	        
-	    if (!isPasswordCorrect) {
-	        // 비밀번호가 일치하지 않으면 탈퇴 실패
-	        model.addAttribute("fail", true);
-	        return "member/delete_account";
-	    }
-	        
-	    // 비밀번호가 일치하면 회원 탈퇴 처리
-	    memberService.deleteMemberAccount(loginMemberBean.getMember_id());
-	        
-	    // 세션 무효화 (로그아웃 처리)
-	    session.invalidate();
-	        
-	    return "member/delete_account_success"; // 탈퇴 성공 화면으로 이동
+	@PostMapping("/delete_pro")
+	public String deleteMember(@ModelAttribute("deleteMemberBean") MemberBean deleteMemberBean, Model model,
+			HttpSession session) {
+
+		// 입력한 비밀번호가 현재 로그인된 회원의 비밀번호와 일치하는지 확인
+		boolean isPasswordCorrect = memberService.checkPassword(loginMemberBean.getMember_id(),
+				deleteMemberBean.getPassword());
+
+		if (!isPasswordCorrect) {
+			// 비밀번호가 일치하지 않으면 탈퇴 실패
+			model.addAttribute("fail", true);
+			return "member/delete_account";
+		}
+
+		// 비밀번호가 일치하면 회원 탈퇴 처리
+		memberService.deleteMemberAccount(loginMemberBean.getMember_id());
+
+		// 세션 무효화 (로그아웃 처리)
+		session.invalidate();
+
+		return "member/delete_account_success"; // 탈퇴 성공 화면으로 이동
 	}
-	
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		MemberValidator validator1 = new MemberValidator();
 		binder.addValidators(validator1);
 	}
-	
-	
+
 }

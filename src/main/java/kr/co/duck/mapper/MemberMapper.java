@@ -2,6 +2,7 @@ package kr.co.duck.mapper;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -42,6 +43,9 @@ public interface MemberMapper {
 	
 	@Select("select password from member where member_id = #{member_id}")
 	String getMemberPassword(int member_id);
+	
+	@Update("update member set password = #{password} where member_id = #{member_id}")
+	void modifyMemberPassword(@Param("password") String password, @Param("member_id") int member_id);
 	
 
 }

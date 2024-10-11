@@ -1,12 +1,16 @@
 package kr.co.duck.beans;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
-public class MemberBean {
+public class MemberBean implements Serializable {
+    private static final long serialVersionUID = 1L; // 새로 추가된 부분
 
 	private boolean memberNameExist;
 	private boolean memberLogin;
+	private boolean socialLogin; //소셜로그인 여부 체크
 	private int member_id; // 로그인시 작성하는 id 아님 유저식별번호임
 
 	// @Size(min = 1, max = 10)
@@ -44,10 +48,11 @@ public class MemberBean {
 	private String authCode1;
 	private String authCode2;
 
-	//기본 생성자
+	// 기본 생성자
 	public MemberBean() {
 		this.memberNameExist = false;
 		this.memberLogin = false;
+		this.socialLogin = false;
 	}
 	
 	
@@ -72,6 +77,14 @@ public class MemberBean {
 
 	public void setMemberLogin(boolean memberLogin) {
 		this.memberLogin = memberLogin;
+	}
+
+	public boolean isSocialLogin() {
+		return socialLogin;
+	}
+
+	public void setSocialLogin(boolean socialLogin) {
+		this.socialLogin = socialLogin;
 	}
 
 	public int getMember_id() {

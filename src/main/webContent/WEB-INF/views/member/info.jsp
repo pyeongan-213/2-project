@@ -55,10 +55,10 @@
 				<i class='bx bxs-phone'></i>
 			</div>
 			
-			<div class="row justify-content-center">
-				<form:button class="btn btn-outline-dark" type="button" onclick="location.href='${root }member/delete_account'" style="margin-right:20px; width:100px">회원탈퇴</form:button>
-				<!-- 나중에 메인 버튼 탈퇴하기 버튼으로 교체 예정 -->
+			<div class="row justify-content-center">				
 				<form:button class="btn btn-outline-dark" type="submit" style="margin-left:20px; width:100px;">수정하기</form:button>
+				<form:button class="btn btn-outline-dark" type="button" onclick="location.href='${root }member/modifyPassword'" style="margin-left:20px; width:100px;">비밀번호 변경</form:button>
+				<form:button class="btn btn-outline-dark" type="button" onclick="location.href='${root }member/delete_account'" style="margin-right:20px; width:100px">회원탈퇴</form:button>
 			</div>
 		</form:form>
 	</div>

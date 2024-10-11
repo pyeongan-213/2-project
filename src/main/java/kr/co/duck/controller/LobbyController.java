@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/quiz")
@@ -26,6 +27,14 @@ public class LobbyController {
 		QuizRoomListBean quizRooms = quizRoomService.getAllQuizRooms(null);
 		model.addAttribute("rooms", quizRooms.getQuizRoomBeanList());
 
-		return "quiz/quizlobby"; // 
+		return "quiz/quizlobby"; // quizlobby.jsp로 이동
 	}
+
+	// 방 목록을 업데이트하기 위한 API
+	@GetMapping("/lobby/rooms")
+	@ResponseBody
+	public QuizRoomListBean getRooms() {
+		return quizRoomService.getAllQuizRooms(null);
+	}
+
 }
