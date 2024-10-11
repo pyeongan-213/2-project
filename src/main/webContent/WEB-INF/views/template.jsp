@@ -38,45 +38,15 @@
 		</div>
 
 	</header>
-
+	
 	<div id="contentContainer">
-
-		<div class="background"></div>
-		<section>
-			<div class="album-info">
-				<div class="album-art">
-					<img src="${result.image}" alt="이미지를 불러올 수 없습니다." />
-					<div class="actions">
-						<div class="bookmark">
-
-						</div>
-					</div>
-				</div>
-				<div class="album-details">
-					<h2>${result.artistName}</h2>
-					<h1>${result.albumName}</h1>
-					<br /> <br /> <span> <c:forEach var="track"
-							items="${result.albumRelease}" varStatus="status">
-							<span>${track}</span>
-						</c:forEach>
-					</span>
-					<p>${result.description}</p>
-				</div>
-			</div>
-			<div class="album-tracks">
-				<ol>
-					<c:forEach var="track" items="${result.trackList}"
-						varStatus="status">
-						<li><span>${track}</span> <span>${result.runningTimeList[status.index]}</span>
-							<span> <a
-								href="${pageContext.request.contextPath}/youtubeSearch?query=${fn:escapeXml(result.artistName)}+${fn:escapeXml(track)}">playlist에
-									추가</a>
-						</span></li>
-					</c:forEach>
-				</ol>
-			</div>
-		</section>
-	</div>
+	
+	
+	
+	
+	
+	</div> 	<!-- contentContainer -->
+	
 	<footer>
 		<!-- bottom_info.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
