@@ -20,7 +20,8 @@
 <link rel="icon" type="image/png" sizes="48x48"
 	href="${root}/img/tabicon.png">
 <!-- CSS 및 Bootstrap 아이콘 추가 -->
-<link href="${root}/css/main.css" rel="stylesheet" type="text/css">
+<link href="${root}/css/searchAlbum.css" rel="stylesheet"
+	type="text/css">
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet">
@@ -47,35 +48,53 @@
 				<div class="album-art">
 					<img src="${result.image}" alt="이미지를 불러올 수 없습니다." />
 					<div class="actions">
-						<div class="bookmark">
-
-						</div>
+						<div class="bookmark"></div>
 					</div>
 				</div>
 				<div class="album-details">
-					<h2>${result.artistName}</h2> 
-					<h2>${result.artistGuid}</h2> <!-- 사용해서 아티스트 페이지로 이동하기 -->
+
+					<%-- <h2>${result.artistGuid}</h2> --%>
+					<!-- 사용해서 아티스트 페이지로 이동하기 -->
 					<h1>${result.albumName}</h1>
-					<br /> <br /> <span> <c:forEach var="track"
-							items="${result.albumRelease}" varStatus="status">
-							<span>${track}</span>
-						</c:forEach>
+
+
+					<span>
+						<h4>Artist : ${result.artistName}</h4>
+						<h6>
+							<c:forEach var="track" items="${result.albumRelease}"
+								varStatus="status">
+								<span class="publisher">${track}</span>
+								<span>&nbsp</span>
+							</c:forEach>
+						</h6> <br />
 					</span>
-					<p>${result.description}</p>
+					<p>
+					<h6>${result.description}</h6>
+					</p>
 				</div>
 			</div>
-			<div class="album-tracks">
-				<ol>
+			<table class="album-table">
+				<thead>
+					<tr>
+						<th class="column-count"><h3>#</h3></th>
+						<th class="column-title"><h3>제목</h3></th>
+						<th class="column-playtime"><h3>재생시간</h3></th>
+						<th class="column-action"><h3>-</h3></th>
+					</tr>
+				</thead>
+				<tbody>
 					<c:forEach var="track" items="${result.trackList}"
 						varStatus="status">
-						<li><span>${track}</span> <span>${result.runningTimeList[status.index]}</span>
-							<span> <a
-								href="${pageContext.request.contextPath}/youtubeSearch?query=${fn:escapeXml(result.artistName)}+${fn:escapeXml(track)}">playlist에
-									추가</a>
-						</span></li>
+						<tr>
+							<td class="column-count">${status.count}</td>
+							<td class="column-title">${track}</td>
+							<td class="column-playtime">${result.runningTimeList[status.index]}</td>
+							<td class="column-action"><button>+</button></td>
+							<a href="${pageContext.request.contextPath}/youtubeSearch?query=${fn:escapeXml(result.artistName)}+${fn:escapeXml(track)}">playlist에 추가</a>
+						</tr>
 					</c:forEach>
-				</ol>
-			</div>
+				</tbody>
+			</table>
 		</section>
 	</div>
 	<footer>

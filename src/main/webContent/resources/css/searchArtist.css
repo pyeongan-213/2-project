@@ -99,97 +99,7 @@ body {
     color: #007bff;
 }
 
-/* Main content 스타일 */
-.main-content {
-    margin-left: 220px;
-    flex-grow: 1;
-    background-color: var(--theme-bg);
-    padding: 40px;
-    overflow: auto;
-}
 
-/* 인기 아티스트 및 앨범 항목 */
-.artist, .album {
-    position: relative; /* 부모 요소를 relative로 설정 */
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* 원형 이미지 설정 */
-.artist .artist-img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-}
-
-/* 앨범 이미지 설정 */
-.album .card-img-top {
-    width: 150px;
-    height: 150px;
-    border-radius: 10px; /* 약간의 둥근 모서리 유지 */
-}
-
-/* 인기 아티스트 및 앨범 그리드 레이아웃 */
-.artists-grid, .albums-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
-    gap: 20px; /* 항목 간 간격 */
-    justify-items: center; /* 그리드 항목 중앙 정렬 */
-    align-items: center;   /* 항목을 수직으로 중앙에 배치 */
-}
-
-/* 마우스 오버 시 확대 및 그림자 효과 */
-.artist:hover, .album:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-/* 재생 버튼 스타일 */
-.play-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    background-color: #1db954;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    color: white;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* 마우스 올릴 때 재생 버튼이 나타남 */
-.artist:hover .play-button, .album:hover .play-button {
-    opacity: 1;
-}
-
-/* 모두 표시 링크 스타일 */
-.see-all-link {
-    color: #1db954; /* 기본 링크 색상 (녹색) */
-    font-size: 16px; /* 텍스트 크기 */
-    text-decoration: none; /* 밑줄 제거 */
-    font-weight: 500; /* 조금 두꺼운 텍스트 */
-    transition: color 0.3s ease, transform 0.3s ease; /* 애니메이션 효과 */
-}
-
-/* 마우스 오버 시 링크 효과 */
-.see-all-link:hover {
-    color: #fff; /* 마우스 오버 시 흰색으로 변경 */
-    transform: scale(1.1); /* 살짝 확대 */
-    text-decoration: underline; /* 밑줄 표시 */
-}
-
-/* 텍스트 중앙 정렬 */
-.artist-info, .card-body {
-    text-align: center;
-    color: #fff;
-}
 
 /* Footer 스타일 */
 footer {
@@ -210,3 +120,12 @@ footer p {
     font-size: 14px;
     color: #fff;
 }
+
+
+
+
+div#artist-container {
+	padding : 20px 0;
+	position : absolute;
+	
+	}

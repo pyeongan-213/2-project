@@ -20,7 +20,7 @@
 <link rel="icon" type="image/png" sizes="48x48"
 	href="${root}/img/tabicon.png">
 <!-- CSS 및 Bootstrap 아이콘 추가 -->
-<link href="${root}/css/main.css" rel="stylesheet" type="text/css">
+<%-- <link href="${root}/css/searchArtist.css" rel="stylesheet" type="text/css"> --%>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet">
