@@ -41,9 +41,49 @@
 			<button class="c_btn" onclick="setBoardId(1); setTimeout(() => { location.href='${root}board/main_sort?board_id=1'; }, 100);">자유게시판</button>
     		<button class="c_btn" onclick="setBoardId(2); setTimeout(() => { location.href='${root}board/main_sort?board_id=2'; }, 100);">소식/정보</button>
 			<button class="c_btn" onclick="setBoardId(3); setTimeout(() => { location.href='${root}board/main_sort?board_id=3'; }, 100);">음악 추천</button>
-			<p></p>
 		</div>
 		
+		<div class="bestContent" style="margin-bottom: 20px;">
+		<h3>✨인기글</h3>
+		<hr />
+		<table>
+		<thead hidden="hidden">
+			<tr>
+				<th>카테고리</th>
+				<th>제목</th>
+				<th>글쓴이</th>
+				<th>작성일</th>
+				<th>좋아요</th>
+			</tr>
+		</thead>
+		<c:forEach var='obj' items="${bestList}">
+			<tbody align="center">
+			<tr class="best-list-row">
+				<td>
+				<c:choose>
+                    <c:when test="${obj.board_id == 1}">자유게시판</c:when>
+                    <c:when test="${obj.board_id == 2}">소식/정보</c:when>
+                    <c:when test="${obj.board_id == 3}">음악 추천</c:when>
+                </c:choose>
+				</td>
+				<td><a
+					href="${root }board/read?boardpost_id=${obj.boardpost_id}" style="color: orange;">
+					🔥
+					<c:if test="${obj.writedate == currentDate}">
+                	🆕
+            		</c:if>
+            		${obj.content_title}</a></td>
+				<td>${obj.membername }</td>
+				<td>${obj.writedate }</td>
+				<td>♡${obj.like_count }</td>
+			</tr>
+			</tbody>
+		</c:forEach>
+		</table>
+		<hr />
+		</div>
+		<div>
+		<h3>🗨️블라블라</h3>
 		<div class="on-table">
 		<form id="searchForm" action="${root}board/search" method="get" onsubmit="return searchPosts()">
 			<input id="searchInput" name="query" placeholder="search">
@@ -52,33 +92,42 @@
     		<span class="right-align"> <a href="${root }board/write" class="write-btn">글쓰기</a> </span>
 		</div>
 		
-			<div>
-				<table>
-					<thead>
+			
+			<table style="font-size: 17px;">
+				<thead>
+					<tr>
+						<th>카테고리</th>
+						<th>제목</th>
+						<th>글쓴이</th>
+						<th>작성일</th>
+						<th>좋아요</th>
+					</tr>
+				</thead>
+				<tbody align="center">
+					<c:forEach var='obj' items="${contentList}">
 						<tr>
-							<th>카테고리</th>
-							<th>제목</th>
-							<th>글쓴이</th>
-							<th>작성일</th>
-							<th>좋아요</th>
+							<td>
+							<c:choose>
+								<c:when test="${obj.board_id == 1}">자유게시판</c:when>
+								<c:when test="${obj.board_id == 2}">소식/정보</c:when>
+								<c:when test="${obj.board_id == 3}">음악 추천</c:when>
+							</c:choose>
+							</td>
+							<td><a
+								href="${root }board/read?boardpost_id=${obj.boardpost_id}">
+								<c:if test="${obj.writedate == currentDate}">
+                				🆕
+            					</c:if>
+								${obj.content_title}</a></td>
+							<td>${obj.membername }</td>
+							<td>${obj.writedate }</td>
+							<td>♡${obj.like_count }</td>
 						</tr>
-					</thead>
-					<tbody align="center">
-						<c:forEach var='obj' items="${contentList}">
-							<tr>
-								<td>${obj.board_name }</td>
-								<td><a href="${root }board/read?boardpost_id=${obj.boardpost_id}">${obj.content_title}</a></td>
-								<td>${obj.membername }</td>
-								<td>${obj.writedate }</td>
-								<td>${obj.like_count }</td>
-								<td style="display: none;">${obj.content_text }</td>							
-							</tr>						
-						</c:forEach>
-					</tbody>
-				</table>
-
-			</div>
-				
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+		
 			<div class="pagination">
 				<ul>
 				
@@ -209,24 +258,7 @@
 			</div>
 
 	</div>
-	<div class="showBest">
-	<%
-    String userId = (session.getAttribute("loginMemberBean") != null)
-        ? String.valueOf(((kr.co.duck.beans.MemberBean) session.getAttribute("loginMemberBean")).getMember_id())
-        : "null";
-    System.out.println("로그인된 사용자 ID: " + userId); // 로그로 출력
-    userId = userId.trim();
-	%>
-		<h3 style="margin-right: 120px;">BEST</h3>
-		<div class="bestContent">
-		<c:forEach var='obj' items="${bestList}">
-			<div>
-			<span style="margin: 0 20px 0 0;">${obj.content_title}</span>
-			<span style="margin: 0;">♡${obj.like_count }</span>
-			</div>
-		</c:forEach>
-		</div>
-	</div>
+	
 	<div class="fixed-section">
         <button class="fixed-button" onclick="toggleContent()">
         +
@@ -236,15 +268,15 @@
 				<h3>문의하기</h3>
 								
 				<p><label for="name">이름</label></p>
-				<input type="text" id="name" value="${loginMemberBean.real_name}"readonly>
+				<input type="text" id="name" name="name" value="${loginMemberBean.real_name}"readonly>
 
-				<p><label for="email">메일주소</label></p>
+				<p><label for="email">메일 주소</label></p>
 				<input type="email" id="email" value="${loginMemberBean.email}"readonly>
 
 				<p><label for="subject">제목</label></p>
 				<input type="text" id="subject" name="subject" required>
 
-				<p><label for="body">문의내용</label></p>
+				<p><label for="body">문의 내용</label></p>
 				<textarea id="body" name="body" style="width: 100%; height: 250px; padding: 5px; line-height: normal; margin-bottom: 7px;" required></textarea>
 				
 				<button type="submit" style="background: white; display: grid; justify-content: end;">메일 보내기</button>

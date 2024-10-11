@@ -15,7 +15,7 @@ public class PageBean {
 	// 현재 페이지 번호
 	private int currentPage;
 
-	// 전체글 갯수 현재 페이지 번호 페이지 당 글 갯수(10) 페이지 버튼 갯수
+	// 전체글 갯수, 현재 페이지 번호, 페이지 당 글 갯수(10), 페이지 버튼 갯수
 	public PageBean(int contentCnt, int currentPage, int contentPageCnt, int paginationCnt) {
 
 		this.currentPage = currentPage;

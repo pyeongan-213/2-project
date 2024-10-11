@@ -57,10 +57,6 @@ public class BoardDao {
 		boardMapper.deleteReply(reply_id);
 	}
 
-	public String getBoardInfoName(int board_info_idx) {
-		return boardMapper.getBoardInfoName(board_info_idx);
-	}
-
 	public int incrementLikeCount(int boardpost_id) {
         return boardMapper.incrementLikeCount(boardpost_id);
     }

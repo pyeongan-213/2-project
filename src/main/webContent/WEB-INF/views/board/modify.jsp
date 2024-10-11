@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"> 
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-<link href="//bootswatch.com/3/slate/bootstrap.css" rel="stylesheet">
+<link href="//bootswatch.com/3/darkly/bootstrap.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
@@ -22,6 +22,10 @@
     height: auto;
     overflow-y: auto;
     resize: none;
+}
+.note-editable img {
+        max-width: 634px;
+        height: auto;
 }
 </style>
 </head>
@@ -55,7 +59,7 @@
 	<script>
         $(document).ready(function() {
             $('#summernote').summernote({
-                height: 500,
+                height: 685,
                 lang: 'ko-KR',
                 placeholder: '내용을 입력해주세요.',
                 toolbar: [
@@ -94,25 +98,6 @@
             });
         });
 
-        function imageUploader(file, el) {
-        	var formData = new FormData();
-        	formData.append('file', file);
-          
-        	$.ajax({                                                              
-        		data : formData,
-        		type : "POST",
-        		url : '/post/image-upload',  
-        		contentType : false,
-        		processData : false,
-        		enctype : 'multipart/form-data',                                  
-        		success : function(data) {
-        			$(el).summernote('insertImage', "${pageContext.request.contextPath}/upload/"+data, function($image) {
-        				$image.css('width', "100%");
-        			});
-        			console.log(data);
-        		}
-        	});
-        }
     </script>
 </body>
 </html>

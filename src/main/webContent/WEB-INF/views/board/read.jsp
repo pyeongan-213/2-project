@@ -112,17 +112,6 @@
 			</button>
 		</div>
 	</div>
-	<div class="showBest">
-		<h3 style="margin-right: 120px;">BEST</h3>
-		<div class="bestContent">
-		<c:forEach var='obj' items="${bestList}">
-			<div>
-			<span style="margin: 0 20px 0 0;">${obj.content_title}</span>
-			<span style="margin: 0;">♡${obj.like_count }</span>
-			</div>
-		</c:forEach>
-		</div>
-	</div>
 
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {

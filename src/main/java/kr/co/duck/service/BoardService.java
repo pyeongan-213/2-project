@@ -86,10 +86,6 @@ public class BoardService {
 	public void deleteReply(int reply_id) {
 		boardDao.deleteReply(reply_id);
 	}
-	
-	public String getBoardInfoName(int board_info_idx) {
-		return boardDao.getBoardInfoName(board_info_idx);
-	}
 
 	public int addLike(int boardpost_id) {
         return boardDao.incrementLikeCount(boardpost_id);

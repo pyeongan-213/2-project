@@ -20,9 +20,12 @@ public class BoardRestController {
 	private MailSendService mailService;
 
 	@PostMapping("/board/receiveEmail/{email}")
-	public ResponseEntity<Void> receiveEmail(@PathVariable String email, @RequestParam String subject,
-			@RequestParam String body) {
-		mailService.receiveEmail(email, subject, body);
+	public ResponseEntity<Void> receiveEmail(@PathVariable String email,
+											 @RequestParam String name,
+											 @RequestParam String subject,
+											 @RequestParam String body) {
+		
+		mailService.receiveEmail(name, email, subject, body);
 
 		String redirectUrl = ServletUriComponentsBuilder
 							 .fromCurrentContextPath().path("/board/main")

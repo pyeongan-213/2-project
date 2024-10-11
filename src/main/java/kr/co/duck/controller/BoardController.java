@@ -1,10 +1,14 @@
 package kr.co.duck.controller;
 
-import java.util.HashMap; 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,38 +44,56 @@ public class BoardController {
 	public String goToBoard(@RequestParam(value = "page", defaultValue = "1") int page,
 							Model model) {
 		
+		Date currentDate = new Date();
+		String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(currentDate);
+		model.addAttribute("currentDate", formattedDate);
+		
 		model.addAttribute("loginMemberBean", loginMemberBean);
 		
 		List<ContentBean> contentList = boardService.getContentList(page);
 		model.addAttribute("contentList",contentList);
 		
+		List<ContentBean> bestList = boardService.getBestList();
+		model.addAttribute("bestList",bestList);
+		
 		PageBean pageBean = boardService.getContentCnt(page);
 		model.addAttribute("pageBean",pageBean);
 		
-		List<ContentBean> bestList = boardService.getBestList();
-		model.addAttribute("bestList",bestList);
-		System.out.println("유저 실명 : " + loginMemberBean.getReal_name());
-		System.out.println("유저 email : " + loginMemberBean.getEmail());
-		System.out.println("유저 닉네임 : " + loginMemberBean.getNickname());
-		System.out.println("유저 식별자 : " + loginMemberBean.getMember_id());
 		return "board/main";
 	}
 
 	@GetMapping("/main_sort")
-	public String sortMain(@RequestParam("board_id")int board_id,
-						   @RequestParam(value = "page", defaultValue = "1") int page,
-						   Model model) {
+	public String sortMain(@RequestParam("board_id") int board_id,
+	                       @RequestParam(value = "page", defaultValue = "1") int page,
+	                       HttpSession session, HttpServletRequest request, Model model) {
+	    System.out.println("sortMain method called with board_id: " + board_id);  // 로그로 메서드 호출 확인
+
+	    // 로그인 여부 체크
+	    if (loginMemberBean == null || !loginMemberBean.isMemberLogin()) {
+	        // 현재 URL을 세션에 저장하여 로그인 후 돌아갈 수 있도록 설정
+	        String currentUrl = request.getRequestURI() + "?" + request.getQueryString(); // 현재 URL 가져오기
+	        session.setAttribute("redirectURI", currentUrl);  // 로그인 후 돌아올 URI 저장
+	        System.out.println("Saved redirectURI: " + currentUrl);  // 로그로 확인
+	        return "redirect:/member/login";
+	    }
+
+	    // 로그인 상태라면 게시글 리스트 가져오기
+	    List<ContentBean> sortedContentList = boardService.getsortedList(board_id, page);
+	    model.addAttribute("contentList", sortedContentList);
+
+	    List<ContentBean> bestList = boardService.getBestList();
+		model.addAttribute("bestList",bestList);
 		
-		model.addAttribute("board_id", board_id);
-		
-		List<ContentBean> sortedContentList = boardService.getsortedList(board_id, page);
-		model.addAttribute("contentList",sortedContentList);
-		
-		PageBean pageBean = boardService.getSortedContentCnt(board_id, page);
-		model.addAttribute("pageBean",pageBean);
-	
-		return "board/main";
+	    // 페이징 처리
+	    PageBean pageBean = boardService.getSortedContentCnt(board_id, page);
+	    model.addAttribute("pageBean", pageBean);
+
+	    // board_id도 모델에 저장
+	    model.addAttribute("board_id", board_id);
+
+	    return "board/main";
 	}
+
 
 	@GetMapping("/read")
 	public String read(@RequestParam("boardpost_id")int boardpost_id, Model model) {
@@ -105,8 +127,10 @@ public class BoardController {
 			return "board/write";
 		}
 		
+		//더미데이터 넣을때 사용
+		//for (int i = 0; i < 100; i++) {
 		boardService.addContent(writeContentBean);
-		
+		//}
 		return "board/write_success";
 	}
 
@@ -181,9 +205,6 @@ public class BoardController {
 	public Map<String, Object> addLike(@RequestBody Map<String, Integer> requestBody) {
 		Integer boardpost_id = requestBody.get("boardpost_id"); // JSON에서 boardpost_id 추출
 		Integer member_id = requestBody.get("member_id"); // JSON에서 member_id 추출
-		
-	    System.out.println("Received boardpost_id: " + boardpost_id);
-	    System.out.println("Received member_id: " + member_id);
 
 	    boardService.addLike(boardpost_id);
 
@@ -199,9 +220,6 @@ public class BoardController {
 	public Map<String, Object> removeLike(@RequestBody Map<String, Integer> requestBody) {
 	    Integer boardpost_id = requestBody.get("boardpost_id"); // JSON에서 boardpost_id 추출
 		Integer member_id = requestBody.get("member_id"); // JSON에서 member_id 추출
-
-	    System.out.println("Received boardpost_id: " + boardpost_id);
-	    System.out.println("Received member_id: " + member_id);
 
 	    boardService.removeLike(boardpost_id);
 
@@ -219,6 +237,9 @@ public class BoardController {
 							  Model model) {
 	    model.addAttribute("board_id",boardId);
 	    
+	    List<ContentBean> bestList = boardService.getBestList();
+		model.addAttribute("bestList",bestList);
+		
 	    if (boardId == 0) {
 	    	PageBean pageBean = boardService.getAllSearchedContentCnt(query, page);
 			model.addAttribute("pageBean",pageBean);

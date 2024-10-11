@@ -187,7 +187,7 @@ public class ServletAppContext implements WebMvcConfigurer {
 
 		return mailSender;
 	}
-
+	
 	private Properties getMailProperties() {
 		Properties properties = new Properties();
 		properties.put("mail.smtp.auth", true);

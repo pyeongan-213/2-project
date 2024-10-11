@@ -73,6 +73,7 @@ input:focus {
 table {
 	border-collapse: collapse;
 	width: 100%;
+	border-spacing: 10px;
 }
 
 thead {
@@ -154,23 +155,10 @@ span {
     z-index: 1000; /* 다른 요소들 위에 표시되도록 설정 (높은 값일수록 위에 표시됨) */
 }
 
-.showBest{
-	width: 230px;
-	margin: 0 10px; /* 좌우 여백을 20px로 설정 */
-	display: flex;
-    flex-direction: column; /* 수직 방향으로 정렬 */
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* 전체 높이 사용 (부모 요소에 따라 조정 필요) */
+.best-list-row{
+	color: orange;
 }
-.bestContent{
-	font-size: 14px;
-}
-.bestContent > div {
-    margin-bottom: 10px; /* 항목 간 간격 설정 */
-    width: 100%; /* 부모 요소에 맞게 넓이 설정 */
-    display: flex;
-}
+
 /* .fixed-button: 고정 섹션 내의 버튼 스타일 */
 .fixed-button {
     display: block; /* 블록 요소로 설정 (flexbox 관련 속성은 사용하지 않음) */

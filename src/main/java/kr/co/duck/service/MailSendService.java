@@ -50,11 +50,11 @@ public class MailSendService {
 	}
 
 	//게시판에서 문의하는 기능(해진 추가)
-	public void receiveEmail(String email, String subject, String body) {
+	public void receiveEmail(String name, String email, String subject, String body) {
 		String from = email;
 		String toMail = "haejin001228@naver.com";
 		String title = subject;
-		String content = body;
+		String content = "보낸 사람 : " + name + "(" + email + ")<br>" + "<hr>" + body.replace("\n", "<br>");
 		mailReceive(from, toMail, title, content);
 	}
 	
