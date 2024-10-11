@@ -159,7 +159,16 @@ public class TopMenuSearchService {
 				break; // 최대 10개까지만 가져오기
 		}
 		artistDetail.setAlbumNameList(albumNameList);
-
+		
+		Elements albumGuidElements = doc.select("div[style='width:150px'] a");
+		List<String> albumGuidList = new ArrayList<>();
+		count = 0;
+		for (Element albumGuid : albumGuidElements) {
+			albumGuidList.add(albumGuid.attr("href"));
+			if (++count >= 10)
+				break; // 최대 10개까지만 가져오기
+		}
+		artistDetail.setAlbumGuidList(albumGuidList);
 		return artistDetail;
 	}
 
@@ -168,6 +177,7 @@ public class TopMenuSearchService {
 		AlbumDetail albumDetail = new AlbumDetail();
 		albumDetail.setAlbumName(doc.select("div.album-title").first().text());
 		albumDetail.setArtistName(doc.select("div.album-artist a").text());
+		albumDetail.setArtistGuid(doc.select("div.album-artist a").attr("href"));
 		String description = doc.select("meta[property=og:description]").attr("content");
 		if (description.length() > 1300) {
 			description = description.substring(0, 1300); // 최대 1300자까지 자르기
@@ -371,11 +381,22 @@ public class TopMenuSearchService {
 		private String image;
 		private List<String> albumImageList;
 		private List<String> albumNameList;
+		private List<String> albumGuidList;
 		private String debutDate;
 
 		// Getters and setters
+		
+		
 		public String getArtistName() {
 			return artistName;
+		}
+
+		public List<String> getAlbumGuidList() {
+			return albumGuidList;
+		}
+
+		public void setAlbumGuidList(List<String> albumGuidList) {
+			this.albumGuidList = albumGuidList;
 		}
 
 		public String getDebutDate() {
@@ -434,6 +455,7 @@ public class TopMenuSearchService {
 
 	public class AlbumDetail {
 		private String artistName;
+		private String artistGuid;
 		private String albumName;
 		private String period;
 		private String description;
@@ -446,6 +468,14 @@ public class TopMenuSearchService {
 
 		public String getArtistName() {
 			return artistName;
+		}
+
+		public String getArtistGuid() {
+			return artistGuid;
+		}
+
+		public void setArtistGuid(String artistGuid) {
+			this.artistGuid = artistGuid;
 		}
 
 		public List<String> getAlbumRelease() {

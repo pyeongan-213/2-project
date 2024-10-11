@@ -68,6 +68,7 @@
 						<p class="album-name">
 							<c:out value="${album}" />
 						</p>
+						<h4><c:out value="${result.albumGuidList[status.index]}"/></h4>
 					</div>
 				</c:forEach>
 

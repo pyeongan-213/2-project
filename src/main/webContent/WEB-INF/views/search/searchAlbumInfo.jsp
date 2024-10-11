@@ -53,7 +53,8 @@
 					</div>
 				</div>
 				<div class="album-details">
-					<h2>${result.artistName}</h2>
+					<h2>${result.artistName}</h2> 
+					<h2>${result.artistGuid}</h2> <!-- 사용해서 아티스트 페이지로 이동하기 -->
 					<h1>${result.albumName}</h1>
 					<br /> <br /> <span> <c:forEach var="track"
 							items="${result.albumRelease}" varStatus="status">
