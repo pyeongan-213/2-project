@@ -32,8 +32,8 @@ public class QuizRoom {
 	@Column(name = "member_count", nullable = false) // 현재 방의 멤버 수
 	private int memberCount;
 
-	@Column(name = "members", length = 1000) // 참여 멤버 ID를 콤마로 구분하여 저장
-	private String members;
+	@Column(name = "max_capacity", nullable = false) // 최대인원 수
+	private int maxCapacity;
 
 	@Version // 낙관적 락을 위한 버전 필드
 	@Column(name = "version")
@@ -45,13 +45,13 @@ public class QuizRoom {
 
 	// 모든 필드를 포함하는 생성자
 	public QuizRoom(String quizRoomName, String quizRoomPassword, String owner, int status, int memberCount,
-			String members) {
+			int maxCapacity) {
 		this.quizRoomName = quizRoomName;
 		this.quizRoomPassword = quizRoomPassword;
 		this.owner = owner;
 		this.status = status;
 		this.memberCount = memberCount;
-		this.members = members;
+		this.maxCapacity = maxCapacity;
 	}
 
 	// Getter와 Setter
@@ -103,12 +103,12 @@ public class QuizRoom {
 		this.memberCount = memberCount;
 	}
 
-	public String getMembers() {
-		return members;
+	public int getmaxCapacity() {
+		return maxCapacity;
 	}
 
-	public void setMembers(String members) {
-		this.members = members;
+	public void setmaxCapacity(int maxCapacity) {
+		this.maxCapacity = maxCapacity;
 	}
 
 	public Integer getVersion() {
@@ -121,8 +121,11 @@ public class QuizRoom {
 
 	@Override
 	public String toString() {
-		return "QuizRoom{" + "quizRoomId=" + quizRoomId + ", quizRoomName='" + quizRoomName + '\''
-				+ ", quizRoomPassword='" + quizRoomPassword + '\'' + ", owner='" + owner + '\'' + ", status=" + status
-				+ ", memberCount=" + memberCount + ", members='" + members + '\'' + ", version=" + version + '}';
+		return "QuizRoom [quizRoomId=" + quizRoomId + ", quizRoomName=" + quizRoomName + ", quizRoomPassword="
+				+ quizRoomPassword + ", owner=" + owner + ", status=" + status + ", memberCount=" + memberCount
+				+ ", maxcapacity=" + maxCapacity + ", version=" + version + "]";
 	}
+
+	
+	
 }

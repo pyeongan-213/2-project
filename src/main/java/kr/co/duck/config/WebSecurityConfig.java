@@ -46,7 +46,7 @@ public class WebSecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:8080"));
+		config.setAllowedOriginPatterns(Collections.singletonList("*"));
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
 		config.setAllowCredentials(true);

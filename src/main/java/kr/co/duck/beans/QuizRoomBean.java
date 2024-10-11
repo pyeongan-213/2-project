@@ -7,7 +7,7 @@ public class QuizRoomBean {
 	private String owner; // owner와 매핑
 	private int status; // status와 매핑 (0: 닫힘, 1: 열림)
 	private int memberCount; // member_count와 매핑
-	private String members; // 콤마로 구분된 멤버 ID 문자열
+	private int maxcapacity; // max_capacity와 매핑
 
 	// 기본 생성자
 	public QuizRoomBean() {
@@ -15,21 +15,21 @@ public class QuizRoomBean {
 
 	// 모든 필드를 포함하는 생성자
 	public QuizRoomBean(int quizRoomId, String quizRoomName, String quizRoomPassword, String owner, int status,
-			int memberCount, String members) {
+			int memberCount, int maxcapacity) {
+		super();
 		this.quizRoomId = quizRoomId;
 		this.quizRoomName = quizRoomName;
 		this.quizRoomPassword = quizRoomPassword;
 		this.owner = owner;
 		this.status = status;
 		this.memberCount = memberCount;
-		this.members = members;
+		this.maxcapacity = maxcapacity;
 	}
-
+	
 	// Getter와 Setter
 	public int getQuizRoomId() {
 		return quizRoomId;
 	}
-
 	public void setQuizRoomId(int quizRoomId) {
 		this.quizRoomId = quizRoomId;
 	}
@@ -74,18 +74,25 @@ public class QuizRoomBean {
 		this.memberCount = memberCount;
 	}
 
-	public String getMembers() {
-		return members;
+
+	public int getMaxcapacity() {
+		return maxcapacity;
 	}
 
-	public void setMembers(String members) {
-		this.members = members;
+	public void setMaxcapacity(int maxcapacity) {
+		this.maxcapacity = maxcapacity;
 	}
 
 	@Override
 	public String toString() {
-		return "QuizRoomBean{" + "quizRoomId=" + quizRoomId + ", quizRoomName='" + quizRoomName + '\''
-				+ ", quizRoomPassword='" + quizRoomPassword + '\'' + ", owner='" + owner + '\'' + ", status=" + status
-				+ ", memberCount=" + memberCount + ", members='" + members + '\'' + '}';
+		return "QuizRoomBean [quizRoomId=" + quizRoomId + ", quizRoomName=" + quizRoomName + ", quizRoomPassword="
+				+ quizRoomPassword + ", owner=" + owner + ", status=" + status + ", memberCount=" + memberCount
+				+ ", maxcapacity=" + maxcapacity + ", getQuizRoomId()=" + getQuizRoomId() + ", getQuizRoomName()="
+				+ getQuizRoomName() + ", getQuizRoomPassword()=" + getQuizRoomPassword() + ", getOwner()=" + getOwner()
+				+ ", getStatus()=" + getStatus() + ", getMemberCount()=" + getMemberCount() + ", getMaxcapacity()="
+				+ getMaxcapacity() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
 	}
+
+	
 }
