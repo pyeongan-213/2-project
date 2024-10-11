@@ -27,6 +27,7 @@
         max-width: 634px;
         height: auto;
 }
+
 </style>
 </head>
 <body>
@@ -36,11 +37,11 @@
 		<form:form action="${root}board/write_pro" method="post" modelAttribute="writeContentBean" enctype="multipart/form-data">
 			<div style="margin-bottom: 20px;">
 				<span class="custom-select"> 
-				<form:select path="board_id" id="drop-down">
+				<form:select path="board_id" id="drop-down" style="color : black;">
 					<form:option value="-1" disabled="disabled" selected="selected" style="color: black;">카테고리</form:option>
-					<form:option value="1" style="color: #74E885">자유게시판</form:option>
-					<form:option value="2" style="color: #BC5ADC">소식/정보</form:option>
-					<form:option value="3" style="color: yellow;">음악 추천</form:option>
+					<form:option value="1" style="color : black;">자유게시판</form:option>
+					<form:option value="2" style="color : black;">소식/정보</form:option>
+					<form:option value="3" style="color : black;">음악 추천</form:option>
 				</form:select>
 				</span>
 				<span>
