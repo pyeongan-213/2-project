@@ -3,8 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <c:set var='root' value='${pageContext.request.contextPath }/' />
-<c:set var="URI_1"
-	value="${requestScope['javax.servlet.forward.request_uri']}" />
+<c:set var="URI_1" value="${requestScope['javax.servlet.forward.request_uri']}" />
 <c:set var="URI_2" value="${root}board/main" />
 <c:set var="URI_3" value="${root}board/main_sort" />
 <c:set var="URI_4" value="${root}board/search" />
@@ -44,8 +43,7 @@
 			<button class="c_btn"
 				onclick="setBoardId(2); setTimeout(() => { location.href='${root}board/main_sort?board_id=2'; }, 100);">소식/정보</button>
 			<button class="c_btn"
-				onclick="setBoardId(3); setTimeout(() => { location.href='${root}board/main_sort?board_id=3'; }, 100);">음악
-				추천</button>
+				onclick="setBoardId(3); setTimeout(() => { location.href='${root}board/main_sort?board_id=3'; }, 100);">음악 추천</button>
 		</div>
 
 		<div class="bestContent" style="margin-bottom: 20px;">
@@ -302,37 +300,62 @@
 	</footer>
 
 	<script>
-let currentBoardId = 0; // 전역 변수로 선언
+	let currentBoardId = 0; // 전역 변수로 선언
 
-function setBoardId(boardId) {
-    currentBoardId = boardId;
-    document.getElementById('boardId').value = boardId;
-    console.log("Current Board ID set to:", boardId); // 로그 추가
-}
+	// 사용자가 게시판을 클릭할 때만 boardId 설정
+	function setBoardId(boardId) {
+	    currentBoardId = boardId;
+	    document.getElementById('boardId').value = boardId; // 숨겨진 필드에 저장
+	    console.log("Current Board ID set to:", boardId); // 로그 확인
+	}
 
-function setCurrentBoardIdFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const boardId = urlParams.get('board_id');
-    if (boardId) {
-        currentBoardId = boardId;
-        document.getElementById('boardId').value = boardId; // hidden input에 설정
-        console.log("Current Board ID set from URL:", boardId); // 로그 추가
-    }
-}	
+	// URL에서 board_id를 가져와 설정하는 함수
+	function setCurrentBoardIdFromURL() {
+	    const urlParams = new URLSearchParams(window.location.search);
+	    const boardId = urlParams.get('board_id');
+	    if (boardId) {
+	        currentBoardId = boardId; // URL에서 가져온 값을 전역 변수에 저장
+	        document.getElementById('boardId').value = boardId; // 숨겨진 필드에 설정
+	        console.log("Current Board ID set from URL:", boardId); // URL에서 가져온 board_id 확인
+	    } else {
+	        // URL에 board_id가 없으면 기본값 0 설정
+	        currentBoardId = 0;
+	        document.getElementById('boardId').value = 0;
+	    }
+	}
 
-function searchPosts() {
-    const input = document.getElementById('searchInput');
-    const query = input.value.trim();
+	// 검색어 입력 시 호출되는 함수
+	function searchPosts() {
+	    const input = document.getElementById('searchInput');
+	    const query = input.value.trim();
 
-    console.log("Searching with query:", query, "and board ID:", currentBoardId); // 로그 추가
+	    console.log("Searching with query:", query, "and board ID:", currentBoardId);
 
-    if (query) {
-        return true; 
-    } else {
-        alert("검색어를 입력해 주세요."); // 오류 메시지 추가
-        return false;
-    }
-}
+	    if (query) {
+	        return true; 
+	    } else {
+	        alert("검색어를 입력해 주세요.");
+	        return false;
+	    }
+	}
+
+	// 페이지 로드 시 URL에서 board_id 추출 및 버튼 활성화
+	window.onload = function() {
+	    setCurrentBoardIdFromURL(); // 페이지 로드 시 URL에서 board_id 설정
+
+	    const boardId = currentBoardId; // setCurrentBoardIdFromURL에서 설정된 값 사용
+	    const buttons = document.querySelectorAll('.c_btn');
+
+	    // 모든 버튼의 'active' 클래스를 제거
+	    buttons.forEach(button => button.classList.remove('active'));
+
+	    // URL에서 추출한 board_id에 해당하는 버튼에 'active' 클래스 추가
+	    if (boardId !== null && buttons[boardId]) {
+	        buttons[boardId].classList.add('active');
+	    } else {
+	        buttons[0].classList.add('active'); // 기본값은 첫 번째 버튼
+	    }
+	};
 
 </script>
 

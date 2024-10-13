@@ -52,7 +52,12 @@ button.c_btn {
 }
 
 button.c_btn:hover {
-	border: 1px solid #33FF33;
+	background: white;
+	color: black;
+}
+
+button.c_btn.active{
+	background: white;
 	color: black;
 }
 
