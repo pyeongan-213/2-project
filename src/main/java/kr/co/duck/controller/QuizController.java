@@ -1,75 +1,112 @@
 package kr.co.duck.controller;
 
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.*;
-import kr.co.duck.beans.QuizBean;
-import kr.co.duck.service.QuizService;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import kr.co.duck.domain.QuizMusic;
+import kr.co.duck.service.QuizService;
+import kr.co.duck.util.CustomException;
 
 @RestController
 @RequestMapping("/quiz")
 public class QuizController {
-	private final QuizService quizService;
-	private final SimpMessagingTemplate messagingTemplate; // WebSocket 템플릿 추가
 
-	public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate) {
-		this.quizService = quizService;
-		this.messagingTemplate = messagingTemplate;
-	}
+    private final QuizService quizService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-	@PostMapping("/create")
-	public String createQuiz(@RequestBody QuizBean quizBean) {
-		quizService.createQuiz(quizBean);
-		return "퀴즈가 생성되었습니다.";
-	}
+    // **생성자 주입**
+    public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate) {
+        this.quizService = quizService;
+        this.messagingTemplate = messagingTemplate;
+    }
 
-	@GetMapping("/list")
-	public List<QuizBean> getAllQuizzes() {
-		return quizService.getAllQuizzes();
-	}
+    // **퀴즈 생성 (QuizMusic 저장)**
+    @PostMapping("/create")
+    public ResponseEntity<String> createQuiz(@RequestBody QuizMusic quizMusic) {
+        quizService.createQuiz(quizMusic);
+        return ResponseEntity.ok("퀴즈가 생성되었습니다.");
+    }
 
-	@GetMapping("/details/{quizId}")
-	public QuizBean getQuiz(@PathVariable String quizId) {
-	    try {
-	        int id = Integer.parseInt(quizId);
-	        return quizService.getQuiz(id);
-	    } catch (NumberFormatException e) {
-	        throw new IllegalArgumentException("잘못된 퀴즈 ID입니다: " + quizId);
-	    }
-	}
+    // **모든 퀴즈 목록 가져오기**
+    @GetMapping("/list")
+    public ResponseEntity<List<QuizMusic>> getAllQuizzes() {
+        List<QuizMusic> quizzes = quizService.getAllQuizzes();
+        return ResponseEntity.ok(quizzes);
+    }
 
-	@PutMapping("/update/{quizId}")
-	public String updateQuiz(@PathVariable int quizId, @RequestBody QuizBean quizBean) {
-		quizService.updateQuiz(quizId, quizBean);
-		return "퀴즈가 업데이트되었습니다.";
-	}
+    // **특정 퀴즈의 모든 문제 가져오기**
+    @GetMapping("/details/{quizId}")
+    public ResponseEntity<List<QuizMusic>> getQuizByQuizId(@PathVariable int quizId) {
+        List<QuizMusic> quizList = quizService.getQuizByQuizId(quizId);
+        return ResponseEntity.ok(quizList);
+    }
 
-	@DeleteMapping("/delete/{quizId}")
-	public String deleteQuiz(@PathVariable int quizId) {
-		quizService.deleteQuiz(quizId);
-		return "퀴즈가 삭제되었습니다.";
-	}
+    @GetMapping("/rooms/{roomId}/random")
+    public ResponseEntity<?> quizStart(@PathVariable int roomId) {
+        try {
+            System.out.println("퀴즈 시작 요청: roomId = " + roomId); // 로그 추가
+            QuizMusic quiz = quizService.getRandomQuizQuestion(1); // quiz_id를 1로 명시
 
-	// 퀴즈 시작 (WebSocket 사용)
-	@PostMapping("/start/{roomId}")
-	public String quizStart(@PathVariable int roomId) {
-		// 퀴즈 시작 로직 처리
-		quizService.quizStart(roomId, new QuizBean());
+            System.out.println("조회된 랜덤 퀴즈: " + quiz); // 확인용 로그
 
-		// WebSocket 메시지 전송 (퀴즈 시작)
-		messagingTemplate.convertAndSend("/sub/quiz/" + roomId, "퀴즈가 시작되었습니다!");
+            if (quiz == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("퀴즈를 찾을 수 없습니다.");
+            }
 
-		return "퀴즈가 시작되었습니다!";
-	}
+            // WebSocket 메시지 전송
+            messagingTemplate.convertAndSend("/sub/quiz/" + roomId, quiz);
 
-	// 정답 제출 메서드 (WebSocket 사용 가능)
-	@PostMapping("/answer/{memberId}")
-	public String submitAnswer(@PathVariable int memberId, @RequestBody QuizBean quizBean) {
-		boolean isCorrect = quizService.submitAnswer(memberId, quizBean);
+            // JSON 응답 반환
+            return ResponseEntity.ok(quiz);
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("퀴즈를 가져오는 중 오류가 발생했습니다.");
+        }
+    }
 
-		// WebSocket을 통해 실시간 정답 여부 전송
-		messagingTemplate.convertAndSend("/sub/quiz/answer/" + quizBean.getQuizId(), isCorrect);
 
-		return isCorrect ? "정답입니다!" : "오답입니다!";
-	}
+    // **정답 제출 및 WebSocket 메시지 전송**
+    @PostMapping("/answer/{memberId}")
+    public ResponseEntity<String> submitAnswer(
+            @PathVariable int memberId,
+            @RequestParam int quizId,
+            @RequestParam String answer) {
+
+        boolean isCorrect = quizService.submitAnswer(memberId, quizId, answer);
+
+        // 정답 메시지 생성
+        Map<String, Object> answerMessage = new HashMap<>();
+        answerMessage.put("isCorrect", isCorrect);
+        answerMessage.put("playerId", memberId);
+        answerMessage.put("message", isCorrect ? "정답입니다!" : "오답입니다!");
+
+        // WebSocket을 통해 정답 여부 전송
+        messagingTemplate.convertAndSend("/sub/quiz/answer/" + quizId, answerMessage);
+
+        return ResponseEntity.ok(isCorrect ? "정답입니다!" : "오답입니다!");
+    }
+
+    // **퀴즈 삭제**
+    @DeleteMapping("/delete/{quizId}")
+    public ResponseEntity<String> deleteQuiz(@PathVariable int quizId) {
+        quizService.deleteQuiz(quizId);
+        return ResponseEntity.ok("퀴즈가 삭제되었습니다.");
+    }
 }

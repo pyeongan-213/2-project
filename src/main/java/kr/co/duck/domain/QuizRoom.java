@@ -5,8 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
+import kr.co.duck.beans.QuizBean;
 
 @Entity
 @Table(name = "quiz_room") // 테이블 이름을 명시적으로 지정
@@ -34,7 +38,15 @@ public class QuizRoom {
 
 	@Column(name = "max_capacity", nullable = false) // 최대인원 수
 	private int maxCapacity;
+	
+	@Column(name = "max_music", nullable = false) // 최대 곡 수
+	private int maxMusic;
 
+	// QuizBean과의 연관 관계
+    @ManyToOne
+    @JoinColumn(name = "quiz_id", nullable = true)
+    private QuizBean quiz;  // QuizBean을 참조
+	
 	@Version // 낙관적 락을 위한 버전 필드
 	@Column(name = "version")
 	private Integer version;
@@ -45,18 +57,35 @@ public class QuizRoom {
 
 	// 모든 필드를 포함하는 생성자
 	public QuizRoom(String quizRoomName, String quizRoomPassword, String owner, int status, int memberCount,
-			int maxCapacity) {
+			int maxCapacity, int maxMusic) {
 		this.quizRoomName = quizRoomName;
 		this.quizRoomPassword = quizRoomPassword;
 		this.owner = owner;
 		this.status = status;
 		this.memberCount = memberCount;
 		this.maxCapacity = maxCapacity;
+		this.maxMusic = maxMusic;
 	}
 
 	// Getter와 Setter
 	public int getQuizRoomId() {
 		return quizRoomId;
+	}
+
+	public int getMaxCapacity() {
+		return maxCapacity;
+	}
+
+	public void setMaxCapacity(int maxCapacity) {
+		this.maxCapacity = maxCapacity;
+	}
+
+	public QuizBean getQuiz() {
+		return quiz;
+	}
+
+	public void setQuiz(QuizBean quiz) {
+		this.quiz = quiz;
 	}
 
 	public void setQuizRoomId(int quizRoomId) {
@@ -111,6 +140,14 @@ public class QuizRoom {
 		this.maxCapacity = maxCapacity;
 	}
 
+	public int getMaxMusic() {
+		return maxMusic;
+	}
+
+	public void setMaxMusic(int maxMusic) {
+		this.maxMusic = maxMusic;
+	}
+
 	public Integer getVersion() {
 		return version;
 	}
@@ -119,13 +156,5 @@ public class QuizRoom {
 		this.version = version;
 	}
 
-	@Override
-	public String toString() {
-		return "QuizRoom [quizRoomId=" + quizRoomId + ", quizRoomName=" + quizRoomName + ", quizRoomPassword="
-				+ quizRoomPassword + ", owner=" + owner + ", status=" + status + ", memberCount=" + memberCount
-				+ ", maxcapacity=" + maxCapacity + ", version=" + version + "]";
-	}
-
-	
 	
 }

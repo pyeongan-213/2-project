@@ -1,0 +1,128 @@
+* {
+    outline: none;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+    background-color: #1E1E1E;
+}
+
+.quiz-room-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.quiz-room-main {
+    display: flex;
+    flex-grow: 1;
+}
+
+
+.score {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+
+/* 중앙 콘텐츠와의 정렬 */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+/* 음악 아이콘 및 버튼 */
+.music-icon i {
+    font-size: 60px;
+    color: #6c63ff;
+}
+#start-quiz-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #6c63ff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#start-quiz-btn:hover {
+    background-color: #5a54e8;
+}
+
+
+
+.quiz-room-game-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin: 20px;
+}
+
+.quiz-room-music-icon i {
+    font-size: 100px;
+    color: #6a6ae3;
+}
+
+.quiz-room-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #6a6ae3;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.quiz-room-chat-section {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #1f1d2b;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.quiz-room-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #252545;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.quiz-room-chat-input-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+.quiz-room-chat-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #252545;
+    color: white;
+    border: none;
+}
+
+.quiz-room-chat-btn {
+    background-color: #ff66b2;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}

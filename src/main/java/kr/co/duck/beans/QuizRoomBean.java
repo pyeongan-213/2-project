@@ -1,98 +1,106 @@
 package kr.co.duck.beans;
 
 public class QuizRoomBean {
-	private int quizRoomId; // quiz_room_id와 매핑
-	private String quizRoomName; // quiz_room_name과 매핑
-	private String quizRoomPassword; // quiz_room_password와 매핑
-	private String owner; // owner와 매핑
-	private int status; // status와 매핑 (0: 닫힘, 1: 열림)
-	private int memberCount; // member_count와 매핑
-	private int maxcapacity; // max_capacity와 매핑
+    private int quizRoomId;
+    private String quizRoomName;
+    private String quizRoomPassword;
+    private String owner;
+    private int status;
+    private int memberCount;
+    private int maxCapacity;
+    private int maxMusic;
+    private String quizQuestionType; // 퀴즈 질문 유형
 
-	// 기본 생성자
-	public QuizRoomBean() {
-	}
+    // 기본 생성자: 방 생성 시 멤버 카운트를 0으로 초기화
+    public QuizRoomBean() {
+        this.memberCount = 0; // 생성 시 인원 수를 0으로 초기화
+    }
 
-	// 모든 필드를 포함하는 생성자
-	public QuizRoomBean(int quizRoomId, String quizRoomName, String quizRoomPassword, String owner, int status,
-			int memberCount, int maxcapacity) {
-		super();
-		this.quizRoomId = quizRoomId;
-		this.quizRoomName = quizRoomName;
-		this.quizRoomPassword = quizRoomPassword;
-		this.owner = owner;
-		this.status = status;
-		this.memberCount = memberCount;
-		this.maxcapacity = maxcapacity;
-	}
-	
-	// Getter와 Setter
-	public int getQuizRoomId() {
-		return quizRoomId;
-	}
-	public void setQuizRoomId(int quizRoomId) {
-		this.quizRoomId = quizRoomId;
-	}
+    // 모든 필드를 포함하는 생성자
+    public QuizRoomBean(int quizRoomId, String quizRoomName, String quizRoomPassword, String owner, int status,
+            int maxCapacity, int maxMusic, int memberCount, String quizQuestionType) {
+        this.quizRoomId = quizRoomId;
+        this.quizRoomName = quizRoomName;
+        this.quizRoomPassword = quizRoomPassword;
+        this.owner = owner;
+        this.status = status;
+        this.memberCount = 0; // 방 생성 시 멤버 카운트 0으로 설정
+        this.maxCapacity = maxCapacity;
+        this.quizQuestionType = quizQuestionType; // 퀴즈 질문 유형 추가
+        this.maxMusic = maxMusic;
+    }
 
-	public String getQuizRoomName() {
-		return quizRoomName;
-	}
+    // Getter와 Setter 메서드
 
-	public void setQuizRoomName(String quizRoomName) {
-		this.quizRoomName = quizRoomName;
-	}
+    public int getQuizRoomId() {
+        return quizRoomId;
+    }
 
-	public String getQuizRoomPassword() {
-		return quizRoomPassword;
-	}
+    public void setQuizRoomId(int quizRoomId) {
+        this.quizRoomId = quizRoomId;
+    }
 
-	public void setQuizRoomPassword(String quizRoomPassword) {
-		this.quizRoomPassword = quizRoomPassword;
-	}
+    public String getQuizRoomName() {
+        return quizRoomName;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setQuizRoomName(String quizRoomName) {
+        this.quizRoomName = quizRoomName;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public String getQuizRoomPassword() {
+        return quizRoomPassword;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public void setQuizRoomPassword(String quizRoomPassword) {
+        this.quizRoomPassword = quizRoomPassword;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public int getMemberCount() {
-		return memberCount;
-	}
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	public void setMemberCount(int memberCount) {
-		this.memberCount = memberCount;
-	}
+    public int getStatus() {
+        return status;
+    }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public int getMaxcapacity() {
-		return maxcapacity;
-	}
+    public int getMemberCount() {
+        return memberCount;
+    }
 
-	public void setMaxcapacity(int maxcapacity) {
-		this.maxcapacity = maxcapacity;
-	}
+    public void setMemberCount(int memberCount) {
+        this.memberCount = memberCount;
+    }
 
-	@Override
-	public String toString() {
-		return "QuizRoomBean [quizRoomId=" + quizRoomId + ", quizRoomName=" + quizRoomName + ", quizRoomPassword="
-				+ quizRoomPassword + ", owner=" + owner + ", status=" + status + ", memberCount=" + memberCount
-				+ ", maxcapacity=" + maxcapacity + ", getQuizRoomId()=" + getQuizRoomId() + ", getQuizRoomName()="
-				+ getQuizRoomName() + ", getQuizRoomPassword()=" + getQuizRoomPassword() + ", getOwner()=" + getOwner()
-				+ ", getStatus()=" + getStatus() + ", getMemberCount()=" + getMemberCount() + ", getMaxcapacity()="
-				+ getMaxcapacity() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
-				+ super.toString() + "]";
-	}
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
 
-	
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public int getMaxMusic() {
+        return maxMusic;
+    }
+
+    public void setMaxMusic(int maxMusic) {
+        this.maxMusic = maxMusic;
+    }
+
+    public String getQuizQuestionType() {
+        return quizQuestionType;
+    }
+
+    public void setQuizQuestionType(String quizQuestionType) {
+        this.quizQuestionType = quizQuestionType;
+    }
 }

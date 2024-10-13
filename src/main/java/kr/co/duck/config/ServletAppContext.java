@@ -28,7 +28,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -41,15 +40,15 @@ import com.google.api.services.youtube.YouTube;
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.interceptor.CheckLoginInterceptor;
 import kr.co.duck.interceptor.TopMenuInterceptor;
+import kr.co.duck.repository.QuizMusicRepository;
 import kr.co.duck.service.ManiaDBService;
 import kr.co.duck.service.PlaylistManagementService;
-import kr.co.duck.service.PlaylistService;
 import kr.co.duck.service.TopMenuService;
 
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "kr.co.duck")
-@MapperScan("kr.co.duck.mapper") // MyBatis Mapper 인터페이스가 있는 패키지를 스캔
+@MapperScan("kr.co.duck.mapper")
 @MapperScan("kr.co.duck.dao")
 @PropertySource("/WEB-INF/properties/db.properties")
 @EnableJpaRepositories(basePackages = "kr.co.duck.repository")
@@ -76,6 +75,9 @@ public class ServletAppContext implements WebMvcConfigurer {
     @Autowired
     private ServletContext servletContext;
 
+    @Autowired
+    private QuizMusicRepository quizMusicRepository;
+
     // View Resolver 설정
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
@@ -96,11 +98,10 @@ public class ServletAppContext implements WebMvcConfigurer {
         source.setUrl(db_url);
         source.setUsername(db_username);
         source.setPassword(db_password);
-
         return source;
     }
 
-    // SqlSessionFactory 설정 (MyBatis 관련 설정)
+    // SqlSessionFactory 설정
     @Bean
     public SqlSessionFactory factory(BasicDataSource source) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
@@ -111,16 +112,13 @@ public class ServletAppContext implements WebMvcConfigurer {
     // Interceptor 설정
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService, loginMemberBean);
-        registry.addInterceptor(topMenuInterceptor).addPathPatterns("/**");
-
-        CheckLoginInterceptor checkLoginInterceptor = new CheckLoginInterceptor(loginMemberBean);
-        registry.addInterceptor(checkLoginInterceptor)
+        registry.addInterceptor(new TopMenuInterceptor(topMenuService, loginMemberBean)).addPathPatterns("/**");
+        registry.addInterceptor(new CheckLoginInterceptor(loginMemberBean))
                 .addPathPatterns("/member/modify", "/member/logout", "/board/*")
                 .excludePathPatterns("/board/main");
     }
 
-    // Property 정보 읽어들이는 Bean 등록
+    // Property 정보 설정
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -141,13 +139,12 @@ public class ServletAppContext implements WebMvcConfigurer {
         return new StandardServletMultipartResolver();
     }
 
-    // PlaylistManagementService 추가
+    // 추가 서비스 설정
     @Bean
     public PlaylistManagementService playlistManagementService() {
         return new PlaylistManagementService();
     }
 
-    // ManiaDBService 추가
     @Bean
     public ManiaDBService maniaDBService() {
         return new ManiaDBService();
@@ -170,10 +167,7 @@ public class ServletAppContext implements WebMvcConfigurer {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", true);
         properties.put("mail.smtp.starttls.enable", true);
-        properties.put("mail.smtp.starttls.required", true);
         properties.put("mail.smtp.connectiontimeout", 5000);
-        properties.put("mail.smtp.timeout", 5000);
-        properties.put("mail.smtp.writetimeout", 5000);
         return properties;
     }
 
@@ -183,9 +177,7 @@ public class ServletAppContext implements WebMvcConfigurer {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan("kr.co.duck.beans", "kr.co.duck.domain");
-
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        em.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         return em;
     }
 
@@ -199,10 +191,11 @@ public class ServletAppContext implements WebMvcConfigurer {
 
     @Bean
     public YouTube youtube() throws Exception {
-        return new YouTube.Builder(
-            GoogleNetHttpTransport.newTrustedTransport(),
-            GSON_FACTORY,
-            request -> {}
-        ).setApplicationName("YourApplicationName").build();
+        return new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), GSON_FACTORY, request -> {})
+                .setApplicationName("YourApplicationName").build();
     }
+
+   
+
+
 }

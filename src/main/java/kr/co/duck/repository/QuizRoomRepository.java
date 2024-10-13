@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import kr.co.duck.domain.QuizRoom;
 
 // 기능: 퀴즈방 레포지토리
-public interface QuizRoomRepository extends JpaRepository<QuizRoom, Long> {
+public interface QuizRoomRepository extends JpaRepository<QuizRoom, Integer> {
 
 	// 퀴즈방 전체 조회 페이징 처리
 	Page<QuizRoom> findAll(Pageable pageable);
@@ -22,10 +22,10 @@ public interface QuizRoomRepository extends JpaRepository<QuizRoom, Long> {
 	Page<QuizRoom> findByQuizRoomNameContaining(Pageable pageable, String keyword);
 
 	// 퀴즈방 단건 조회
-	Optional<QuizRoom> findByQuizRoomId(Long quizRoomId);
+	Optional<QuizRoom> findByQuizRoomId(int quizRoomId);
 
 	// 비관적 락 적용을 통한 퀴즈방 단건 조회
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("select q from QuizRoom q where q.quizRoomId = :quizRoomId")
-	Optional<QuizRoom> findByQuizRoomIdWithLock(Long quizRoomId);
+	Optional<QuizRoom> findByQuizRoomIdWithLock(int quizRoomId);
 }

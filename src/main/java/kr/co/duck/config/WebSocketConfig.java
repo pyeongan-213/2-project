@@ -1,6 +1,6 @@
 package kr.co.duck.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -9,44 +9,44 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
-
 import kr.co.duck.websocket.SignalHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSocketConfigurer {
 
-    @Autowired
-    private SignalHandler signalHandler; // 필드 주입 방식으로 변경
+    private final SignalHandler signalHandler;
 
-    // 웹 소켓 연결을 위한 엔드포인트 설정 및 STOMP sub/pub 엔드포인트 설정
+    public WebSocketConfig(SignalHandler signalHandler) {
+        this.signalHandler = signalHandler;
+    }
+
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
+    public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-stomp")
-                .setAllowedOriginPatterns("http://localhost:8080")
+                .setAllowedOriginPatterns("*")
                 .withSockJS()
                 .setHeartbeatTime(1000);
     }
 
+    // @NonNull 애노테이션 추가
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
+    public void configureMessageBroker(@NonNull MessageBrokerRegistry config) {
         config.enableSimpleBroker("/sub");
         config.setApplicationDestinationPrefixes("/pub");
     }
 
-    // 웹소켓 버퍼 사이즈 증축
     @Override
-    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+    public void configureWebSocketTransport(@NonNull WebSocketTransportRegistration registration) {
         registration.setMessageSizeLimit(160 * 64 * 1024);
         registration.setSendTimeLimit(100 * 10000);
         registration.setSendBufferSizeLimit(3 * 512 * 1024);
     }
 
-    // 일반 웹소켓 핸들러 등록
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    public void registerWebSocketHandlers(@NonNull WebSocketHandlerRegistry registry) {
         registry.addHandler(signalHandler, "/signal")
-                .setAllowedOrigins("http://localhost:8080")
+                .setAllowedOrigins("*")
                 .withSockJS();
     }
 }
