@@ -160,3 +160,15 @@ html, body {
 	border: none;
 	cursor: pointer;
 }
+
+/* 힌트 */
+.hint-display {
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ff66b2;
+    font-weight: bold;
+    display: none;
+}

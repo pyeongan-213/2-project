@@ -29,6 +29,11 @@ public class ChatService {
      * @param content 메시지 내용
      */
     public void sendChatMessage(int roomId, String sender, String content) {
+        if (content.equalsIgnoreCase("!힌트")) {
+            sendHintMessage(); // 힌트 메시지 전송
+            return;
+        }
+
         ChatMessage<String> chatMessage = new ChatMessage<>();
         chatMessage.setRoomId(String.valueOf(roomId));  // roomId를 String으로 변환
         chatMessage.setSender(sender);
@@ -36,6 +41,19 @@ public class ChatService {
 
         sendingOperations.convertAndSend("/sub/chatRoom/" + roomId, chatMessage);
         log.info("Chat message sent: {}", chatMessage);
+    }
+
+    /**
+     * 힌트 메시지 전송 메서드
+     */
+    private void sendHintMessage() {
+        QuizMessage<String> hintMessage = new QuizMessage<>();
+        hintMessage.setType(QuizMessage.MessageType.HINT);
+        hintMessage.setSender("시스템");
+        hintMessage.setContent("힌트가 제공되었습니다.");
+
+        sendingOperations.convertAndSend("/sub/quizRoom/1", hintMessage); // Room ID 1 예시
+        log.info("Hint message sent.");
     }
 
     /**
@@ -88,7 +106,6 @@ public class ChatService {
      * @param isCorrect 정답 여부 (true: 정답, false: 오답)
      */
     public void sendAnswerMessage(int roomId, int memberId, boolean isCorrect) {
-        // 정답 메시지 생성
         String messageContent = isCorrect ? "정답입니다!" : "오답입니다!";
         QuizMessage<String> answerMessage = new QuizMessage<>();
         answerMessage.setQuizRoomId(roomId);
@@ -96,7 +113,6 @@ public class ChatService {
         answerMessage.setSender(String.valueOf(memberId));
         answerMessage.setContent(messageContent);
 
-        // WebSocket을 통해 전송
         sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, answerMessage);
         log.info("Answer message sent: {}", answerMessage);
     }

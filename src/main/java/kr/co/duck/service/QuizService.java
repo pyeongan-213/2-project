@@ -40,6 +40,9 @@ public class QuizService {
     private final ChatService chatService;
     private final Random random = new Random();
 
+    // 힌트 진행 상태 관리
+    private final Map<Integer, Integer> hintProgress = new HashMap<>();
+
     @Autowired
     private ServletContext servletContext;
 
@@ -56,7 +59,6 @@ public class QuizService {
         this.chatService = chatService;
     }
 
-    // **서버 시작 시 JSON 데이터를 DB에 로드**
     @PostConstruct
     public void init() {
         loadJsonToDatabase();
@@ -65,64 +67,37 @@ public class QuizService {
     @Transactional
     public void loadJsonToDatabase() {
         try {
-            // JSON 파일의 절대 경로 가져오기
             String filePath = servletContext.getRealPath("/resources/quizData/music_kr.json");
-            System.out.println("JSON 파일 경로: " + filePath);
-
             File jsonFile = new File(filePath);
+
             if (!jsonFile.exists()) {
                 throw new RuntimeException("JSON 파일을 찾을 수 없습니다: " + filePath);
             }
 
-            // JSON 파일을 읽어 리스트로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             List<QuizMusic> quizMusicList = objectMapper.readValue(
                     new FileInputStream(jsonFile), new TypeReference<List<QuizMusic>>() {});
 
-            // 중복을 피하고 새로운 데이터만 저장하는 로직
             for (QuizMusic quizMusic : quizMusicList) {
                 boolean exists = quizMusicRepository.existsByQuizIdAndMusicId(
-                    quizMusic.getQuizId(), quizMusic.getMusicId());
+                        quizMusic.getQuizId(), quizMusic.getMusicId());
 
                 if (!exists) {
-                    quizMusicRepository.save(quizMusic); // 중복이 없을 경우에만 저장
-                    System.out.println("새로운 데이터 저장: " + quizMusic.getName());
-                } else {
-                    System.out.println("이미 존재하는 데이터: " + quizMusic.getName());
+                    quizMusicRepository.save(quizMusic);
                 }
             }
-
-            System.out.println("데이터 로드 완료.");
         } catch (Exception e) {
-            System.err.println("오류 발생: " + e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException("JSON 파일 로드 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
-    
-    //db에서 퀴즈 랜덤으로 뽑아옴
+
     @Transactional(readOnly = true)
     public QuizMusic getRandomQuizQuestion(int quizId) {
-        List<QuizMusic> quizList;
-
-        try {
-            quizList = quizMusicRepository.findByQuizId(quizId);
-            System.out.println("조회된 퀴즈 개수: " + quizList.size());  // 로그 추가
-        } catch (Exception e) {
-        	System.err.println("퀴즈 조회 중 오류 발생: " + e.getMessage());
-            e.printStackTrace(); // 상세 오류 정보 출력
-            throw new CustomException(StatusCode.INVALID_TOKEN, "퀴즈 조회 중 오류가 발생했습니다.");
-        }
-
+        List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
         if (quizList.isEmpty()) {
             throw new CustomException(StatusCode.NOT_FOUND_QUIZ, "해당 퀴즈에 문제가 없습니다.");
         }
-
-        int randomIndex = random.nextInt(quizList.size());
-        QuizMusic randomQuiz = quizList.get(randomIndex);
-        System.out.println("선택된 퀴즈: " + randomQuiz);  // 로그 추가
-
-        return randomQuiz;
+        return quizList.get(random.nextInt(quizList.size()));
     }
 
     @Transactional
@@ -140,11 +115,7 @@ public class QuizService {
 
     @Transactional(readOnly = true)
     public List<QuizMusic> getQuizByQuizId(int quizId) {
-        List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
-        if (quizList.isEmpty()) {
-            throw new CustomException(StatusCode.NOT_FOUND_QUIZ);
-        }
-        return quizList;
+        return quizMusicRepository.findByQuizId(quizId);
     }
 
     @Transactional
@@ -157,60 +128,23 @@ public class QuizService {
     }
 
     @Transactional
-    public void quizStart(int roomId) {
-        List<QuizRoomAttendee> attendees = quizRoomAttendeeRepository.findByQuizRoomQuizRoomId(roomId);
-        if (attendees.isEmpty()) {
-            throw new CustomException(StatusCode.NOT_ENOUGH_MEMBER);
-        }
-
-        Map<String, Object> contentSet = new HashMap<>();
-        contentSet.put("alert", "퀴즈가 시작되었습니다!");
-        contentSet.put("participants", getNicknameList(attendees));
-
-        chatService.sendQuizMessage(roomId, QuizMessage.MessageType.START, contentSet, null);
-    }
-
-    @Transactional
     public boolean submitAnswer(int memberId, int quizId, String userAnswer) {
-        // 1. 해당 퀴즈 ID로 QuizMusic 목록 조회
         List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
+        boolean isCorrect = quizList.stream().anyMatch(quiz ->
+                quiz.getAnswer().stream().anyMatch(answer ->
+                        answer.replaceAll("\\s+", "").equalsIgnoreCase(userAnswer.replaceAll("\\s+", ""))));
 
-     // 정답 목록과 사용자가 입력한 답안을 로그로 출력
-        System.out.println("사용자 입력: " + userAnswer);
-        System.out.println("정답 목록: " + quizList);
-
-        // 2. 사용자가 제출한 답안을 정답 목록과 비교
-        boolean isCorrect = quizList.stream().anyMatch(quiz -> {
-            List<String> answers = quiz.getAnswer();
-            if (answers == null) return false;
-            
-            // 정답과 사용자 입력에서 공백과 특수 문자 제거 후 비교
-            return answers.stream().anyMatch(a -> 
-                a.replaceAll("\\s+", "").replaceAll("[^a-zA-Z0-9가-힣]", "")
-                 .equalsIgnoreCase(userAnswer.replaceAll("\\s+", "").replaceAll("[^a-zA-Z0-9가-힣]", ""))
-            );
-        });
-
-
-        // 3. 멤버 조회 및 예외 처리
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_MEMBER));
 
-        // 4. 게임 통계 업데이트 및 저장
         updateGameStats(member.getMemberGameStats(), isCorrect);
-        memberGameStatsRepository.save(member.getMemberGameStats());
 
-        // 5. 정답/오답 메시지 생성 및 전송
-        QuizMessage.MessageType messageType = isCorrect 
-                ? QuizMessage.MessageType.CORRECT 
-                : QuizMessage.MessageType.INCORRECT;
-        String messageContent = isCorrect ? "정답입니다!" : "오답입니다!";
-        chatService.sendQuizMessage(quizId, messageType, messageContent, member.getNickname());
+        chatService.sendQuizMessage(quizId,
+                isCorrect ? QuizMessage.MessageType.CORRECT : QuizMessage.MessageType.INCORRECT,
+                isCorrect ? "정답입니다!" : "오답입니다!", member.getNickname());
 
-        // 6. 정답 여부 반환
         return isCorrect;
     }
-
 
     private void updateGameStats(MemberGameStats stats, boolean isCorrect) {
         if (isCorrect) {
@@ -222,15 +156,42 @@ public class QuizService {
         stats.setPlayTime(stats.getPlayTime() + calculatePlayTime());
     }
 
+    private int calculatePlayTime() {
+        return 60;
+    }
+
     public List<String> getNicknameList(List<QuizRoomAttendee> attendees) {
         List<String> nicknameList = new ArrayList<>();
-        for (QuizRoomAttendee attendee : attendees) {
-            nicknameList.add(attendee.getMemberNickname());
-        }
+        attendees.forEach(attendee -> nicknameList.add(attendee.getMemberNickname()));
         return nicknameList;
     }
 
-    private int calculatePlayTime() {
-        return 60;
+    /**
+     * 힌트 생성 메서드: 요청 시 정답의 일부를 점진적으로 공개합니다.
+     * @param quizId 퀴즈 ID
+     * @return 생성된 힌트 문자열
+     */
+    public String generateHint(int quizId) {
+        List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
+        if (quizList.isEmpty()) {
+            return "힌트를 제공할 수 없습니다.";
+        }
+
+        String answer = quizList.get(0).getAnswer().get(0); // 첫 번째 정답 사용
+        int hintLength = hintProgress.getOrDefault(quizId, 0) + 1;
+
+        // 힌트 생성 (공개된 부분은 문자로, 나머지는 'O'로 표시)
+        StringBuilder hintBuilder = new StringBuilder();
+        for (int i = 0; i < answer.length(); i++) {
+            if (i < hintLength) {
+                hintBuilder.append(answer.charAt(i));
+            } else {
+                hintBuilder.append('○');
+            }
+        }
+
+        // 힌트 진행 상태 업데이트
+        hintProgress.put(quizId, hintLength);
+        return hintBuilder.toString();
     }
 }

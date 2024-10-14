@@ -1,11 +1,12 @@
 let stompClient;
-const roomId = 1; 
+const roomId = 1;
 let isPlaying = false;
 let currentVideo = null;
 let currentAnswers = [];
 let currentSongName = '';
 let countdownInterval = null;
-
+let hintIndex = 0; // 힌트 진행 상태를 저장할 변수
+let currentAnswer = ''; // 현재 퀴즈의 정답
 
 document.addEventListener('DOMContentLoaded', () => {
     const socket = new SockJS(`${root}/ws-stomp`);
@@ -20,13 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
             currentVideo = msg.code;
             currentAnswers = msg.answer.map(answer => answer.trim().toLowerCase());
             currentSongName = msg.name;
+            currentAnswer = msg.answer[0]; // 첫 번째 정답 사용
+            hintIndex = 0; // 힌트 초기화
             playMusic(msg.code, msg.start);
         });
 
         stompClient.subscribe(`/sub/chat/${roomId}`, (message) => {
             const chat = JSON.parse(message.body);
             displayChatMessage(chat.sender, chat.content);
-            checkAnswer(chat.sender, chat.content);
+            processChatMessage(chat.sender, chat.content);
         });
 
         document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
@@ -50,6 +53,8 @@ async function startQuiz() {
             currentVideo = quiz.code;
             currentAnswers = quiz.answer.map(answer => answer.trim().toLowerCase());
             currentSongName = quiz.name;
+            currentAnswer = quiz.answer[0]; // 첫 번째 정답 사용
+            hintIndex = 0; // 힌트 초기화
             playMusic(quiz.code, quiz.start);
         } else {
             console.error('랜덤 퀴즈 가져오기 실패');
@@ -92,6 +97,37 @@ function updatePlayIcon() {
     }
 }
 
+function processChatMessage(sender, content) {
+    if (content.trim().toLowerCase() === '!힌트') {
+        displayHint();
+        return;
+    }
+    checkAnswer(sender, content);
+}
+
+function displayHint() {
+    const hintDisplay = document.getElementById('hint-info');
+    if (!hintDisplay) {
+        console.error('힌트 표시 요소를 찾을 수 없습니다.');
+        return;
+    }
+
+    if (hintIndex >= currentAnswer.length) {
+        console.log('더 이상 힌트가 없습니다.');
+        return;
+    }
+
+    let hint = '';
+    for (let i = 0; i < currentAnswer.length; i++) {
+        hint += i <= hintIndex ? currentAnswer[i] : 'O';
+    }
+    hintIndex++; // 다음 힌트 준비
+
+    hintDisplay.textContent = `힌트: ${hint}`;
+    hintDisplay.classList.remove('hidden');
+}
+
+
 function checkAnswer(sender, userAnswer) {
     const trimmedAnswer = userAnswer.trim().toLowerCase();
     if (currentAnswers.includes(trimmedAnswer)) {
@@ -101,6 +137,7 @@ function checkAnswer(sender, userAnswer) {
             sender: '시스템',
             content: `${sender}님이 정답을 맞췄습니다!`
         }));
+        hideHint(); // 정답 시 힌트 숨김
     }
 }
 
@@ -109,54 +146,50 @@ function displayAnswerInfo(sender) {
     const songInfo = document.getElementById('song-info');
     const answerDisplay = document.getElementById('answer-info');
 
-    // 정답자와 곡 정보 표시
     correctPlayer.textContent = `정답자: ${sender}`;
     songInfo.textContent = currentSongName;
-    answerDisplay.classList.remove('hidden'); // 정답 정보 표시
+    answerDisplay.classList.remove('hidden');
 
-    startCountdown(); // 타이머 시작
+    startCountdown();
+}
+
+function hideHint() {
+    const hintDisplay = document.getElementById('hint-info');
+    hintDisplay.classList.add('hidden');
+    hintDisplay.textContent = '';
 }
 
 function startCountdown() {
-    // 기존 타이머가 있다면 초기화
     if (countdownInterval) clearInterval(countdownInterval);
 
     let timeLeft = 10;
     const countdownDisplay = document.getElementById('next-quiz-timer');
-
-    // 타이머 초기화 및 표시
     countdownDisplay.textContent = `다음 퀴즈가 시작됩니다 (${timeLeft})`;
     countdownDisplay.classList.remove('hidden');
 
-    // 타이머 인터벌 설정
     countdownInterval = setInterval(() => {
         timeLeft--;
         countdownDisplay.textContent = `다음 퀴즈가 시작됩니다 (${timeLeft})`;
 
         if (timeLeft < 0) {
-            clearInterval(countdownInterval); // 타이머 종료
-            hideAnswerInfo(); // 정답자와 타이머 숨기기
-            startQuiz(); // 다음 퀴즈 시작
+            clearInterval(countdownInterval);
+            hideAnswerInfo();
+            startQuiz();
         }
     }, 1000);
 }
 
 function hideAnswerInfo() {
-    // 정답자 정보와 타이머 숨기기
     const answerInfo = document.getElementById('answer-info');
     const countdownDisplay = document.getElementById('next-quiz-timer');
 
-    // 정답자와 곡 정보 초기화
     document.getElementById('correct-player').textContent = '';
     document.getElementById('song-info').textContent = '';
 
-    // 타이머와 정답자 정보 모두 숨기기
     answerInfo.classList.add('hidden');
     countdownDisplay.classList.add('hidden');
-    countdownDisplay.textContent = ''; // 타이머 텍스트 초기화
+    countdownDisplay.textContent = '';
 }
-
-
 
 function sendMessage() {
     const chatInput = document.getElementById('chat-input');
@@ -171,7 +204,7 @@ function sendMessage() {
     }));
     displayChatMessage('나', message);
     chatInput.value = '';
-    checkAnswer('나', message);
+    processChatMessage('나', message);
 }
 
 function displayChatMessage(sender, content) {
