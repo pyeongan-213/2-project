@@ -58,7 +58,7 @@
             position: fixed;
             top: 0; 
             left: 0;
-            background: rgba(41, 171, 164, 0.8);
+            background: rgba(15, 15, 15, 0.9);
             visibility: hidden;
             opacity: 0;
             transition: all 0.25s ease-in-out;
@@ -68,14 +68,14 @@
             visibility: visible;
         }
         .modal {
-            width: 80%;
+            width: 68%;
             height: 80%;
             display: block;
             position: relative;
             top: 50%; 
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #fff;
+            background: #222;
             opacity: 0;
             transition: all 0.5s ease-in-out;
         }
@@ -84,17 +84,23 @@
         }
         .head { 
             width: 100%;
-            padding: 12px;
-            background: #e2525c;
+            padding: 15px;
+            background: #1db954;
+            font-size: 40px;
+            color: #fff;
+            left-padding: 35px;
         }
         .btn-close {
-            font-size: 28px;
+            font-size: 40px;
             float: right;
             color: #fff;
             cursor: pointer;
+            position: absolute;
+            right: 26px;
+            top: 8px;
         }
         .content {
-            padding: 10%;
+            padding: 3%;
         }
     </style>
 </head>
@@ -157,7 +163,7 @@
 <div class="modal-wrapper">
   <div class="modal">
     <div class="head">
-      <span class="btn-close">×</span>
+      <span><h1 >플레이리스트에 추가</h1></span><span class="btn-close">×</span>
     </div>
     <div class="content" id="modalContent">
       <!-- YouTube 검색 결과가 여기에 표시됩니다 -->
@@ -179,7 +185,7 @@
             // AJAX로 YouTube 검색 페이지를 모달에 로드
             $.ajax({
                 url: '${root}/youtubeSearch',  // 검색 요청을 보낼 경로
-                type: 'GET',  // POST 요청 사용
+                type: 'GET',  
                 contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 data: {
                     query: artistName + " " + trackName
