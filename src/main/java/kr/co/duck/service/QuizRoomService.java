@@ -27,6 +27,7 @@ import kr.co.duck.repository.QuizRoomRepository;
 import kr.co.duck.repository.SessionRepository;
 import kr.co.duck.util.CustomException;
 import kr.co.duck.util.StatusCode;
+import kr.co.duck.util.UserDetailsImpl;
 
 @Service
 public class QuizRoomService {
@@ -141,21 +142,23 @@ public class QuizRoomService {
 
 	// 퀴즈방 생성
 	@Transactional
-	public QuizRoomBean createRoom(QuizRoomBean quizRoomBean, MemberBean memberBean) {
-		Member member = memberCommand.findMemberById(memberBean.getMember_id());
+	public QuizRoomBean createRoom(QuizRoomBean quizRoomBean, Member member) {
 		ensureMemberGameStats(member);
 
 		// 게임 통계 업데이트
 		MemberGameStats stats = member.getMemberGameStats();
 		stats.setMakeRoomNum(stats.getMakeRoomNum() + 1);
 
+		// Member와 MemberGameStats를 저장
 		memberCommand.saveMember(member);
 
+		// QuizRoom 객체 생성
 		QuizRoom quizRoom = new QuizRoom(quizRoomBean.getQuizRoomName(), quizRoomBean.getQuizRoomPassword(),
 				member.getNickname(), 1, quizRoomBean.getMemberCount(), quizRoomBean.getMembers());
 
 		quizCommand.saveQuizRoom(quizRoom);
 
+		// 퀴즈 방 참가자 객체 생성
 		QuizRoomAttendee quizRoomAttendee = new QuizRoomAttendee(quizRoom, member);
 		quizCommand.saveQuizRoomAttendee(quizRoomAttendee);
 
@@ -163,29 +166,19 @@ public class QuizRoomService {
 				quizRoom.getOwner(), quizRoom.getStatus(), quizRoom.getMemberCount(), quizRoomBean.getMembers());
 	}
 
-	// 퀴즈방 입장
+	// 퀴즈룸 입장
 	@Transactional
-	public Map<String, String> enterQuizRoom(int roomId, MemberBean memberBean, String roomPassword) {
-		Member member = memberCommand.findMemberById(memberBean.getMember_id());
+	public Map<String, String> enterQuizRoom(int roomId, Member member, String roomPassword) {
 		QuizRoom enterQuizRoom = quizQuery.findQuizRoomByRoomIdLock(roomId);
 
-		// 중복된 사용자 방 참여 방지
-		List<QuizRoomAttendee> quizRoomAttendeeList = quizQuery.findAttendeeByQuizRoom(enterQuizRoom);
-		boolean isAlreadyParticipant = quizRoomAttendeeList.stream()
-				.anyMatch(attendee -> attendee.getMember().getMemberId() == member.getMemberId());
-		if (isAlreadyParticipant) {
-			throw new CustomException(StatusCode.MEMBER_DUPLICATED, "이미 방에 참여 중입니다.");
-		}
-
-		// 비밀번호가 필요한 방일 경우에만 비밀번호 확인
-		if (enterQuizRoom.getQuizRoomPassword() != null && !enterQuizRoom.getQuizRoomPassword().isEmpty()) {
-			if (!enterQuizRoom.getQuizRoomPassword().equals(roomPassword)) {
-				throw new CustomException(StatusCode.BAD_REQUEST, "비밀번호가 올바르지 않습니다.");
-			}
+		// 비밀번호 검증
+		if (!enterQuizRoom.getQuizRoomPassword().equals(roomPassword)) {
+			throw new CustomException(StatusCode.BAD_REQUEST, "비밀번호가 올바르지 않습니다.");
 		}
 
 		ensureMemberGameStats(member);
 
+		// 게임 통계 업데이트
 		MemberGameStats stats = member.getMemberGameStats();
 		stats.setEnterGameNum(stats.getEnterGameNum() + 1);
 		memberCommand.saveMember(member);
@@ -202,40 +195,70 @@ public class QuizRoomService {
 		return roomInfo;
 	}
 
+	// 퀴즈방 입장 검증
+	public void enterVerify(int roomId, Member member) {
+		// 멤버가 null인 경우 예외 처리
+		if (member == null) {
+			throw new CustomException(StatusCode.INVALID_TOKEN, "유효하지 않은 토큰입니다. 로그인 후 시도해주세요.");
+		}
+
+		// 방 존재 여부 확인
+		QuizRoom room = quizQuery.findQuizRoomByRoomId(roomId);
+		if (room == null) {
+			throw new CustomException(StatusCode.NOT_EXIST_ROOMS, "해당 ID의 방이 존재하지 않습니다.");
+		}
+
+		// 방 참가자 목록 가져오기
+		List<QuizRoomAttendee> quizRoomAttendeeList = quizQuery.findAttendeeByRoomId(roomId);
+
+		// 이미 참여한 경우 확인
+		boolean isAlreadyParticipant = quizRoomAttendeeList.stream()
+				.anyMatch(quizRoomAttendee -> member.getNickname().equals(quizRoomAttendee.getMemberNickname()));
+
+		if (isAlreadyParticipant) {
+			throw new CustomException(StatusCode.MEMBER_DUPLICATED, "이미 방에 참여하였습니다.");
+		}
+
+		// 최대 인원 제한 확인
+		final int MAX_CAPACITY = 10; // 설정할 최대 인원수
+		if (quizRoomAttendeeList.size() >= MAX_CAPACITY) {
+			throw new CustomException(StatusCode.CANT_ENTER, "방의 최대 참여 인원을 초과하였습니다.");
+		}
+	}
+
 	// 방 나가기
 	@Transactional
-	public void roomExit(int roomId, MemberBean memberBean) {
-		Member member = memberCommand.findMemberById(memberBean.getMember_id());
+	public void roomExit(int roomId, Member member) {
 		QuizRoom enterQuizRoom = quizQuery.findQuizRoomByRoomId(roomId);
+		QuizRoomAttendee quizRoomAttendee = quizQuery.findAttendeeByMember(member);
+		quizCommand.deleteQuizRoomAttendee(quizRoomAttendee);
 
-		// 참여자가 방에 있는지 확인하고, 참여자를 제거
-		QuizRoomAttendee quizRoomAttendee = quizQuery.findAttendeeByMemberAndRoom(member, enterQuizRoom);
-		if (quizRoomAttendee != null) {
-			quizCommand.deleteQuizRoomAttendee(quizRoomAttendee);
-		} else {
-			throw new CustomException(StatusCode.BAD_REQUEST, "방에 참여 중인 사용자가 아닙니다.");
-		}
+		List<QuizRoomAttendee> existQuizRoomAttendee = quizQuery.findAttendeeByQuizRoom(enterQuizRoom);
 
-		// 방의 현재 참여자 목록을 업데이트
-		List<QuizRoomAttendee> existingAttendees = quizQuery.findAttendeeByQuizRoom(enterQuizRoom);
+		if (existQuizRoomAttendee.isEmpty()) {
+			ensureMemberGameStats(member);
 
-		// 방에 남은 참여자가 없으면 방을 삭제
-		if (existingAttendees.isEmpty()) {
+			// 게임 통계 업데이트
+			MemberGameStats stats = member.getMemberGameStats();
+			stats.setSoloExitNum(stats.getSoloExitNum() + 1);
+			memberCommand.saveMember(member);
+
 			quizCommand.deleteQuizRoom(enterQuizRoom);
 			sessionRepository.deleteAllClientsInRoom(roomId);
-			return;
 		}
 
-		// 방에서 나가는 사용자에 대한 메시지 전송
+		if (enterQuizRoom.getStatus() == 0) {
+			quizService.forcedEndQuiz(roomId, member.getNickname());
+		}
+
 		Map<String, Object> contentSet = new HashMap<>();
-		contentSet.put("memberCount", existingAttendees.size());
+		contentSet.put("memberCount", existQuizRoomAttendee.size());
 		contentSet.put("alert", member.getNickname() + " 님이 방을 나가셨습니다!");
 
 		quizService.sendQuizMessage(roomId, QuizMessage.MessageType.LEAVE, contentSet, null, member.getNickname());
 
-		// 방 소유자가 방을 나갔고, 남아있는 참여자가 있으면 새 소유자를 할당
-		if (member.getNickname().equals(enterQuizRoom.getOwner()) && !existingAttendees.isEmpty()) {
-			String nextOwner = existingAttendees.get((int) (Math.random() * existingAttendees.size()))
+		if (member.getNickname().equals(enterQuizRoom.getOwner()) && !existQuizRoomAttendee.isEmpty()) {
+			String nextOwner = existQuizRoomAttendee.get((int) (Math.random() * existQuizRoomAttendee.size()))
 					.getMemberNickname();
 			enterQuizRoom.setOwner(nextOwner);
 			quizService.sendQuizMessage(roomId, QuizMessage.MessageType.NEWOWNER, null, null, nextOwner);
