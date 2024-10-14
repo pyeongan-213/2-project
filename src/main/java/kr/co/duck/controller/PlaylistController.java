@@ -105,13 +105,14 @@ public class PlaylistController {
 
 		// MusicBean 생성 및 정보 설정
 		MusicBean music = new MusicBean();
+		System.out.println(videoUrl);
+		videoUrl = videoUrl.replace("https://www.youtube.com/watch?v=", "");
+		System.out.println(videoUrl);
 		music.setVideoUrl(videoUrl);
 		music.setmusic_Name(music_Name);
 		music.setArtist(artist);
 		music.setThumbnailUrl(thumbnailUrl);
 
-		// 음악 ID를 설정하는 부분이 빠졌을 수 있습니다.
-		// YouTube API 등을 통해 musicId를 제대로 가져오고 있는지 확인 필요
 		System.out.println("Music ID: " + music.getMusicId()); // 값이 0인지 출력 확인
 
 		// 플레이리스트에 음악 추가
