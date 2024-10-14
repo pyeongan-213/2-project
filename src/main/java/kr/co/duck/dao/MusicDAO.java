@@ -15,7 +15,7 @@ public interface MusicDAO {
 
     // 음악 추가
     @Insert("INSERT INTO MUSIC (MUSIC_ID, MUSIC_NAME, ARTIST, VIDEOURL, THUMBNAILURL) "
-            + "VALUES (music_seq.NEXTVAL, #{musicName}, #{artist}, #{videoUrl}, #{thumbnailUrl})")
+            + "VALUES (music_seq.NEXTVAL, #{music_Name}, #{artist}, #{videoUrl}, #{thumbnailUrl})")
     @SelectKey(statement = "SELECT music_seq.CURRVAL FROM dual", keyProperty = "musicId", before = false, resultType = int.class)
     void insertMusic(MusicBean music);
 

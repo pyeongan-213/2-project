@@ -53,12 +53,12 @@ public class YouTubeService {
             // 검색 결과를 MusicBean 리스트로 변환
             for (SearchResult result : results) {
                 MusicBean musicBean = new MusicBean();
-                musicBean.setMusicName(result.getSnippet().getTitle());
+                musicBean.setmusic_Name(result.getSnippet().getTitle());
                 musicBean.setArtist(result.getSnippet().getChannelTitle());
                 musicBean.setThumbnailUrl(result.getSnippet().getThumbnails().getDefault().getUrl());
                 musicBean.setVideoUrl("https://www.youtube.com/watch?v=" + result.getId().getVideoId());
 
-                System.out.println("검색 결과: " + musicBean.getMusicName() + " - " + musicBean.getArtist());
+                System.out.println("검색 결과: " + musicBean.getmusic_Name() + " - " + musicBean.getArtist());
 
                 musicBeans.add(musicBean);
             }
