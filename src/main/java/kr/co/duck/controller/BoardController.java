@@ -142,6 +142,10 @@ public class BoardController {
 			return "board/read";
 		}
 		
+		String replyText = writeReplyBean.getReply_text();
+		replyText = replyText.replaceAll("\n", "<br>");
+		writeReplyBean.setReply_text(replyText);
+		
 		boardService.addReply(writeReplyBean);
 		
 		return "redirect:/board/read?boardpost_id=" + boardpost_id;

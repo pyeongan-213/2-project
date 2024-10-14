@@ -12,27 +12,49 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="48x48" href="${root}/img/tabicon.png">
+    <!-- CSS 및 Bootstrap 아이콘 추가 -->
+    <link href="${root}/css/main.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/board.css">
 <title>Board</title>
 <script>
-	/* 문의버튼js */
-	function toggleContent() {
-		var content = document.querySelector('.fixed-content');
-		if (content.style.display === 'block') {
-			content.style.display = 'none';
-		} else {
-			content.style.display = 'block';
-		}
-	}
+/* 문의버튼js */
+function toggleContent() {
+    var content = document.querySelector('.fixed-content');
+    var button = document.querySelector('.fixed-button');
+    
+    if (content.style.display === 'block') {
+        content.style.opacity = 0;
+        content.style.transform = 'translateY(20px)'; // 아래로 이동
+        setTimeout(() => {
+            content.style.display = 'none';
+            button.classList.remove('active');
+        }, 300); // 애니메이션 시간과 일치
+    } else {
+        content.style.display = 'block';
+        setTimeout(() => {
+            content.style.opacity = 1;
+            content.style.transform = 'translateY(0)'; // 원래 위치로 복귀
+        }, 10);
+        button.classList.add('active');
+    }
+}
 </script>
 </head>
 <body onload="setCurrentBoardIdFromURL();">
 	<header>
-		<!-- ============ -->
+		<!-- top_menu.jsp 포함 -->
+		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
+		<!-- Sidebar 포함 -->
+		<div class="sidebar">
+		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
+		</div>
 	</header>
-	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
-	<div class="container">
+	
+	<div id="main-content">
+	<div class="board-container">
 
 		<h1>커뮤니티</h1>
 		<div>
@@ -73,7 +95,7 @@
 									</c:when>
 								</c:choose></td>
 							<td style="width: 50%; text-align: left;"><a
-								href="${root }board/read?boardpost_id=${obj.boardpost_id}"
+								href="${root }board/read?board_id=${obj.board_id }&boardpost_id=${obj.boardpost_id}"
 								style="color: #fea443;"> 🔥${obj.content_title}</a></td>
 							<td style="width: 20%; color: gray; font-size: 14px;">${obj.writedate}</td>
 							<td style="width: 10%; text-align: left; color: gray; font-size: 14px;">♡${obj.like_count}</td>
@@ -122,7 +144,8 @@
 									</c:when>
 								</c:choose></td>
 							<td style="width: 35%; text-align: left;"><a
-								href="${root}board/read?boardpost_id=${obj.boardpost_id}">
+								href="${root}board/read?board_id=${obj.board_id }&boardpost_id=${obj.boardpost_id}"
+								style="color: white;">
 									${obj.content_title} </a></td>
 							<td style="width: 15%; color: gray; font-size: 14px;">${obj.membername}</td>
 							<td style="width: 15%; color: gray; font-size: 14px;">${obj.writedate}</td>
@@ -258,45 +281,46 @@
 				</c:if>
 			</ul>
 		</div>
-
 	</div>
-
+	
 	<div class="fixed-section">
-		<button class="fixed-button" onclick="toggleContent()">+</button>
+		<button class="fixed-button" onclick="toggleContent()">
+			<span class="icon">+</span>
+		</button>
 		<div class="fixed-content">
 			<form:form action="${root }board/receiveEmail/${loginMemberBean.email}" method="post">
-				<h3>문의하기</h3>
-
+				<h3 style="background: #f7f7f8;">문의하기</h3>
+				
 				<p>
 				<label for="name">이름</label>
-				</p>
 				<textarea id="name" name="name" rows="1" readonly>${loginMemberBean.real_name}</textarea>
-
-				<p>
-					<label for="email">메일 주소</label>
 				</p>
+				
+				<p>
+				<label for="email">메일 주소</label>
 				<textarea id="email" name="email" rows="1" readonly>${loginMemberBean.email}</textarea>
-
-				<p>
-					<label for="subject">제목</label>
 				</p>
+				
+				<p>
+				<label for="subject">제목</label>
 				<textarea id="subject" name="subject" rows="1" required></textarea>
-
-				<p>
-					<label for="body">문의 내용</label>
 				</p>
+				
+				<p>
+				<label for="body">문의 내용</label>
 				<textarea id="body" name="body"
 					style="width: 100%; height: 250px; padding: 5px; line-height: normal; margin-bottom: 7px;"
 					required></textarea>
-
-				<button class="send-mail" type="submit"
-				>
-					메일보내기 ✉️  </button>
+				</p>
+				
+				<button class="send-mail" type="submit">메일보내기 ✉️</button>
 			</form:form>
 		</div>
 	</div>
+	</div>
 	<footer>
-		<!-- ========== -->
+		<!-- bottom_info.jsp 포함 -->
+      <jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
 	</footer>
 
 	<script>

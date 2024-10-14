@@ -26,5 +26,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="src/main/webContent/WEB-INF/lib/lombok.jar"/>
 	<classpathentry kind="lib" path="src/main/webContent/WEB-INF/lib/ojdbc8.jar"/>
+	<classpathentry kind="lib" path="src/main/webContent/WEB-INF/lib/jsp-api.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
