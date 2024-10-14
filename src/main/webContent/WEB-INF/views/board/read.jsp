@@ -52,10 +52,10 @@
 			</div>
 
 			<div class="content_text">
-			<span>
+			<span style="display: inline-block; width: 100%; padding: 10px;">
 			${readContentBean.content_text }
 			</span>
-			</div>
+			
 
 			<div style="display: flex; margin: 20px 0 20px">
 				<span id="likeButton_${readContentBean.boardpost_id}"
@@ -66,13 +66,15 @@
 					test="${loginMemberBean.member_id == readContentBean.member_id}">
 					<span style="margin-left: auto;"> <a
 						href="${root }board/modify?boardpost_id=${readContentBean.boardpost_id}"
+						style="text-decoration: none; color: black;"
 						class="write-btn">수정</a> | <a
 						href="${root }board/delete?boardpost_id=${readContentBean.boardpost_id}"
+						style="text-decoration: none; color: black;"
 						class="write-btn">삭제</a>
 					</span>
 				</c:if>
 			</div>
-
+			</div>
 			<div class="comment-container">
 				<c:forEach var='obj' items="${replyList }">
 				<div class="comment">
@@ -92,7 +94,7 @@
 				</c:forEach>
 			</div>
 
-			<div style=" padding: 10px;">
+			<div style="margin: 25px 0;">
 			<form:form action="${root}board/write_reply_pro" method="post"
 				modelAttribute="writeReplyBean">
 				<input type="hidden" name="boardpost_id"

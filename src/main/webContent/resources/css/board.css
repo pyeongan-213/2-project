@@ -5,30 +5,26 @@ fixed-content > p {
 	color: black;
 }
 
- a {
+a {
 	text-decoration: none;
 }
 
 body {
 	color: white;
 	background-color: black;
-	margin: auto;
     padding: 0;
 	background: black;
 	display: flex;
-	justify-content: center;
 	min-height: 100vh;
 	width: 100%;
-	max-width: 1200px;
 	overflow-x: hidden; 
 }
 
 .board-container {
 	display: flex;
-	flex-direction: column; /* 수직 방향으로 정렬 */
-	/*width: 70%;  원하는 너비 설정 */
+	flex-direction: column;
 	background: black; /* 배경 색상 추가 (선택 사항) */
-    margin: 60px 30px 0 250px;
+    margin: 80px 30px 20px 250px;
 	justify-content: center;
 }
 
@@ -103,12 +99,17 @@ thead th {
 	background: #74E885;
 	color: black;
 	border: none;
-	border-radius: 3px;
+	border-radius: 2px;
 	padding: 5px 20px;
-	font-size: 14px;
+	font-size: 13px;
 	text-decoration: none;
 	cursor: pointer;
 	transition: background-color 0.3s
+}
+
+.write-btn a {
+	text-decoration: none;
+	color: black;
 }
 
 .write-btn:hover {
@@ -261,10 +262,6 @@ thead th {
 	margin: 20px 0;
 }
 
-select option {
-    background-color: white;
-}
-
 .ck-content {
     background: white;
     color: black;
@@ -275,70 +272,22 @@ select option {
     color: black;
 }
 
-select {
-	width: 150px;
-	outline: none;
-	padding: 4px 3px;
-	border: none;
-	border-bottom: 1px solid gray;
-	appearance: none;
-	font-size: 16px;
-	margin-right: 4px;
-}
-
-select:focus {
-	outline: none;
-}
-
-option:hover {
-	background-color: blue;
-	color: inherit;
-}
-
-select option {
-	background-color: white;
-	font-size: 14px;
-}
-
-.custom-select {
-	position: relative;
-	width: 200px; /* 원하는 너비 설정 */
-}
-
-.custom-select div {
-	border: none; /* 테두리 없음 */
-	border-bottom: 1px solid gray; /* 아래쪽 테두리 */
-	padding: 10px; /* 안쪽 여백 */
-	margin-bottom: 10px; /* 아래쪽 여백 */
-	background-color: white; /* 배경색 흰색 */
-	color: #333; /* 글자 색상 */
-	cursor: pointer; /* 커서 변경 */
-}
-
-.custom-select::after {
-	content: '▼'; /* 화살표 */
-	position: absolute;
-	right: 10px;
-	top: 50%;
-	transform: translateY(-50%);
-	pointer-events: none; /* 클릭 방지 */
-	font-size: 16px; /* 화살표 크기 조정 */
-	color: gray; /* 화살표 색상 */
-}
-
 .comment-container > div{
-	margin: 10px;
+	margin: 10px 0;
 }
 
 .content-box{
-	background: #2d2736;
-	padding: 40px;
+	background: #3C3D37;
+	padding: 30px;
 	border-radius: 20px;
+	width: 100%;
+	box-sizing: border-box;
+	margin-bottom: 40px;
 }
 
 
 .content_title{
-	background: #705e78;
+	background: #697565;
 	padding: 25px;
 	border-radius: 10px;
 	font-weight: bold;
@@ -349,32 +298,34 @@ select option {
 .content_text {
 	all: unset;
 	color: white;
-	background: #705e78;
+	background: #D1B9A2;
 	padding: 10px 25px;
 	border-radius: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	display: inline-block;
 }
 
-.content_text > table {
+.content_text table {
 	border-collapse: collapse;
 }
 
-.content_text > table > tbody > tr > td {
+.content_text td {
 	border: 1px solid white;
 }
 
-.content_text > a {
-	all: unset !important;
+.content_text a {
 	text-decoration: underline;
 	color: blue;
 	cursor: pointer;
 }
-/* 
+
 .comment{
-	background: #705e78;
+	background: #697565;
 	padding: 10px 25px;
 	border-radius: 10px;
 }
- */
+
 .write-reply {
 	border: none;
     color: white;
@@ -383,8 +334,37 @@ select option {
 	width: 100%;
 	height: 100px;
 	padding: 10px;
-	background: #705e78;
+	background: #B0B0B0;
 	border-radius: 10px;
 	position: relative;
 	cursor: text;
+}
+
+select {
+	width: 150px;
+	padding: 4px 3px;
+	border-radius: 6px;
+	border: 1px solid #2F3545;
+	background-color: #151924;
+	/* color: white; */
+	font-size: 16px;
+	appearance: none;
+	cursor: pointer;
+	transition: border-color 0.3s;
+}
+
+select option {
+    background-color: #151924;
+    color: white;
+    font-size: 14px;
+}
+
+select:focus {
+	outline: none;
+	border-color: #23C4F8;
+}
+
+option:hover {
+	background-color: blue;
+	color: inherit;
 }

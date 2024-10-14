@@ -11,6 +11,13 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"> 
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <link href="//bootswatch.com/3/darkly/bootstrap.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="48x48" href="${root}/img/tabicon.png">
+<!-- CSS 및 Bootstrap 아이콘 추가 -->
+<link href="${root}/css/main.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/board.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
@@ -31,17 +38,24 @@
 </style>
 </head>
 <body>
-	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
-	<div class="container">
+	<header>
+		<!-- top_menu.jsp 포함 -->
+		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
+		<!-- Sidebar 포함 -->
+		<div class="sidebar">
+		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
+		</div>
+	</header>
+	<div class="board-container">
 		<div style="margin-left: 30px">
 		<form:form action="${root}board/write_pro" method="post" modelAttribute="writeContentBean" enctype="multipart/form-data">
-			<div style="margin-bottom: 20px;">
+			<div style="margin-bottom: 15px;">
 				<span class="custom-select"> 
-				<form:select path="board_id" id="drop-down" style="color : black;">
-					<form:option value="-1" disabled="disabled" selected="selected" style="color: black;">카테고리</form:option>
-					<form:option value="1" style="color : black;">자유게시판</form:option>
-					<form:option value="2" style="color : black;">소식/정보</form:option>
-					<form:option value="3" style="color : black;">음악 추천</form:option>
+				<form:select path="board_id" id="drop-down">
+					<form:option value="-1" disabled="disabled" selected="selected" style="color: #A9A9A9;">카테고리</form:option>
+					<form:option value="1" style="color : #1ee99a;">자유게시판</form:option>
+					<form:option value="2" style="color : #c783d7;">소식/정보</form:option>
+					<form:option value="3" style="color : #f1cb49;">음악 추천</form:option>
 				</form:select>
 				</span>
 				<span>
@@ -56,12 +70,16 @@
     		</div>
 			
 			<span style="float: right;">
-				<form:button type="reset" class="write-btn"><a href="${root }board/main">취소</a></form:button>
+				<form:button type="reset" class="write-btn"><a href="${root }board/main" style="text-decoration: none; color: black;">취소</a></form:button>
 				<form:button class="write-btn" id="saveButton">작성</form:button>
 			</span>
 		</form:form>
 		</div>
 	</div>
+	<footer>
+	<!-- bottom_info.jsp 포함 -->
+    <jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
+	</footer>
 	<script>
         $(document).ready(function() {
             $('#summernote').summernote({
@@ -100,8 +118,8 @@
                 var boardId = $('#drop-down').val();
                 if (boardId === "-1") {
                     // 에러 메시지 표시
-                    alert("카테고리를 선택해 주세요."); // 알림 창 또는 특정 DOM 요소에 메시지 추가
-                    $(this).prop('disabled', false); // 버튼 활성화
+                    swal("카테고리를 선택해 주세요.","", {icon: "warning"});
+					$(this).prop('disabled', false); // 버튼 활성화
                     return; // 폼 제출 중단
                 }
                 
@@ -109,7 +127,18 @@
                 $(this).closest('form').submit();
             });
         });
+		
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdown = document.getElementById('drop-down');
 
+            function updateSelectColor() {
+                var selectedOption = dropdown.options[dropdown.selectedIndex];
+                dropdown.style.color = selectedOption.style.color || '#000'; // 기본 색상 설정
+            }
+
+            dropdown.addEventListener('change', updateSelectColor);
+            updateSelectColor(); // 초기 색상 설정
+        });
     </script>
 </body>
 </html>

@@ -94,7 +94,7 @@ function toggleContent() {
 										<span style="color: #f1cb49">음악 추천</span>
 									</c:when>
 								</c:choose></td>
-							<td style="width: 50%; text-align: left;"><a
+							<td style="width: 50%; text-align: left; padding: 0 20px;"><a
 								href="${root }board/read?board_id=${obj.board_id }&boardpost_id=${obj.boardpost_id}"
 								style="color: #fea443;"> 🔥${obj.content_title}</a></td>
 							<td style="width: 20%; color: gray; font-size: 14px;">${obj.writedate}</td>
@@ -143,7 +143,7 @@ function toggleContent() {
 										<span style="color: #f1cb49">음악 추천</span>
 									</c:when>
 								</c:choose></td>
-							<td style="width: 35%; text-align: left;"><a
+							<td style="width: 35%; text-align: left; padding: 0 20px;"><a
 								href="${root}board/read?board_id=${obj.board_id }&boardpost_id=${obj.boardpost_id}"
 								style="color: white;">
 									${obj.content_title} </a></td>
