@@ -116,23 +116,23 @@ body {
 
 /* 원형 이미지 설정 */
 .artist .artist-img {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     transition: transform 0.3s ease;
 }
 
 /* 앨범 이미지 설정 */
 .album .card-img-top {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     border-radius: 10px; /* 약간의 둥근 모서리 유지 */
 }
 
 /* 인기 아티스트 및 앨범 그리드 레이아웃 */
 .artists-grid, .albums-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
     gap: 20px; /* 항목 간 간격 */
     justify-items: center; /* 그리드 항목 중앙 정렬 */
     align-items: center;   /* 항목을 수직으로 중앙에 배치 */
