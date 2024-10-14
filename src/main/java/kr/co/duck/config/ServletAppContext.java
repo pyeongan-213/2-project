@@ -28,7 +28,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -43,7 +42,6 @@ import kr.co.duck.interceptor.CheckLoginInterceptor;
 import kr.co.duck.interceptor.TopMenuInterceptor;
 import kr.co.duck.service.ManiaDBService;
 import kr.co.duck.service.PlaylistManagementService;
-import kr.co.duck.service.PlaylistService;
 import kr.co.duck.service.TopMenuService;
 
 @Configuration

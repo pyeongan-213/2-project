@@ -1,12 +1,9 @@
 package kr.co.duck.beans;
 
-import java.io.Serializable;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
-public class MemberBean implements Serializable {
-    private static final long serialVersionUID = 1L; // 새로 추가된 부분
+public class MemberBean {
 
 	private boolean memberNameExist;
 	private boolean memberLogin;
@@ -47,19 +44,19 @@ public class MemberBean implements Serializable {
 	private String authCode1;
 	private String authCode2;
 
-	// 기본 생성자
+	//기본 생성자
 	public MemberBean() {
 		this.memberNameExist = false;
 		this.memberLogin = false;
 	}
-
-	// 새로운 생성자
-	public MemberBean(int member_id, String nickname, String email) {
-		this.member_id = member_id;
-		this.nickname = nickname;
-		this.email = email;
-	}
-
+	
+    // 새로운 생성자
+    public MemberBean(int member_id, String nickname, String email) {
+        this.member_id = member_id;
+        this.nickname = nickname;
+        this.email = email;
+    }
+	
 	public boolean isMemberNameExist() {
 		return memberNameExist;
 	}
