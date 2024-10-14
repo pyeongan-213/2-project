@@ -4,17 +4,24 @@ import kr.co.duck.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
-// 기능 : 유저 정보 레포
+// 기능 : 유저 정보 레포지토리
 public interface MemberRepository extends JpaRepository<Member, Integer> {
-	Optional<Member> findByEmail(String email); // email로 회원 조회
 
-	Optional<Member> findByNickname(String nickname); // nickname으로 회원 조회
+	// 이메일로 회원 조회
+	Optional<Member> findByEmail(String email);
 
-	//Optional<Member> findByKakaoId(int kakaoId); // 카카오Id로 회원 조회
+	// 닉네임으로 회원 조회
+	Optional<Member> findByNickname(String nickname);
 
-	boolean existsByEmail(String email); // 같은 email 존재여부 확인
+	// 이메일 중복 확인
+	boolean existsByEmail(String email);
 
-	boolean existsByNickname(String nickname); // 같은 nickname 존재여부 확인
+	// 닉네임 중복 확인
+	boolean existsByNickname(String nickname);
 
-	//boolean existsByKakaoId(int kakaoId); // 같은 kakaoId 존재여부 확인
+	// Optional: 카카오 ID로 회원 조회 (필요 시 주석 해제)
+	// Optional<Member> findByKakaoId(int kakaoId);
+
+	// Optional: 카카오 ID 중복 확인 (필요 시 주석 해제)
+	// boolean existsByKakaoId(int kakaoId);
 }

@@ -66,6 +66,14 @@ public class QuizQuery {
 				.getSingleResult();
 	}
 
+	// 특정 멤버와 방에 대한 퀴즈 방 참석자 조회
+	public QuizRoomAttendee findAttendeeByMemberAndRoom(Member member, QuizRoom quizRoom) {
+		String query = "SELECT a FROM QuizRoomAttendee a WHERE a.member = :member AND a.quizRoom = :quizRoom";
+		List<QuizRoomAttendee> resultList = entityManager.createQuery(query, QuizRoomAttendee.class)
+				.setParameter("member", member).setParameter("quizRoom", quizRoom).getResultList();
+		return resultList.isEmpty() ? null : resultList.get(0);
+	}
+
 	// 퀴즈 방 키워드 검색
 	public Page<QuizRoom> findQuizRoomByContainingKeyword(Pageable pageable, String keyword) {
 		if (pageable == null) {

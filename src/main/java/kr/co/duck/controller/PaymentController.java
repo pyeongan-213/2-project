@@ -14,33 +14,33 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // °áÁ¦ Á¤º¸ »ðÀÔ
     @PostMapping("/add")
     public String addPayment(@RequestBody Payment payment) {
         paymentService.insertPayment(payment);
         return "Payment added successfully!";
     }
 
-    // Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+    // Æ¯Á¤ °áÁ¦ Á¤º¸ Á¶È¸
     @GetMapping("/{paymentId}")
     public Payment getPayment(@PathVariable int paymentId) {
         return paymentService.getPayment(paymentId);
     }
 
-    // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+    // ¸ðµç °áÁ¦ Á¤º¸ Á¶È¸
     @GetMapping("/all")
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    // °áÁ¦ Á¤º¸ ¾÷µ¥ÀÌÆ®
     @PutMapping("/update")
     public String updatePayment(@RequestBody Payment payment) {
         paymentService.updatePayment(payment);
         return "Payment updated successfully!";
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // °áÁ¦ Á¤º¸ »èÁ¦
     @DeleteMapping("/delete/{paymentId}")
     public String deletePayment(@PathVariable int paymentId) {
         paymentService.deletePayment(paymentId);

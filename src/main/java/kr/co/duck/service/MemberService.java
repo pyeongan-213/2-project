@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.dao.MemberDao;
+import kr.co.duck.domain.Member;
+import kr.co.duck.repository.MemberRepository;
 
 @Service
 public class MemberService {
@@ -112,9 +114,12 @@ public class MemberService {
 		return savedPassword.equals(password);
 	}
 	
-	public void modifyMemberPassword(String password, int member_id) {
-		memberDao.modifyMemberPassword(password, member_id);
-	}
-	
+	//이 부분 추가했어요
+    @Autowired
+    private MemberRepository memberRepository;
+
+    public Member findMemberById(int memberId) {
+        return memberRepository.findById(memberId).orElse(null);
+    }
 	
 }
