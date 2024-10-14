@@ -23,7 +23,8 @@
 			<a class="sidebar-link" href="${root}/temp/payment">payment</a>  
 			<a class="sidebar-link" href="${root}/playlist">Playlist</a>
 			<a class="sidebar-link" href="${root}/playlist/list">PlaylistList</a>
-
+			<a class="sidebar-link" href="${root}/temp/slide_popup">결제</a>
+			
 		</div>
 	</div>
 </div>
