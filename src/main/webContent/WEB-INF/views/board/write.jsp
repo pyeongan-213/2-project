@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"> 
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-<link href="//bootswatch.com/3/slate/bootstrap.css" rel="stylesheet">
+<link href="//bootswatch.com/3/darkly/bootstrap.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
@@ -23,28 +23,31 @@
     overflow-y: auto;
     resize: none;
 }
+.note-editable img {
+        max-width: 634px;
+        height: auto;
+}
+
 </style>
 </head>
 <body>
 	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
 	<div class="container">
-		<div style="font-size: 13px; margin: 20px 0;">
-			<div>(현재 로그인중인 유저)</div>
-		</div>
 		<div style="margin-left: 30px">
 		<form:form action="${root}board/write_pro" method="post" modelAttribute="writeContentBean" enctype="multipart/form-data">
 			<div style="margin-bottom: 20px;">
 				<span class="custom-select"> 
-				<form:select path="board_id" id="drop-down">
+				<form:select path="board_id" id="drop-down" style="color : black;">
 					<form:option value="-1" disabled="disabled" selected="selected" style="color: black;">카테고리</form:option>
-					<form:option value="1" style="color: #74E885">자유게시판</form:option>
-					<form:option value="2" style="color: #BC5ADC">소식/정보</form:option>
-					<form:option value="3" style="color: yellow;">음악 추천</form:option>
+					<form:option value="1" style="color : black;">자유게시판</form:option>
+					<form:option value="2" style="color : black;">소식/정보</form:option>
+					<form:option value="3" style="color : black;">음악 추천</form:option>
 				</form:select>
 				</span>
 				<span>
 				<form:input path="content_title" style="width: 400px; font-size: 16px; padding: 3px; margin-right: 20px;" 
 				placeholder="제목" />
+				<form:errors path="content_title" style='color:red'/>
 				</span>
 			</div>
 			
@@ -52,7 +55,7 @@
         		<textarea name="content_text" id="summernote"></textarea>
     		</div>
 			
-			<span style="float: right; margin: 30px 0">
+			<span style="float: right;">
 				<form:button type="reset" class="write-btn"><a href="${root }board/main">취소</a></form:button>
 				<form:button class="write-btn" id="saveButton">작성</form:button>
 			</span>
@@ -62,8 +65,9 @@
 	<script>
         $(document).ready(function() {
             $('#summernote').summernote({
-                height: 500,
+                height: 685,
                 lang: 'ko-KR',
+                placeholder: '내용을 입력해주세요.',
                 toolbar: [
                     ['fontsize', ['fontsize']],
                     ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -91,31 +95,21 @@
 
                 // textarea에 HTML 내용 설정
                 $('textarea[name="content_text"]').val(htmlContent);
-
+             	
+                // board_id 선택 여부 체크
+                var boardId = $('#drop-down').val();
+                if (boardId === "-1") {
+                    // 에러 메시지 표시
+                    alert("카테고리를 선택해 주세요."); // 알림 창 또는 특정 DOM 요소에 메시지 추가
+                    $(this).prop('disabled', false); // 버튼 활성화
+                    return; // 폼 제출 중단
+                }
+                
                 // 폼 제출
                 $(this).closest('form').submit();
             });
         });
 
-        function imageUploader(file, el) {
-        	var formData = new FormData();
-        	formData.append('file', file);
-          
-        	$.ajax({                                                              
-        		data : formData,
-        		type : "POST",
-        		url : '/post/image-upload',  
-        		contentType : false,
-        		processData : false,
-        		enctype : 'multipart/form-data',                                  
-        		success : function(data) {
-        			$(el).summernote('insertImage', "${pageContext.request.contextPath}/upload/"+data, function($image) {
-        				$image.css('width', "100%");
-        			});
-        			console.log(data);
-        		}
-        	});
-        }
     </script>
 </body>
 </html>

@@ -1,10 +1,13 @@
 package kr.co.duck.beans;
 
+import javax.validation.constraints.NotBlank;
+
 public class ReplyBean {
 
 	private int reply_id; //댓글식별자
 	private int boardpost_id; //boardpost_id FK
 	private int member_id; //member_id FK
+	@NotBlank
 	private String reply_text; //댓글내용	
 	private String reply_date; //댓글 쓴 날짜
 	private String reply_modify; //댓글 수정 날짜

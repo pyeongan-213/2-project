@@ -17,7 +17,8 @@ public interface MemberMapper {
 			+ "(member_seq.nextval, #{membername}, #{password}, #{age}, #{email}, TO_CHAR(sysdate,'YYYY-MM-dd'), #{real_name}, 'User', #{nickname}, 'Duck 회원')")
 	void addMemberInfo(MemberBean joinMemberBean);
 
-	@Select("select member_id, nickname from member where membername = #{membername} and password = #{password}")
+	//real_name, email(해진 추가)
+	@Select("select member_id, nickname, real_name, email from member where membername = #{membername} and password = #{password}")
 	MemberBean getLoginMemberInfo(MemberBean tempLoginMemberBean);
 
 	@Select("select nickname from member where membername = #{arg0}")

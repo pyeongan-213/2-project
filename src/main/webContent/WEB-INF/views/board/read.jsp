@@ -85,8 +85,6 @@
 						${obj.reply_text }
 						<c:if test="${loginMemberBean.member_id == obj.member_id}">
 							<span style="float: right;"> 
-								<a href="${root }board/modify_rep?boardpost_id=${readContentBean.boardpost_id}&reply_id=${obj.reply_id}">수정</a>
-								| 
 								<a href="${root }board/delete_rep?boardpost_id=${readContentBean.boardpost_id}&reply_id=${obj.reply_id}">삭제</a>
 							</span>
 						</c:if>
@@ -102,6 +100,7 @@
 					style="border: 1px solid gray; width: 100%; height: 100px; position: relative;">
 					<input type="text" name="reply_text"
 						style="border: none; outline: none; width: 100%; box-sizing: border-box; background: black; color: white;">
+					<form:errors path="reply_text" style="color:red"/>
 					<button class="write-btn"
 						style="position: absolute; right: 10px; bottom: 10px;">작성</button>
 				</div>
@@ -111,17 +110,6 @@
 			<button class="write-btn">
 				<a href="${root }board/main" style="color: black;">목록</a>
 			</button>
-		</div>
-	</div>
-	<div class="showBest">
-		<h3 style="margin-right: 120px;">BEST</h3>
-		<div class="bestContent">
-		<c:forEach var='obj' items="${bestList}">
-			<div>
-			<span style="margin: 0 20px 0 0;">${obj.content_title}</span>
-			<span style="margin: 0;">♡${obj.like_count }</span>
-			</div>
-		</c:forEach>
 		</div>
 	</div>
 

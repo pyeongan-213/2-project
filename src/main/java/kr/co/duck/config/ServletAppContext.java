@@ -11,6 +11,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +42,8 @@ import com.google.api.services.youtube.YouTube;
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.interceptor.CheckLoginInterceptor;
 import kr.co.duck.interceptor.TopMenuInterceptor;
+import kr.co.duck.mapper.MemberMapper;
+import kr.co.duck.mapper.TopMenuMapper;
 import kr.co.duck.service.ManiaDBService;
 import kr.co.duck.service.PlaylistManagementService;
 import kr.co.duck.service.PlaylistService;
@@ -87,6 +90,59 @@ public class ServletAppContext implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("/resources/");
     }
+
+	@Bean
+	public MapperFactoryBean<MemberMapper> getMemberMapper(SqlSessionFactory factory) throws Exception {
+		MapperFactoryBean<MemberMapper> factoryBean = new MapperFactoryBean<MemberMapper>(MemberMapper.class);
+		factoryBean.setSqlSessionFactory(factory);
+		return factoryBean;
+	}
+
+	@Bean
+	public MapperFactoryBean<TopMenuMapper> getTopMenuMapper(SqlSessionFactory factory) throws Exception {
+		MapperFactoryBean<TopMenuMapper> factoryBean = new MapperFactoryBean<TopMenuMapper>(TopMenuMapper.class);
+		factoryBean.setSqlSessionFactory(factory);
+		return factoryBean;
+	}
+
+	// property 정보를 읽어들이는 Bean 등록
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
+	// PlaylistService Bean
+	@Bean
+	public PlaylistService playlistService() {
+		return new PlaylistService();
+	}
+
+	// mail
+	@Bean("mailSender")
+	public JavaMailSender javaMailSender() {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
+		mailSender.setUsername("solduck0927@gmail.com");
+		mailSender.setPassword("akgz uoqd ktpj kohw");
+		mailSender.setDefaultEncoding("UTF-8");
+		mailSender.setJavaMailProperties(getMailProperties());
+
+		return mailSender;
+	}
+	
+	private Properties getMailProperties() {
+		Properties properties = new Properties();
+		properties.put("mail.smtp.auth", true);
+		properties.put("mail.smtp.starttls.enable", true);
+		properties.put("mail.smtp.starttls.required", true);
+		properties.put("mail.smtp.connectiontimeout", 5000);
+		properties.put("mail.smtp.timeout", 5000);
+		properties.put("mail.smtp.writetimeout", 5000);
+
+		return properties;
+	}
+	
 
     // 데이터베이스 접속 정보를 관리하는 Bean
     @Bean
@@ -153,29 +209,6 @@ public class ServletAppContext implements WebMvcConfigurer {
         return new ManiaDBService();
     }
 
-    // 이메일 설정
-    @Bean("mailSender")
-    public JavaMailSender javaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-        mailSender.setUsername("solduck0927@gmail.com");
-        mailSender.setPassword("akgz uoqd ktpj kohw");
-        mailSender.setDefaultEncoding("UTF-8");
-        mailSender.setJavaMailProperties(getMailProperties());
-        return mailSender;
-    }
-
-    private Properties getMailProperties() {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", true);
-        properties.put("mail.smtp.starttls.enable", true);
-        properties.put("mail.smtp.starttls.required", true);
-        properties.put("mail.smtp.connectiontimeout", 5000);
-        properties.put("mail.smtp.timeout", 5000);
-        properties.put("mail.smtp.writetimeout", 5000);
-        return properties;
-    }
 
     // JPA 설정
     @Bean

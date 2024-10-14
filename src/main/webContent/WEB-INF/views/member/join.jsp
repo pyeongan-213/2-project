@@ -11,7 +11,7 @@
   
   <!-- jQuery 라이브러리 추가 -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
+  <link rel="stylesheet" href="${root }css/join.css" />
   
 </head>
 <script>
