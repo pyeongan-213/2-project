@@ -27,6 +27,14 @@ img {
     --delay: 0s;
 }
 
+/* Base : 상단바 사이드바 하단바의 크기만큼 위치 이동 (필요하면 사용) */ 
+div#contentContainer{
+	margin-top : 60px;
+	margin-left : 245px;
+}
+
+
+
 /* Body 및 메인 스타일 */
 body {
     font-family: var(--body-font);

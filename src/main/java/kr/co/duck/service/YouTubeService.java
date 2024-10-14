@@ -37,7 +37,7 @@ public class YouTubeService {
             // YouTube 검색 요청 구성
             YouTube.Search.List search = youtube.search().list("snippet");
             search.setKey(API_KEY);  // API 키 설정
-            search.setQ(query);  // 검색어 설정
+            search.setQ(query +"MV");  // 검색어 설정
             search.setType("video");  // 비디오만 검색
             search.setMaxResults(5L);  // 결과 개수 설정
 

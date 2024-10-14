@@ -23,10 +23,10 @@
 	rel="stylesheet">
 </head>
 <body>
-
-	<!-- top_menu.jsp 포함 -->
-	<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
-
+	<header>
+		<!-- top_menu.jsp 포함 -->
+		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
+	</header>
 	<!-- 전체 컨테이너 설정 -->
 	<div class="flex-container">
 		<!-- Sidebar 포함 -->
@@ -94,10 +94,10 @@
 			</section>
 		</div>
 	</div>
-
-	<!-- bottom_info.jsp 포함 -->
-	<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
-
+	<footer>
+		<!-- bottom_info.jsp 포함 -->
+		<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
+	</footer>
 	<!-- JavaScript 파일 -->
 	<script src="${root}/js/main.js"></script>
 </body>

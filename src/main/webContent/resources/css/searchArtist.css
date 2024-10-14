@@ -1,0 +1,131 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+* {
+    outline: none;
+    box-sizing: border-box;
+    user-select: none; /* 모든 요소에서 드래그 방지 */
+}
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+:root {
+    --body-font: "Inter", sans-serif;
+    --theme-bg: #1f1d2b;
+    --body-color: #808191;
+    --button-bg: #353340;
+    --border-color: rgba(128, 129, 145, 0.24);
+    --video-bg: #252936;
+    --delay: 0s;
+}
+
+/* Base : 상단바 사이드바 하단바의 크기만큼 위치 이동 (필요하면 사용) */ 
+div#contentContainer{
+	margin-top : 60px;
+	margin-left : 245px;
+}
+
+
+
+/* Body 및 메인 스타일 */
+body {
+    font-family: var(--body-font);
+    color: var(--body-color);
+    background-color: #1E1E1E; /* 약간 밝은 어두운 배경 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Flex container로 사이드바와 메인 콘텐츠 설정 */
+.flex-container {
+    display: flex;
+    width: 100%;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* 사이드바 구분선에 그림자 추가 */
+.sidebar {
+    width: 220px;
+    background-color: #121212;
+    height: 100vh;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: auto;
+    border-right: 1px solid #333;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* 빛나는 효과 */
+}
+
+/* 사이드바 내용 설정 */
+.sidebar .side-wrapper {
+    padding: 20px;
+    width: 100%;
+}
+
+.sidebar-header {
+    color: #fff;
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sidebar-link {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin: 10px 0;
+    font-size: 20px;
+    text-align: center;
+}
+
+.sidebar-link:hover {
+    color: #007bff;
+}
+
+
+
+/* Footer 스타일 */
+footer {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #1f1d2b;
+    text-align: center;
+    color: white;
+    position: relative;
+    bottom: 0;
+    clear: both;
+    margin-top: auto;
+    border-top: 1px solid #333;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+}
+
+
+
+
+div#artist-container {
+	padding : 20px 0;
+	position : absolute;
+	
+	}
