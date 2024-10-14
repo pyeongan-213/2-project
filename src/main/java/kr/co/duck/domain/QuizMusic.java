@@ -77,4 +77,11 @@ public class QuizMusic {
 
     public List<String> getAnswer() { return answer; }
     public void setAnswer(List<String> answer) { this.answer = answer; }
+
+	@Override
+	public String toString() {
+		return "QuizMusic [quizId=" + quizId + ", musicId=" + musicId + ", name=" + name + ", code=" + code + ", start="
+				+ start + ", tags=" + tags + ", answer=" + answer + "]";
+	}
+    
 }

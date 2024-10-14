@@ -1,3 +1,4 @@
+/* 전체 스타일 유지 */
 * {
     outline: none;
     box-sizing: border-box;
@@ -23,12 +24,10 @@ html, body {
     flex-grow: 1;
 }
 
-
 .score {
     color: #f39c12;
     font-weight: bold;
 }
-
 
 /* 중앙 콘텐츠와의 정렬 */
 .main-content {
@@ -43,6 +42,7 @@ html, body {
     font-size: 60px;
     color: #6c63ff;
 }
+
 #start-quiz-btn {
     margin-top: 20px;
     padding: 10px 20px;
@@ -57,8 +57,6 @@ html, body {
     background-color: #5a54e8;
 }
 
-
-
 .quiz-room-game-center {
     flex: 1;
     display: flex;
@@ -69,9 +67,24 @@ html, body {
     margin: 20px;
 }
 
+/* 음악 아이콘 클릭 시 효과 */
+.quiz-room-music-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.quiz-room-music-icon:active {
+    transform: scale(0.9);
+}
+
 .quiz-room-music-icon i {
     font-size: 100px;
     color: #6a6ae3;
+    transition: color 0.3s ease;
+}
+
+/* 재생 중인 상태 스타일 */
+.quiz-room-music-icon.playing i {
+    color: #ff6666; /* 재생 중일 때 색상 */
 }
 
 .quiz-room-btn {

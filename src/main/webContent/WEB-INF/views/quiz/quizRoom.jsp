@@ -20,6 +20,8 @@
 	src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
 <script
 	src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<!-- YouTube API 로드 -->
 <script>
 	console.log('Root:', '${root}');
 	window.root = '${root}';
@@ -47,14 +49,18 @@
 					</ul>
 				</div>
 			</div>
+
 			<!-- 중앙: 게임 시작 및 퀴즈 -->
 			<div class="quiz-room-game-center">
-				<div class="quiz-room-music-icon">
+				<div id="play-t	ggle-btn" class="quiz-room-music-icon">
 					<i class="bi bi-play-circle-fill"></i>
 				</div>
 				<button id="start-quiz-btn" class="quiz-room-btn">게임 시작</button>
 				<div id="quiz-area" class="quiz-room-quiz-area">
 					<p>퀴즈 문제가 여기에 표시됩니다.</p>
+					<iframe id="youtube-player" width="0" height="0" frameborder="0"
+						allow="autoplay; encrypted-media" style="display: none;">
+					</iframe>
 				</div>
 			</div>
 
