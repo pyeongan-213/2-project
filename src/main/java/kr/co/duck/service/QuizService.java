@@ -84,6 +84,7 @@ public class QuizService {
         } catch (Exception e) {
             throw new RuntimeException("JSON 파일 로드 중 오류가 발생했습니다: " + e.getMessage());
         }
+        System.out.println("뮤직데이터 DB저장 완료");
     }
 
     @Transactional(readOnly = true)

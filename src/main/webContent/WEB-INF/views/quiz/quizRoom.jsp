@@ -77,8 +77,14 @@
 				<p id="next-quiz-timer" class="quiz-timer hidden"></p>
 
 				<!-- 게임 시작 버튼 -->
-				<button id="start-quiz-btn" class="quiz-room-btn">게임 시작</button>
-
+				<!-- <button id="start-quiz-btn" class="quiz-room-btn">게임 시작</button> -->
+				<div class="gamebtn">
+    			<a href="#" id="start-quiz-btn" class="quiz-room-btn">
+       					 <span data-attr="Game"></span>
+        				<span data-attr="Start">Now</span>
+   					 </a>
+					</div>
+					
 				<!-- 유튜브 플레이어 -->
 				<div id="quiz-area" class="quiz-room-quiz-area">
 					<iframe id="youtube-player" width="0" height="0" frameborder="0"

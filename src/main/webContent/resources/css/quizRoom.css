@@ -9,7 +9,7 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	font-family: "Inter", sans-serif;
+	font-family: verdana;
 	background-color: #1E1E1E;
 }
 
@@ -43,7 +43,7 @@ html, body {
 	color: #6c63ff;
 }
 
-#start-quiz-btn {
+/* #start-quiz-btn {
 	margin-top: 20px;
 	padding: 10px 20px;
 	border: none;
@@ -56,7 +56,7 @@ html, body {
 
 #start-quiz-btn:hover {
 	background-color: #5a54e8;
-}
+} */
 
 .quiz-room-game-center {
 	flex: 1;
@@ -172,3 +172,91 @@ html, body {
     font-weight: bold;
     display: none;
 }
+
+
+.gamebtn {
+    position: absolute;
+    top: 70%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+}
+a {
+    display: flex; /* 두 span을 같은 줄에 배치 */
+    align-items: stretch; /* 같은 높이로 맞춤 */
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 30px;
+}
+a span {
+    flex: 1; /* 동일한 너비로 확장 */
+    padding: 15px;
+    transition: 0.5s;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+a span:nth-child(1) {
+    color: #fff;
+    background: #0000ff;
+}
+a span:nth-child(2) {
+    color: #fff;
+    background: #ff3636;
+}
+a span:nth-child(1):before {
+    content: attr(data-attr);
+    position: absolute;
+    top: 0;
+    left: -280%;
+    background: #ff3636;
+    padding: 15px;
+    transition: 0.5S;
+    transform-origin: top;
+    transform: rotateX(90deg) translateY(-50%);
+}
+a:hover span:nth-child(1):before {
+    transform: rotateX(0deg) translateY(0%);
+} 
+a span:nth-child(2):before {
+    content: attr(data-attr);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #400000;
+    padding: 15px;
+    transition: 0.5S;
+    transform-origin: bottom;
+    transform: rotateX(90deg) translateY(50%);
+}
+a:hover span:nth-child(2):before {
+    transform: rotateX(0deg) translateY(0%);
+} 
+a  span:nth-child(1):after {
+  content: attr(data-attr);
+  padding: 15px;
+  position: absolute;
+  top: 0;
+  left: -280%;
+  background: #400000;
+  transform-origin: bottom;
+  transform: rotateX(0deg) translateY(0%);
+  transition: 0.5s;
+}
+a:hover span:nth-child(1):after {
+  transform: rotateX(90deg) translateY(50%);
+}
+a span:nth-child(2):after {
+    content: attr(data-attr);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #ff3636;
+    padding: 15px;
+    transition: 0.5S;
+    transform-origin: top;
+    transform: rotateX(0deg) translateY(0%);
+}
+a:hover span:nth-child(2):after {
+    transform: rotateX(90deg) translateY(-50%);
+} 

@@ -227,9 +227,33 @@ button:hover {
     background-color: #45a049;
 }
 
-/* 모달 창 드래그 기능 */
-.modal-content {
-    cursor: move;
-    user-select: none;
+.music-button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: 1px solid #000;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: box-shadow 1s ease-out; /* 부드러운 전환 */
 }
 
+.music-button:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+    animation: pulse 0.5s ease-out; /* 짧은 애니메이션 */
+}
+
+.music-button.selected {
+    background-color: #4caf50;
+    color: white;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05); /* 조금만 확대 */
+    }
+    100% {
+        transform: scale(1);
+    }
+}

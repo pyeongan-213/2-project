@@ -61,7 +61,6 @@ public class QuizController {
             System.out.println("퀴즈 시작 요청: roomId = " + roomId); // 로그 추가
             QuizMusic quiz = quizService.getRandomQuizQuestion(1); // quiz_id를 1로 명시
 
-            System.out.println("조회된 랜덤 퀴즈: " + quiz); // 확인용 로그
 
             if (quiz == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)

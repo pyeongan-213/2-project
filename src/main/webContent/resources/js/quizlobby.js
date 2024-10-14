@@ -125,6 +125,18 @@ async function createRoom(event) {
         alert('방 생성 중 오류가 발생했습니다: ' + error.message);
     }
 }
+function selectMaxMusicEventListeners() {
+	document.querySelectorAll('.music-button').forEach(button => {
+    	button.addEventListener('click', () => {
+       	 // 모든 버튼 선택 해제
+       	document.querySelectorAll('.music-button').forEach(btn => btn.classList.remove('selected'));
+
+        // 클릭한 버튼에 선택 표시 및 값 설정
+        button.classList.add('selected');
+        document.getElementById('maxMusic').value = button.getAttribute('data-value');
+    });
+});
+}
 
 // 방 참여 이벤트 리스너 추가 함수
 function addJoinRoomEventListeners() {

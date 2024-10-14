@@ -88,6 +88,23 @@ public class QuizRoomController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
+        int maxParticipants = quizRoomBean.getMaxCapacity();
+        int maxSongs = quizRoomBean.getMaxMusic();
+
+        // 최대 인원 및 최대 곡수 검증
+        if (maxParticipants >= 10) {
+            response.put("success", false);
+            response.put("message", "최대 인원은 10명까지 가능합니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (maxSongs != 100 && maxSongs != 200 && maxSongs != 300 &&
+            maxSongs != 400 && maxSongs != 500) {
+            response.put("success", false);
+            response.put("message", "최대 곡수는 100, 200, 300, 400, 500 중 하나여야 합니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         try {
             QuizRoomBean createdRoom = quizRoomService.createRoom(quizRoomBean, loginMemberBean);
             response.put("success", true);
@@ -99,6 +116,7 @@ public class QuizRoomController {
             return ResponseEntity.status(e.getStatusCode().getHttpStatus()).body(response);
         }
     }
+
 
     // **퀴즈방 참여 API**
     @PostMapping("/join")

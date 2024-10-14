@@ -88,8 +88,15 @@ userId = userId.trim();%>
 				<input type="text" id="roomName" name="roomName" required><br> 
 				<label for="maxCapacity">최대 인원수:</label> 
 				<input type="number" id="maxCapacity" name="maxCapacity" min="1" required><br> 
-				<label for="maxMusic">최대 곡 수:</label> 
-				<input type="number" id="maxMusic" name="maxMusic" min="1" required><br> 
+				<label>최대 곡 수 선택:</label>
+				<div class="max-music-buttons">
+				    <button type="button" class="music-button" data-value="100">100곡</button>
+				    <button type="button" class="music-button" data-value="200">200곡</button>
+				    <button type="button" class="music-button" data-value="300">300곡</button>
+				    <button type="button" class="music-button" data-value="400">400곡</button>
+				    <button type="button" class="music-button" data-value="500">500곡</button>
+				</div>
+				<input type="hidden" id="maxMusic" name="maxMusic" value="100" required>
 				<label for="quizType">퀴즈 타입:</label> 
 				<select id="quizType" name="quizType">
 					<option value="songTitle">노래 제목 맞추기</option>

@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         stompClient.subscribe(`/sub/quiz/${roomId}`, (message) => {
             const msg = JSON.parse(message.body);
-            console.log('퀴즈 메시지 수신:', msg);
             currentVideo = msg.code;
             currentAnswers = msg.answer.map(answer => answer.trim().toLowerCase());
             currentSongName = msg.name;
