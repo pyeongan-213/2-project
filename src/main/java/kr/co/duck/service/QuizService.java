@@ -99,7 +99,8 @@ public class QuizService {
             throw new RuntimeException("JSON 파일 로드 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
-
+    
+    //db에서 퀴즈 랜덤으로 뽑아옴
     @Transactional(readOnly = true)
     public QuizMusic getRandomQuizQuestion(int quizId) {
         List<QuizMusic> quizList;
@@ -171,26 +172,42 @@ public class QuizService {
 
     @Transactional
     public boolean submitAnswer(int memberId, int quizId, String userAnswer) {
+        // 1. 해당 퀴즈 ID로 QuizMusic 목록 조회
         List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
 
+     // 정답 목록과 사용자가 입력한 답안을 로그로 출력
+        System.out.println("사용자 입력: " + userAnswer);
+        System.out.println("정답 목록: " + quizList);
+
+        // 2. 사용자가 제출한 답안을 정답 목록과 비교
         boolean isCorrect = quizList.stream().anyMatch(quiz -> {
-            List<String> answers = quiz.getAnswer();  // List로 변환된 answer 사용
-            return answers.stream().anyMatch(a -> a.equalsIgnoreCase(userAnswer));
+            List<String> answers = quiz.getAnswer();
+            if (answers == null) return false;
+            
+            // 정답과 사용자 입력에서 공백과 특수 문자 제거 후 비교
+            return answers.stream().anyMatch(a -> 
+                a.replaceAll("\\s+", "").replaceAll("[^a-zA-Z0-9가-힣]", "")
+                 .equalsIgnoreCase(userAnswer.replaceAll("\\s+", "").replaceAll("[^a-zA-Z0-9가-힣]", ""))
+            );
         });
 
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_MEMBER));
 
+        // 3. 멤버 조회 및 예외 처리
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_MEMBER));
+
+        // 4. 게임 통계 업데이트 및 저장
         updateGameStats(member.getMemberGameStats(), isCorrect);
         memberGameStatsRepository.save(member.getMemberGameStats());
 
+        // 5. 정답/오답 메시지 생성 및 전송
         QuizMessage.MessageType messageType = isCorrect 
-            ? QuizMessage.MessageType.CORRECT 
-            : QuizMessage.MessageType.INCORRECT;
-
+                ? QuizMessage.MessageType.CORRECT 
+                : QuizMessage.MessageType.INCORRECT;
         String messageContent = isCorrect ? "정답입니다!" : "오답입니다!";
         chatService.sendQuizMessage(quizId, messageType, messageContent, member.getNickname());
 
+        // 6. 정답 여부 반환
         return isCorrect;
     }
 

@@ -53,7 +53,8 @@ public class QuizController {
         List<QuizMusic> quizList = quizService.getQuizByQuizId(quizId);
         return ResponseEntity.ok(quizList);
     }
-
+    
+    // **퀴즈를 랜덤으로 뽑아옴**
     @GetMapping("/rooms/{roomId}/random")
     public ResponseEntity<?> quizStart(@PathVariable int roomId) {
         try {
@@ -70,7 +71,7 @@ public class QuizController {
             // WebSocket 메시지 전송
             messagingTemplate.convertAndSend("/sub/quiz/" + roomId, quiz);
 
-            // JSON 응답 반환
+            // JSON 응답 반환		
             return ResponseEntity.ok(quiz);
         } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -82,26 +83,31 @@ public class QuizController {
     }
 
 
-    // **정답 제출 및 WebSocket 메시지 전송**
     @PostMapping("/answer/{memberId}")
     public ResponseEntity<String> submitAnswer(
             @PathVariable int memberId,
             @RequestParam int quizId,
             @RequestParam String answer) {
 
-        boolean isCorrect = quizService.submitAnswer(memberId, quizId, answer);
+        // DB에 저장된 정답과 사용자의 입력 비교
+        boolean isCorrect = quizService.submitAnswer(memberId, quizId, answer.trim());
 
         // 정답 메시지 생성
-        Map<String, Object> answerMessage = new HashMap<>();
-        answerMessage.put("isCorrect", isCorrect);
-        answerMessage.put("playerId", memberId);
-        answerMessage.put("message", isCorrect ? "정답입니다!" : "오답입니다!");
+        if (isCorrect) {
+            Map<String, Object> answerMessage = new HashMap<>();
+            answerMessage.put("isCorrect", true); // 정답 여부
+            answerMessage.put("playerId", memberId); // 정답자 ID
+            answerMessage.put("message", "정답입니다!");
 
-        // WebSocket을 통해 정답 여부 전송
-        messagingTemplate.convertAndSend("/sub/quiz/answer/" + quizId, answerMessage);
-
-        return ResponseEntity.ok(isCorrect ? "정답입니다!" : "오답입니다!");
+            // WebSocket을 통해 정답 메시지 전송
+            messagingTemplate.convertAndSend("/sub/quiz/answer/" + quizId, answerMessage);
+            
+            return ResponseEntity.ok("정답입니다!"); // 정답 응답 반환
+        } else {
+            return ResponseEntity.ok(""); // 오답일 경우 빈 응답 반환
+        }
     }
+
 
     // **퀴즈 삭제**
     @DeleteMapping("/delete/{quizId}")
@@ -109,4 +115,4 @@ public class QuizController {
         quizService.deleteQuiz(quizId);
         return ResponseEntity.ok("퀴즈가 삭제되었습니다.");
     }
-}
+} 

@@ -1,8 +1,10 @@
 package kr.co.duck.repository;
 
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import kr.co.duck.domain.QuizMusic;
 import kr.co.duck.domain.QuizMusicId;
 
@@ -20,5 +22,6 @@ public interface QuizMusicRepository extends JpaRepository<QuizMusic, QuizMusicI
     
     // 특정 quizId와 musicId 조합이 존재하는지 확인하는 메서드
     boolean existsByQuizIdAndMusicId(int quizId, int musicId);
+    
 
 }

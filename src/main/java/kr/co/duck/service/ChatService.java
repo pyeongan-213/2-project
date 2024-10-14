@@ -38,7 +38,6 @@ public class ChatService {
         log.info("Chat message sent: {}", chatMessage);
     }
 
-
     /**
      * 카메라 제어 메시지 전송 메서드
      * @param message 카메라 제어 메시지
@@ -52,13 +51,16 @@ public class ChatService {
         log.info("Camera control message sent: {}", exportMessage);
     }
 
-    
-   public <T> void message(ChatMessage<T> message) {
-       log.info("Processing chat message: {}", message);
+    /**
+     * 메시지 전송 메서드 (일반 메시지 전송)
+     * @param message ChatMessage 객체
+     */
+    public <T> void message(ChatMessage<T> message) {
+        log.info("Processing chat message: {}", message);
 
-       // 메시지 구독 경로로 전송
-       sendingOperations.convertAndSend("/sub/chat/" + message.getRoomId(), message);
-   }
+        sendingOperations.convertAndSend("/sub/chat/" + message.getRoomId(), message);
+    }
+
     /**
      * 퀴즈 메시지 전송 메서드
      * @param roomId 방 ID
@@ -77,5 +79,25 @@ public class ChatService {
 
         sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, quizMessage);
         log.info("Quiz message sent: {}", quizMessage);
+    }
+
+    /**
+     * 정답 메시지 전송 메서드
+     * @param roomId 방 ID
+     * @param memberId 정답을 제출한 멤버 ID
+     * @param isCorrect 정답 여부 (true: 정답, false: 오답)
+     */
+    public void sendAnswerMessage(int roomId, int memberId, boolean isCorrect) {
+        // 정답 메시지 생성
+        String messageContent = isCorrect ? "정답입니다!" : "오답입니다!";
+        QuizMessage<String> answerMessage = new QuizMessage<>();
+        answerMessage.setQuizRoomId(roomId);
+        answerMessage.setType(isCorrect ? QuizMessage.MessageType.CORRECT : QuizMessage.MessageType.INCORRECT);
+        answerMessage.setSender(String.valueOf(memberId));
+        answerMessage.setContent(messageContent);
+
+        // WebSocket을 통해 전송
+        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, answerMessage);
+        log.info("Answer message sent: {}", answerMessage);
     }
 }
