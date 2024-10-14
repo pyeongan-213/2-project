@@ -7,6 +7,7 @@ public class KakaoPayRedayDto {
 
     private String name;
     private String totalPrice;
+    
 	public String getName() {
 		return name;
 	}

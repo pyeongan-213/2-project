@@ -7,6 +7,8 @@ import kr.co.duck.social.KakaoPayRedayDto;
 import kr.co.duck.util.SessionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/temp")
 public class popup {
 
-	private final KakaoPayService kakaoPayService;
+	@Autowired
+	private KakaoPayService kakaoPayService;
 
 	@GetMapping("/slide_popup")
 	public String main() {

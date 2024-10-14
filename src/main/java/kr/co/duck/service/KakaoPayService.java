@@ -6,6 +6,10 @@ import kr.co.duck.social.KaKaoApproveResponse;
 import kr.co.duck.social.KaKaoReadyResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,9 +27,15 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class KakaoPayService {
 
-    private final RestTemplate restTemplate;
-    private final KaokaopayInfoRepository repository;
+	@Autowired
+    private RestTemplate restTemplate;
+	@Autowired
+    private KaokaopayInfoRepository repository;
 
+	private static final Logger log = LoggerFactory.getLogger(KakaoPayService.class);
+
+	
+	
     private final String READY_URL = "https://open-api.kakaopay.com/online/v1/payment/ready";
     private final String APPROVE_URL = "https://open-api.kakaopay.com/online/v1/payment/approve";
 
@@ -49,9 +59,9 @@ public class KakaoPayService {
             parameters.put("quantity", "1");                                                  // 상품 수량
             parameters.put("total_amount", String.valueOf(totalPrice));                       // 상품 총액
             parameters.put("tax_free_amount", "0");                                           // 상품 비과세 금액
-            parameters.put("approval_url", "http://localhost:8080/temp/kakao/pay/approve");   // 결제 성공 시 URL
-            parameters.put("cancel_url", "http://localhost:8080/tmep/kakao/pay/cancel");      // 결제 취소 시 URL
-            parameters.put("fail_url", "http://localhost:8080/tmep/kakao/pay/fail");          // 결제 실패 시 URL
+            parameters.put("approval_url", "http://localhost:8064/temp/kakao/pay/approve");   // 결제 성공 시 URL
+            parameters.put("cancel_url", "http://localhost:8064/temp/kakao/pay/cancel");      // 결제 취소 시 URL
+            parameters.put("fail_url", "http://localhost:8064/temp/kakao/pay/fail");          // 결제 실패 시 URL
 
             HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
             ResponseEntity<KaKaoReadyResponse> responseEntity = restTemplate.postForEntity(READY_URL, requestEntity, KaKaoReadyResponse.class);
