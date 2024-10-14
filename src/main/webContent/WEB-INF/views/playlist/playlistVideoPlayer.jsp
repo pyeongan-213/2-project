@@ -96,7 +96,7 @@ iframe {
 			<h2>Playlist</h2>
 			<c:forEach var="music" items="${musicList}">
 				<div class="playlist-item">
-					<img src="${music.thumbnailUrl}"> <span>${music.music_Name}</span><span>
+					<img src="${music.thumbnailUrl}" alt="${music.musicName}"> <span>${music.musicName}
 						- ${music.artist}</span>
 					<button onclick="playVideo('${music.videoUrl}')">Play</button>
 				</div>

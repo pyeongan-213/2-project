@@ -46,7 +46,7 @@ public class YouTubeAPI {
 
         for (SearchResult result : results) {
             MusicBean musicBean = new MusicBean();
-            musicBean.setMusicName(result.getSnippet().getTitle());
+            musicBean.setmusic_Name(result.getSnippet().getTitle());
             musicBean.setArtist(result.getSnippet().getChannelTitle());
             musicBean.setVideoUrl("https://www.youtube.com/watch?v=" + result.getId().getVideoId());
             musicBean.setThumbnailUrl(result.getSnippet().getThumbnails().getDefault().getUrl());

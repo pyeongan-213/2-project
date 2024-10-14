@@ -90,7 +90,7 @@
 							<td class="column-title">${track}</td>
 							<td class="column-playtime">${result.runningTimeList[status.index]}</td>
 							<td class="column-action"><button>+</button></td>
-							<a href="${pageContext.request.contextPath}/youtubeSearch?query=${fn:escapeXml(result.artistName)}+${fn:escapeXml(track)}">playlist에 추가</a>
+							<td><a href="${pageContext.request.contextPath}/youtubeSearch?query=${fn:escapeXml(result.artistName)}+${fn:escapeXml(track)}">playlist에 추가</a></td>
 						</tr>
 					</c:forEach>
 				</tbody>

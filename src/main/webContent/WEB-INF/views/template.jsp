@@ -28,7 +28,6 @@
 
 <body>
 	<header>
-
 		<!-- top_menu.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
 
@@ -36,12 +35,10 @@
 		<div class="sidebar">
 			<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
 		</div>
-
 	</header>
 	
 	<div id="contentContainer">
-	
-	
+		
 	
 	
 	

@@ -38,6 +38,9 @@ public class PlaylistService {
     // YouTube 동영상을 플레이리스트에 추가
     public void addMusicToPlaylist(int playlistId, MusicBean music, int memberId) {
         // MUSIC 테이블에 음악을 삽입하고, 자동 생성된 musicId를 얻음
+    	String ThumbnailURLRaw = music.getThumbnailUrl();
+    	String ThunbnailUrl = ThumbnailURLRaw.split("/watch?v=")[0];
+    	music.setThumbnailUrl(ThunbnailUrl);
         musicDAO.insertMusic(music);
 
         // 생성된 musicId를 이용해 PLAYLIST_MUSIC 테이블에 음악 추가

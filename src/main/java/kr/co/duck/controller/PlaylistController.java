@@ -53,6 +53,7 @@ public class PlaylistController {
 	// 플레이리스트 페이지로 이동
 	@GetMapping("/playlist")
 	public String showPlaylist(Model model) {
+	
 		List<MusicBean> playlist = playlistService.getPlaylist();
 		model.addAttribute("playlist", playlist);
 		return "playlist/playlist"; // 플레이리스트를 playlist.jsp로 전달
@@ -74,6 +75,8 @@ public class PlaylistController {
 		// 모델에 데이터를 추가하여 JSP로 전달
 		model.addAttribute("musicList", musicList);
 		model.addAttribute("playlistId", playlistId);
+		
+		System.out.println(musicList.get(0).getmusic_Name());
 
 		return "playlist/playlist"; // playlist.jsp로 이동
 	}
@@ -94,7 +97,7 @@ public class PlaylistController {
 	// 플레이리스트에 YouTube 동영상 추가
 	@PostMapping("/playlist/addToPlaylist")
 	public String addToPlaylist(@RequestParam("playlistId") int playlistId, @RequestParam("videoUrl") String videoUrl,
-			@RequestParam("musicName") String musicName, @RequestParam("artist") String artist,
+			@RequestParam("music_Name") String music_Name, @RequestParam("artist") String artist,
 			@RequestParam("thumbnailUrl") String thumbnailUrl, HttpSession session) {
 
 		// 세션에서 loginMemberBean을 가져옴
@@ -103,7 +106,7 @@ public class PlaylistController {
 		// MusicBean 생성 및 정보 설정
 		MusicBean music = new MusicBean();
 		music.setVideoUrl(videoUrl);
-		music.setMusicName(musicName);
+		music.setmusic_Name(music_Name);
 		music.setArtist(artist);
 		music.setThumbnailUrl(thumbnailUrl);
 

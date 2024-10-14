@@ -29,7 +29,7 @@
 			<tbody>
 				<c:forEach var="song" items="${searchResults}">
 					<tr>
-						<td>${song.musicName}</td>
+						<td>${song.music_Name}</td>
 						<td>${song.artist}</td>
 						<td><img src="${song.thumbnailUrl}" alt="Thumbnail" /></td>
 						<td><a href="${song.videoUrl}" target="_blank">Watch</a></td>
@@ -39,7 +39,7 @@
 								method="post">
 								<!-- 곡 정보를 hidden 필드로 전달 -->
 								<input type="hidden" name="videoUrl" value="${song.videoUrl}">
-								<input type="hidden" name="musicName" value="${song.musicName}">
+								<input type="hidden" name="music_Name" value="${song.music_Name}">
 								<input type="hidden" name="artist" value="${song.artist}">
 								<input type="hidden" name="thumbnailUrl"
 									value="${song.thumbnailUrl}">
