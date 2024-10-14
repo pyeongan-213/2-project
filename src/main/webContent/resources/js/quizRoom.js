@@ -98,11 +98,14 @@ function updatePlayIcon() {
 }
 
 function processChatMessage(sender, content) {
-    if (content.trim().toLowerCase() === '!힌트') {
+    const message = content.trim().toLowerCase();
+    if (message === '!힌트') {
         displayHint();
-        return;
+    } else if (message === '!스킵') {
+        skipQuiz(sender);
+    } else {
+        checkAnswer(sender, content);
     }
-    checkAnswer(sender, content);
 }
 
 function displayHint() {
@@ -127,6 +130,25 @@ function displayHint() {
     hintDisplay.classList.remove('hidden');
 }
 
+function skipQuiz(sender) {
+    console.log(`${sender}님이 문제를 스킵했습니다.`);
+
+    // 타이머가 작동 중이라면 종료합니다.
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null; // 타이머 초기화
+    }
+
+    // 스킵 알림 메시지 전송
+    stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
+        sender: '시스템',
+        content: `${sender}님이 문제를 스킵했습니다. 다음 문제로 이동합니다!`
+    }));
+
+    hideAnswerInfo();
+    startQuiz(); // 즉시 다음 퀴즈 시작
+}
+
 
 function checkAnswer(sender, userAnswer) {
     const trimmedAnswer = userAnswer.trim().toLowerCase();
@@ -137,7 +159,7 @@ function checkAnswer(sender, userAnswer) {
             sender: '시스템',
             content: `${sender}님이 정답을 맞췄습니다!`
         }));
-        hideHint(); // 정답 시 힌트 숨김
+        hideHint();
     }
 }
 
@@ -160,7 +182,11 @@ function hideHint() {
 }
 
 function startCountdown() {
-    if (countdownInterval) clearInterval(countdownInterval);
+    // 기존 타이머가 있다면 초기화
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null; // 타이머 초기화
+    }
 
     let timeLeft = 10;
     const countdownDisplay = document.getElementById('next-quiz-timer');
@@ -172,9 +198,10 @@ function startCountdown() {
         countdownDisplay.textContent = `다음 퀴즈가 시작됩니다 (${timeLeft})`;
 
         if (timeLeft < 0) {
-            clearInterval(countdownInterval);
+            clearInterval(countdownInterval); // 타이머 종료
+            countdownInterval = null; // 초기화
             hideAnswerInfo();
-            startQuiz();
+            startQuiz(); // 다음 퀴즈 시작
         }
     }, 1000);
 }
@@ -191,6 +218,19 @@ function hideAnswerInfo() {
     countdownDisplay.textContent = '';
 }
 
+const MAX_CHAT_MESSAGES = 14;
+
+function displayChatMessage(sender, content) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageElement = document.createElement('p');
+    messageElement.innerHTML = `<strong>${sender}:</strong> ${content}`;
+    chatMessages.appendChild(messageElement);
+
+    while (chatMessages.children.length > MAX_CHAT_MESSAGES) {
+        chatMessages.removeChild(chatMessages.firstChild);
+    }
+}
+
 function sendMessage() {
     const chatInput = document.getElementById('chat-input');
     const message = chatInput.value.trim();
@@ -205,11 +245,4 @@ function sendMessage() {
     displayChatMessage('나', message);
     chatInput.value = '';
     processChatMessage('나', message);
-}
-
-function displayChatMessage(sender, content) {
-    const chatMessages = document.getElementById('chat-messages');
-    const messageElement = document.createElement('p');
-    messageElement.innerHTML = `<strong>${sender}:</strong> ${content}`;
-    chatMessages.appendChild(messageElement);
 }

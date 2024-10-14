@@ -33,31 +33,26 @@ import kr.co.duck.util.StatusCode;
 @Service
 public class QuizService {
 
-    private final QuizMusicRepository quizMusicRepository;
-    private final MemberGameStatsRepository memberGameStatsRepository;
-    private final MemberRepository memberRepository;
-    private final QuizRoomAttendeeRepository quizRoomAttendeeRepository;
-    private final ChatService chatService;
-    private final Random random = new Random();
+    @Autowired
+    private QuizMusicRepository quizMusicRepository;
 
-    // 힌트 진행 상태 관리
+    @Autowired
+    private MemberGameStatsRepository memberGameStatsRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private QuizRoomAttendeeRepository quizRoomAttendeeRepository;
+
+    @Autowired
+    private ChatService chatService;
+
+    private final Random random = new Random();
     private final Map<Integer, Integer> hintProgress = new HashMap<>();
 
     @Autowired
     private ServletContext servletContext;
-
-    @Autowired
-    public QuizService(QuizMusicRepository quizMusicRepository,
-                       MemberGameStatsRepository memberGameStatsRepository,
-                       MemberRepository memberRepository,
-                       QuizRoomAttendeeRepository quizRoomAttendeeRepository,
-                       ChatService chatService) {
-        this.quizMusicRepository = quizMusicRepository;
-        this.memberGameStatsRepository = memberGameStatsRepository;
-        this.memberRepository = memberRepository;
-        this.quizRoomAttendeeRepository = quizRoomAttendeeRepository;
-        this.chatService = chatService;
-    }
 
     @PostConstruct
     public void init() {
@@ -146,6 +141,14 @@ public class QuizService {
         return isCorrect;
     }
 
+    @Transactional
+    public void startNextQuiz(int roomId) {
+        QuizMusic nextQuiz = getRandomQuizQuestion(roomId);
+        if (nextQuiz != null) {
+            chatService.sendQuizMessage(roomId, QuizMessage.MessageType.NEXT, nextQuiz, "시스템");
+        }
+    }
+
     private void updateGameStats(MemberGameStats stats, boolean isCorrect) {
         if (isCorrect) {
             stats.setWinNum(stats.getWinNum() + 1);
@@ -166,21 +169,15 @@ public class QuizService {
         return nicknameList;
     }
 
-    /**
-     * 힌트 생성 메서드: 요청 시 정답의 일부를 점진적으로 공개합니다.
-     * @param quizId 퀴즈 ID
-     * @return 생성된 힌트 문자열
-     */
     public String generateHint(int quizId) {
         List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
         if (quizList.isEmpty()) {
             return "힌트를 제공할 수 없습니다.";
         }
 
-        String answer = quizList.get(0).getAnswer().get(0); // 첫 번째 정답 사용
+        String answer = quizList.get(0).getAnswer().get(0);
         int hintLength = hintProgress.getOrDefault(quizId, 0) + 1;
 
-        // 힌트 생성 (공개된 부분은 문자로, 나머지는 'O'로 표시)
         StringBuilder hintBuilder = new StringBuilder();
         for (int i = 0; i < answer.length(); i++) {
             if (i < hintLength) {
@@ -190,7 +187,6 @@ public class QuizService {
             }
         }
 
-        // 힌트 진행 상태 업데이트
         hintProgress.put(quizId, hintLength);
         return hintBuilder.toString();
     }

@@ -2,6 +2,7 @@ package kr.co.duck.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,15 @@ public class ChatService {
 
     private static final Logger log = LoggerFactory.getLogger(ChatService.class);
     private final SimpMessageSendingOperations sendingOperations;
+    private QuizService quizService; // Setter로 주입
 
-    // 생성자
     public ChatService(SimpMessageSendingOperations sendingOperations) {
         this.sendingOperations = sendingOperations;
+    }
+
+    @Autowired
+    public void setQuizService(QuizService quizService) {
+        this.quizService = quizService;
     }
 
     /**
@@ -34,8 +40,13 @@ public class ChatService {
             return;
         }
 
+        if (content.equalsIgnoreCase("!스킵")) {
+            skipQuiz(roomId, sender); // 스킵 처리
+            return;
+        }
+
         ChatMessage<String> chatMessage = new ChatMessage<>();
-        chatMessage.setRoomId(String.valueOf(roomId));  // roomId를 String으로 변환
+        chatMessage.setRoomId(String.valueOf(roomId));
         chatMessage.setSender(sender);
         chatMessage.setMessage(content);
 
@@ -54,6 +65,21 @@ public class ChatService {
 
         sendingOperations.convertAndSend("/sub/quizRoom/1", hintMessage); // Room ID 1 예시
         log.info("Hint message sent.");
+    }
+
+    /**
+     * 스킵 명령 처리 메서드
+     * @param roomId 방 ID
+     * @param sender 명령을 입력한 사용자
+     */
+    private void skipQuiz(int roomId, String sender) {
+        // 스킵 알림 메시지 전송
+        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, 
+            new QuizMessage<>("시스템", sender + "님이 문제를 스킵했습니다. 다음 문제로 이동합니다."));
+
+        // 다음 퀴즈 시작
+        quizService.startNextQuiz(roomId);
+        log.info("Quiz skipped by: {}", sender);
     }
 
     /**
