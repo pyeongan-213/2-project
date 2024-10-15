@@ -1,9 +1,5 @@
 @charset "UTF-8";
-
-fixed-content > p {
-	background: white;
-	color: black;
-}
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
 a {
 	text-decoration: none;
@@ -59,6 +55,10 @@ body {
 	color: black;
 }
 
+.c_btn.active a{
+	color: black;
+}
+
 input {
 	background: black;
 	color: white;
@@ -99,7 +99,7 @@ thead th {
 	background: #74E885;
 	color: black;
 	border: none;
-	border-radius: 2px;
+	border-radius: 4px;
 	padding: 5px 20px;
 	font-size: 13px;
 	text-decoration: none;
@@ -200,6 +200,7 @@ thead th {
     bottom: 85px; /* 버튼 위 85px 거리에서 시작 */
     right: 0; /* 버튼과 같은 우측에 위치 */
     width: 300px; /* 콘텐츠의 너비를 200px로 설정 */
+    height: 548px;
     background-color: #f7f7f8; /* 콘텐츠 배경색을 흰색으로 설정 */
     border: 1px solid #f7f7f8; /* 콘텐츠 테두리를 연한 회색으로 설정 */
     border-radius: 4px; /* 콘텐츠의 모서리를 둥글게 설정 */
@@ -212,16 +213,17 @@ thead th {
 
 .fixed-content h3 {
 	color: black;
-	background: white;
+	background: transparent;
 	margin: 10px 5px;
 }
+
 .fixed-content label {
 	margin-bottom: 5px;
 }
 
 .fixed-content p {
     color: black; /* 글자 색상 설정 */
-    background: #f7f7f8; /* 배경색 설정 (필요한 경우) */
+    background: transparent;
     margin-top: 0px;
     margin-bottom: 2px; /* 단락 간의 여백 조정 */
 }
@@ -243,6 +245,56 @@ thead th {
 	background-color: inherit;
 }
 
+.back {
+	margin: 1em auto;
+	font-family: "Roboto";
+}
+
+.back span {
+	font-size: 3em;
+	color: #4A90E2;
+	background: #1A1F24;
+	display: table-cell;
+	padding: 0 15px;
+	line-height: 100px;
+	animation: jumb 2s infinite;
+}
+
+@keyframes jumb {
+	0% {
+		transform:translateY(0px)
+	}
+	50% {
+		transform:translateY(-30px);
+		box-shadow:0 0 5px rgba(0, 204, 255, 0.8);
+	}
+	100% {
+		transform:translateY(0px) 
+	}
+}
+
+.back span:nth-child(1) {
+	animation-delay: 0s;
+}
+.back span:nth-child(2) {
+	animation-delay: .1s;
+}
+.back span:nth-child(3) {
+	animation-delay: .2s;
+}
+.back span:nth-child(4) {
+	animation-delay: .3s;
+}
+.back span:nth-child(5) {
+	animation-delay: .4s;
+}
+.back span:nth-child(6) {
+	animation-delay: .5s;
+}
+.back span:nth-child(7) {
+	animation-delay: .6s;
+}
+
 .send-mail {
 	background: linear-gradient(to right, #9100f9 , #b700ff 90%);
     color: white;
@@ -255,6 +307,7 @@ thead th {
     font-size: 16px;
     border-radius: 20px;
     cursor: pointer;
+    margin-top: 7px;
 }
 
 .content_text{
@@ -277,8 +330,9 @@ thead th {
 }
 
 .content-box{
-	background: #3C3D37;
-	padding: 30px;
+	background: #303030;
+	margin: 10px;
+	padding: 15px;
 	border-radius: 20px;
 	width: 100%;
 	box-sizing: border-box;
@@ -287,7 +341,7 @@ thead th {
 
 
 .content_title{
-	background: #697565;
+	background: #464545;
 	padding: 25px;
 	border-radius: 10px;
 	font-weight: bold;
@@ -298,7 +352,7 @@ thead th {
 .content_text {
 	all: unset;
 	color: white;
-	background: #D1B9A2;
+	background: #464545;
 	padding: 10px 25px;
 	border-radius: 10px;
 	width: 100%;
@@ -320,8 +374,53 @@ thead th {
 	cursor: pointer;
 }
 
+.content-opt {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    align-items: center; /* 추가: 수직 중앙 정렬 */
+}
+
+.dropdown-menu {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute; /* 드롭다운 메뉴를 절대 위치로 설정 */
+    top: 25px; /* 아이콘 아래로 간격 조정 */
+    right: -30px; /* 아이콘 오른쪽에 정렬 */
+    width: 82px;
+    border-radius: 3px;
+    background-color: #272727; /* 배경색 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+}
+
+.dropdown-item {
+    display: flex; /* Flexbox로 설정 */
+    align-items: center; /* 수직 중앙 정렬 */
+    padding: 5px 10px; /* 패딩 */
+    text-decoration: none; /* 링크 스타일 제거 */
+    color: white; /* 글자 색상 */
+}
+
+.dropdown-icon {
+	filter: brightness(0) invert(1);
+	display: inline-block;
+    width: 18px; /* 아이콘 크기 */
+    height: 18px; /* 아이콘 크기 */
+    margin: 0 8px 0 0; /* 아이콘과 텍스트 간 간격 */
+    vertical-align: middle;
+}
+
+.dropdown-menu a {
+    display: block; /* 각 링크를 블록으로 표시하여 전체 영역 클릭 가능 */
+    text-decoration: none; /* 링크 스타일 제거 */
+    color: white;
+}
+
+.dropdown-menu a:hover {
+    background-color: #505050; /* 마우스 오버 시 배경색 변경 */
+}
+
 .comment{
-	background: #697565;
+	background: #464545;
 	padding: 10px 25px;
 	border-radius: 10px;
 }
@@ -334,19 +433,43 @@ thead th {
 	width: 100%;
 	height: 100px;
 	padding: 10px;
-	background: #B0B0B0;
+	background: #272727;
 	border-radius: 10px;
 	position: relative;
 	cursor: text;
 }
 
+.reply-delete{
+	width: 20px;
+	height: 20px;
+	float: right;
+	position: relative;
+	vertical-align: middle;
+}
+
+.tooltip {
+    width: 70px; /* 툴팁 너비 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    border-radius: 3px; /* 모서리 둥글게 */
+    padding: 3px; /* 안쪽 여백 */
+    position: absolute; /* 위치를 절대적으로 설정 */
+    bottom: -130%; /* 아이콘 위쪽에 위치 */
+    left: 10px;
+    transform: translateX(-50%); /* 중앙 정렬 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    font-size: 12px; /* 폰트 크기 */
+    background: #272727 !important; /* 기본 배경색 */
+    color: white; /* 텍스트 색상 */
+    display: none;
+}
+
 select {
-	width: 150px;
+	text-align: center;
+	width: 100px;
 	padding: 4px 3px;
 	border-radius: 6px;
 	border: 1px solid #2F3545;
 	background-color: #151924;
-	/* color: white; */
 	font-size: 16px;
 	appearance: none;
 	cursor: pointer;

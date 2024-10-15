@@ -58,7 +58,7 @@
 					<form:option value="3" style="color : #f1cb49;">음악 추천</form:option>
 				</form:select>
 				</span>
-				<span>
+				<span style="margin-left: 10px;">
 				<form:input path="content_title" style="width: 400px; font-size: 16px; padding: 3px; margin-right: 20px;" 
 				placeholder="제목" />
 				<form:errors path="content_title" style='color:red'/>

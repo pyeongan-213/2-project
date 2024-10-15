@@ -2,7 +2,13 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var='root' value='${pageContext.request.contextPath }/'/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
-	alert('저장되었습니다')
-	location.href = '${root}board/main'
+document.addEventListener('DOMContentLoaded', function() {
+    swal("저장되었습니다.", "", {icon : "success"})
+    .then(() => {
+        location.href = '${root}board/main';
+    });
+});
 </script>

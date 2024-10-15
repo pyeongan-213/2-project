@@ -16,8 +16,11 @@
     <!-- CSS 및 Bootstrap 아이콘 추가 -->
     <link href="${root}/css/main.css" rel="stylesheet" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/board.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <title>Board</title>
 <script>
 /* 문의버튼js */
@@ -106,15 +109,15 @@ function toggleContent() {
 			<hr />
 		</div>
 		<div>
-			<h3>🗨️블라블라</h3>
+			<h3>🗨️최신 게시글</h3>
 			<div class="on-table">
 				<form id="searchForm" action="${root}board/search" method="get"
 					onsubmit="return searchPosts()">
 					<input id="searchInput" name="query" placeholder="search">
 					<input type="hidden" id="boardId" name="board_id" value="0">
 				</form>
-				<span style="margin-left: auto;"> <a href="${root }board/write"
-					class="write-btn">글쓰기</a>
+				<span style="margin-left: auto; margin-right: 20px;"> <a href="${root }board/write"
+					class="write-btn">글작성</a>
 				</span>
 			</div>
 
@@ -287,9 +290,10 @@ function toggleContent() {
 		<button class="fixed-button" onclick="toggleContent()">
 			<span class="icon">+</span>
 		</button>
+		
 		<div class="fixed-content">
-			<form:form action="${root }board/receiveEmail/${loginMemberBean.email}" method="post">
-				<h3 style="background: #f7f7f8;">문의하기</h3>
+			<form:form id="emailForm" action="${root }board/receiveEmail/${loginMemberBean.email}" method="post">
+				<h3 style="background: transparent;">문의하기</h3>
 				
 				<p>
 				<label for="name">이름</label>
@@ -309,20 +313,36 @@ function toggleContent() {
 				<p>
 				<label for="body">문의 내용</label>
 				<textarea id="body" name="body"
-					style="width: 100%; height: 250px; padding: 5px; line-height: normal; margin-bottom: 7px;"
+					style="width: 100%; height: 250px; padding: 5px; line-height: normal;"
 					required></textarea>
 				</p>
 				
 				<button class="send-mail" type="submit">메일보내기 ✉️</button>
 			</form:form>
 		</div>
+		
 	</div>
 	</div>
+			
 	<footer>
 		<!-- bottom_info.jsp 포함 -->
       <jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
 	</footer>
 
+	<div id="loading" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; text-align: center; padding-top: 20%;">
+	<span class="back">
+  		<span>S</span>
+  		<span>e</span>
+  		<span>n</span>
+  		<span>d</span>
+  		<span>i</span>
+  		<span>n</span>
+  		<span>g</span>
+	</span>
+	</div>
+
+<script src="${root}js/finisher-header.es5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script>
 	let currentBoardId = 0; // 전역 변수로 선언
 
@@ -358,7 +378,7 @@ function toggleContent() {
 	    if (query) {
 	        return true; 
 	    } else {
-	        alert("검색어를 입력해 주세요.");
+	    	swal("검색어를 입력해 주세요.","", {icon: "warning"});
 	        return false;
 	    }
 	}
@@ -381,6 +401,69 @@ function toggleContent() {
 	    }
 	};
 
+	$(document).ready(function() {
+        $('#emailForm').on('submit', function(event) {
+            event.preventDefault(); // 기본 제출 방지
+
+            // 로딩 화면 표시
+            $('#loading').show();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function() {
+                    // 성공적으로 메일이 전송되면 알림창을 띄운다.
+                    swal("메일이 성공적으로 전송되었습니다!", "", { icon: "success" })
+                        .then(() => {
+                            // 메인 페이지로 이동
+                            window.location.href = '${root}board/main';
+                        });
+                },
+                error: function() {
+                    // 에러 발생 시 알림창을 띄운다.
+                    swal("메일 전송에 실패했습니다.", "", { icon: "error" });
+                }
+            });
+        });
+    });
+	
+	$(document).ready(function() {
+        new FinisherHeader({
+            "count": 100,
+            "size": {
+                "min": 2,
+                "max": 11,
+                "pulse": 0.4
+            },
+            "speed": {
+                "x": {
+                    "min": 0,
+                    "max": 0.6
+                },
+                "y": {
+                    "min": 0,
+                    "max": 0.9
+                }
+            },
+            "colors": {
+                "background": "#201e30",
+                "particles": [
+                    "#1ee99a",
+                    "#c783d7",
+                    "#f1cb49",
+                    "#00ffef"
+                ]
+            },
+            "blending": "overlay",
+            "opacity": {
+                "center": 1,
+                "edge": 0.1
+            },
+            "skew": 0,
+            "shapes": ["c"]
+        });
+    });
 </script>
 
 </body>
