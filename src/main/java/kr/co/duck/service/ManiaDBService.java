@@ -230,6 +230,22 @@ public class ManiaDBService {
 		}
 		artistDetail.setAlbumNameList(albumNameList);
 
+		// 앨범 guid 가져오기; 연결용
+		Elements guidElements = doc.select("div[style='width:150px'] a");
+		List<String> albumGuidList = new ArrayList<>();
+		count = 0;
+		for (Element albumguid : guidElements) {
+			String guidRaw = albumguid.attr("href");
+			//System.out.println(guidRaw);
+			String guid = guidRaw.replace("/album/", "");
+			//System.out.println(guid);
+			albumGuidList.add("http://www.maniadb.com/album/" + guid);
+			if (++count >= 10)
+				break; // 최대 10개까지만 가져오기
+		}
+		artistDetail.setAlbumguid(albumGuidList);
+
+		
 		return artistDetail;
 	}
 
@@ -301,11 +317,11 @@ public class ManiaDBService {
 	public ArtistDetail mainArtistCrawling(String artistName) {
 	    // artistName으로 ManiaDB에서 검색
 	    List<Artist> artistList = parseXmlToArtistList(callManiaDBApi(artistName, "artist"));
-	    System.out.println(artistList);
+	    //System.out.println(artistList);
 	    
 	    // 검색 결과가 비어 있으면 null 반환
 	    if (artistList.isEmpty()) {
-	        System.out.println("검색 결과가 없습니다: " + artistName);
+	        //System.out.println("검색 결과가 없습니다: " + artistName);
 	        return null;
 	    }
 	    
@@ -328,6 +344,7 @@ public class ManiaDBService {
 		private String image;
 		private List<String> albumImageList;
 		private List<String> albumNameList;
+		private List<String> albumguid;
 		private String debutDate;
 
 		// Getters and setters
@@ -345,6 +362,14 @@ public class ManiaDBService {
 
 		public void setArtistName(String artistName) {
 			this.artistName = artistName;
+		}
+		
+		public List<String> getAlbumguid() {
+			return albumguid;
+		}
+
+		public void setAlbumguid(List<String> albumguid) {
+			this.albumguid = albumguid;
 		}
 
 		public String getPeriod() {

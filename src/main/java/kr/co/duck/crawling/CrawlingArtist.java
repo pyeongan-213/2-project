@@ -22,7 +22,7 @@ public class CrawlingArtist {
                                  .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36")
                                  .get();
 
-        System.out.println("Successfully connected to URL");
+        //System.out.println("Successfully connected to URL");
 
         // 아티스트 리스트를 포함한 요소 선택
         Elements artistElements = document.select("li.artistplus_li");
