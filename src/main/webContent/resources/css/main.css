@@ -116,32 +116,33 @@ body {
 
 /* 원형 이미지 설정 */
 .artist .artist-img {
-    width: 200px;
-    height: 200px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
     transition: transform 0.3s ease;
 }
 
 /* 앨범 이미지 설정 */
 .album .card-img-top {
-    width: 200px;
-    height: 200px;
+    width: 220px;
+    height: 220px;
     border-radius: 10px; /* 약간의 둥근 모서리 유지 */
 }
 
 /* 인기 아티스트 및 앨범 그리드 레이아웃 */
 .artists-grid, .albums-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
     gap: 20px; /* 항목 간 간격 */
     justify-items: center; /* 그리드 항목 중앙 정렬 */
     align-items: center;   /* 항목을 수직으로 중앙에 배치 */
+
 }
 
 /* 마우스 오버 시 확대 및 그림자 효과 */
 .artist:hover, .album:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* 재생 버튼 스타일 */
@@ -161,11 +162,13 @@ body {
     color: white;
     opacity: 0;
     transition: opacity 0.3s ease;
+    margin-top: 28px;
+    margin-left: 77px;
 }
 
 /* 마우스 올릴 때 재생 버튼이 나타남 */
 .artist:hover .play-button, .album:hover .play-button {
-    opacity: 1;
+    opacity: 0.95;
 }
 
 /* 모두 표시 링크 스타일 */
@@ -188,8 +191,35 @@ body {
 .artist-info, .card-body {
     text-align: center;
     color: #fff;
+    height: 90px;
 }
 
+/* 텍스트 스타일 */
+.artist-info h5, .card-body h5 {
+	margin-top: 10px;
+	font-size : 20px;
+	font-weight : bold;
+}
+
+.artist-info p, .card-body p {
+	font-size : 11px;
+	margin-top: -30px;
+}
+
+
+
+.section-title {
+	margin-top : 10px;
+	color : #EEEEEE;
+	font-size:32px;
+	font-weight: bold;
+}
+.section-artist {
+	margin-top : 35px;
+	color : #EEEEEE;
+	font-size:32px;
+	font-weight: bold;
+}
 /* Footer 스타일 */
 footer {
     width: 100%;
@@ -209,3 +239,20 @@ footer p {
     font-size: 14px;
     color: #fff;
 }
+
+
+/* playlist Modal 스타일 */
+.sidebar .modal { 
+    z-index: 1050; 
+    position: fixed; 
+}
+
+.sidebar .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+}
+
+.sidebar .modal-content {
+    padding: 20px;
+}
+

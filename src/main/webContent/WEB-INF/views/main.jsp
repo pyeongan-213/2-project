@@ -37,25 +37,22 @@
 		<!-- 메인 콘텐츠 영역 -->
 		<div class="main-content">
 			<!-- Header -->
-			<div class="header">
-				<h1 class="main-header">Welcome to DuckMusic</h1>
-			</div>
-
 			<!-- Section -->
 			<section class="main-container">
 				<!-- 인기 아티스트 섹션 -->
 				<div class="section">
 					<div
 						style="display: flex; justify-content: space-between; align-items: center;">
-						<h2 class="section-title">인기 아티스트</h2>
-						<a href="${root}/artists/all" class="see-all-link">모두 표시</a>
+						<h2 class="section-artist">인기 아티스트</h2>
+						<%-- <a href="${root}/artists/all" class="see-all-link">모두 표시</a> --%>
 					</div>
 					<div class="artists-grid">
 						<!-- 아티스트 정보 동적 출력 -->
 						<c:forEach var="artist" items="${artistList}">
 							<div class="artist">
-								<a href="${root}/search/crawlingArtistMain?artist=${artist.artist}"><img class="artist-img" src="${artist.img}"
-									alt="${artist.artist}"></a>
+								<a
+									href="${root}/search/crawlingArtistMain?artist=${artist.artist}"><img
+									class="artist-img" src="${artist.img}" alt="${artist.artist}"></a>
 								<div class="artist-info">
 									<h5>${artist.artist}</h5>
 									<p>아티스트</p>
@@ -67,18 +64,20 @@
 						</c:forEach>
 					</div>
 
+					<hr />
 					<div
 						style="display: flex; justify-content: space-between; align-items: center;">
 						<h2 class="section-title">인기 앨범</h2>
-						<a href="${root}/artists/all" class="see-all-link">모두 표시</a>
+						<%-- <a href="${root}/artists/all" class="see-all-link">모두 표시</a> --%>
 					</div>
 
 					<div class="albums-grid">
 						<!-- 앨범 정보 동적 출력 -->
 						<c:forEach var="album" items="${albumList}">
 							<div class="album">
-								<a href="${root}/search/crawlingAlbumMain?album_id=${album.album_id}"><img class="card-img-top" src="${album.img}"
-									alt="${album.title}"></a>
+								<a
+									href="${root}/search/crawlingAlbumMain?album_id=${album.album_id}"><img
+									class="card-img-top" src="${album.img}" alt="${album.title}"></a>
 								<div class="card-body">
 									<h5 class="fw-bolder">${album.title}</h5>
 									<p>${album.artist}</p>
