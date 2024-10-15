@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 public class ManiaDBService {
 
 	private static final String API_URL = "https://www.maniadb.com/api/search/%s/?sr=%s&key=example&v=0.5";
-
+	
 	public List<?> searchMusic(String query, String searchType) {
 		// API 호출 및 결과 가져오기 (XML 형식으로)
 		String xmlResult = callManiaDBApi(query, searchType);
@@ -102,6 +102,7 @@ public class ManiaDBService {
 				String description = item.select("description").text();
 				String link = item.select("link").text();
 
+				
 				// 트랙 리스트를 분할하여 저장
 				String[] majorsonglistArray = majorsonglistRaw.split(" / ");
 				List<String> majorSongList = Arrays.asList(majorsonglistArray);
@@ -144,6 +145,7 @@ public class ManiaDBService {
 				String albumimage = item.select("front image").text();
 				String trackListRaw = item.select("maniadbtracklist").text();
 				String description = item.select("description").text();
+				
 				
 				String guid = item.select("guid").text();
 				
@@ -200,8 +202,12 @@ public class ManiaDBService {
 		artistDetail.setPeriod(doc.select("td.artist-label:contains(ACTIVE) + td div").text());
 
 		// 설명 가져오기 (meta 태그)
-		artistDetail.setDescription(doc.select("meta[property=og:description]").first().attr("content"));
-
+		String description = doc.select("meta[property=og:description]").first().attr("content");
+	    if (description == null || description.isEmpty()) {
+	        description = "아티스트 세부정보가 없습니다";
+	    }
+	    artistDetail.setDescription(description);
+	    
 		// 앨범 아트 이미지 리스트 가져오기
 		Elements imgElements = doc.select("div.text div a img");
 		List<String> albumImageList = new ArrayList<>();
@@ -224,6 +230,22 @@ public class ManiaDBService {
 		}
 		artistDetail.setAlbumNameList(albumNameList);
 
+		// 앨범 guid 가져오기; 연결용
+		Elements guidElements = doc.select("div[style='width:150px'] a");
+		List<String> albumGuidList = new ArrayList<>();
+		count = 0;
+		for (Element albumguid : guidElements) {
+			String guidRaw = albumguid.attr("href");
+			//System.out.println(guidRaw);
+			String guid = guidRaw.replace("/album/", "");
+			//System.out.println(guid);
+			albumGuidList.add("http://www.maniadb.com/album/" + guid);
+			if (++count >= 10)
+				break; // 최대 10개까지만 가져오기
+		}
+		artistDetail.setAlbumguid(albumGuidList);
+
+		
 		return artistDetail;
 	}
 
@@ -232,7 +254,12 @@ public class ManiaDBService {
 		AlbumDetail albumDetail = new AlbumDetail();
 		albumDetail.setAlbumName(doc.select("div.album-title").first().text());
 		albumDetail.setArtistName(doc.select("div.album-artist a").text());
-		String description = doc.select("meta[property=og:description]").attr("content");
+		
+		// 설명 가져오기 (meta 태그)
+	    String description = doc.select("meta[property=og:description]").attr("content");
+	    if (description == null || description.isEmpty()) {
+	        description = "앨범 세부정보가 없습니다";
+	    }
 		if (description.length() > 1300) {
 		    description = description.substring(0, 1300); // 최대 200자까지 자르기
 		}
@@ -286,6 +313,30 @@ public class ManiaDBService {
 		return albumDetail;
 	}
 
+	
+	public ArtistDetail mainArtistCrawling(String artistName) {
+	    // artistName으로 ManiaDB에서 검색
+	    List<Artist> artistList = parseXmlToArtistList(callManiaDBApi(artistName, "artist"));
+	    //System.out.println(artistList);
+	    
+	    // 검색 결과가 비어 있으면 null 반환
+	    if (artistList.isEmpty()) {
+	        //System.out.println("검색 결과가 없습니다: " + artistName);
+	        return null;
+	    }
+	    
+	    // 첫 번째 아티스트의 link 값을 가져옴
+	    String artistLink = artistList.get(0).getLink();
+	    
+	    // 해당 링크로 아티스트 상세 정보를 스크래핑
+	    ArtistDetail artistDetail = (ArtistDetail) scrapeDetail(artistLink, "artist");
+	    
+	    return artistDetail;
+	}
+
+	
+	
+	
 	public class ArtistDetail {
 		private String artistName;
 		private String period;
@@ -293,6 +344,7 @@ public class ManiaDBService {
 		private String image;
 		private List<String> albumImageList;
 		private List<String> albumNameList;
+		private List<String> albumguid;
 		private String debutDate;
 
 		// Getters and setters
@@ -310,6 +362,14 @@ public class ManiaDBService {
 
 		public void setArtistName(String artistName) {
 			this.artistName = artistName;
+		}
+		
+		public List<String> getAlbumguid() {
+			return albumguid;
+		}
+
+		public void setAlbumguid(List<String> albumguid) {
+			this.albumguid = albumguid;
 		}
 
 		public String getPeriod() {
@@ -364,8 +424,7 @@ public class ManiaDBService {
 		private List<String> runningTimeList;
 		private List<String> albumRelease;
 
-		// Getters and setters
-
+		
 		
 		public String getArtistName() {
 			return artistName;

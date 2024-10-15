@@ -56,7 +56,9 @@
             <c:forEach var="album" items="${result.albumNameList}" varStatus="status">
                 <div class="album-item">
                     <!-- 앨범 아트 -->
+                    <a href="${root}/search/parseDetail?guid=${result.albumguid[status.index]}&type=album">
                     <img src="${result.albumImageList[status.index]}" alt="앨범 아트" class="album-art">
+                    </a>
                     <!-- 앨범 이름 -->
                     <p class="album-name">
                         <c:out value="${album}" />

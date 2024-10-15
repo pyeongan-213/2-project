@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -16,11 +15,11 @@
 </head>
 
 <body>
-<header>
+	<header>
 
-	<h1>오리둥둥이와 함께 음악을 시작해보세요.</h1>
+		<h1>오리둥둥이와 함께 음악을 시작해보세요.</h1>
 
-</header>
+	</header>
 
 	<h2>음악 스트리밍 구독</h2>
 	<b>3000만 곡의 무제한 음악과 유튜브 커버곡까지 이용할 수 있어요.</b>
@@ -89,50 +88,23 @@
 			$("#btn-month-pay").click(function(e) {
 				// 아래 데이터 외에도 필요한 데이터를 원하는 대로 담고, Controller에서 @RequestBody로 받으면 됨
 				let data = {
-					name: '스트리밍',    // 카카오페이에 보낼 대표 상품명
-					totalPrice: 9900 // 총 결제금액
+					name : '스트리밍', // 카카오페이에 보낼 대표 상품명
+					totalPrice : 9900
+				// 총 결제금액
 				};
 
 				$.ajax({
-					type: 'post',
-					url: '${root}temp/kakao/pay/ready',
-					data: JSON.stringify(data),
-					contentType: 'application/json',
-					success: function(response) {
+					type : 'post',
+					url : '${root}temp/kakao/pay/ready',
+					data : JSON.stringify(data),
+					contentType : 'application/json',
+					success : function(response) {
 						location.href = response.next_redirect_pc_url;
 					}
 				});
 			});
 		});
 	</script>
+	<script src="${root}/js/popup.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

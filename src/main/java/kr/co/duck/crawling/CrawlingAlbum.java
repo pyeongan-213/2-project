@@ -42,7 +42,7 @@ public class CrawlingAlbum {
 
         for (Element e : pg1) {
             String album_id = e.attr("album_id");
-            System.out.println(album_id);
+            //System.out.println(album_id);
             String img_src = e.selectFirst("div.cover img").attr("src");
             String img = "https:" + img_src;
             String title = e.selectFirst("div.info-album a.album-title").text();
