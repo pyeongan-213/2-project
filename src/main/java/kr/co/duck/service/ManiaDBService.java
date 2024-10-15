@@ -364,8 +364,7 @@ public class ManiaDBService {
 		private List<String> runningTimeList;
 		private List<String> albumRelease;
 
-		// Getters and setters
-
+		
 		
 		public String getArtistName() {
 			return artistName;

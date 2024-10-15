@@ -54,8 +54,8 @@
 						<!-- 아티스트 정보 동적 출력 -->
 						<c:forEach var="artist" items="${artistList}">
 							<div class="artist">
-								<img class="artist-img" src="${artist.img}"
-									alt="${artist.artist}">
+								<a href="${root}/search/parseDetail?guid=${artist.link}&type=artist"><img class="artist-img" src="${artist.img}"
+									alt="${artist.artist}"></a>
 								<div class="artist-info">
 									<h5>${artist.artist}</h5>
 									<p>아티스트</p>
@@ -77,8 +77,8 @@
 						<!-- 앨범 정보 동적 출력 -->
 						<c:forEach var="album" items="${albumList}">
 							<div class="album">
-								<img class="card-img-top" src="${album.img}"
-									alt="${album.title}">
+								<a href="${root}/search/crawlingAlbumMain?album_id=${album.album_id}"><img class="card-img-top" src="${album.img}"
+									alt="${album.title}"></a>
 								<div class="card-body">
 									<h5 class="fw-bolder">${album.title}</h5>
 									<p>${album.artist}</p>
