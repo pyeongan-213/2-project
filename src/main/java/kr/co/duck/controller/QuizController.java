@@ -58,7 +58,6 @@ public class QuizController {
     @GetMapping("/rooms/{roomId}/random")
     public ResponseEntity<?> quizStart(@PathVariable int roomId) {
         try {
-            System.out.println("퀴즈 시작 요청: roomId = " + roomId); // 로그 추가
             QuizMusic quiz = quizService.getRandomQuizQuestion(1); // quiz_id를 1로 명시
 
 
@@ -69,6 +68,7 @@ public class QuizController {
 
             // WebSocket 메시지 전송
             messagingTemplate.convertAndSend("/sub/quiz/" + roomId, quiz);
+            System.out.println("퀴즈 시작 요청: roomId = " + roomId); // 로그 추가
 
             // JSON 응답 반환		
             return ResponseEntity.ok(quiz);
@@ -79,6 +79,7 @@ public class QuizController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("퀴즈를 가져오는 중 오류가 발생했습니다.");
         }
+
     }
 
 

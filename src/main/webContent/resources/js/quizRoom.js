@@ -8,6 +8,16 @@ let countdownInterval = null;
 let hintIndex = 0; // 힌트 진행 상태를 저장할 변수
 let currentAnswer = ''; // 현재 퀴즈의 정답
 
+// 효과음 객체 생성 (효과음 파일 경로 설정)
+const correctAnswerSound = new Audio(`${root}/audio/correct_answer.mp3`);
+
+// 정답 맞췄을 때 효과음 재생 함수
+function playCorrectAnswerSound() {
+    correctAnswerSound.play().catch(error => {
+        console.error('오디오 재생 오류:', error);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const socket = new SockJS(`${root}/ws-stomp`);
     stompClient = Stomp.over(socket);
@@ -145,6 +155,7 @@ function skipQuiz(sender) {
     }));
 
     hideAnswerInfo();
+    hideHint();
     startQuiz(); // 즉시 다음 퀴즈 시작
 }
 
@@ -153,6 +164,7 @@ function checkAnswer(sender, userAnswer) {
     const trimmedAnswer = userAnswer.trim().toLowerCase();
     if (currentAnswers.includes(trimmedAnswer)) {
         console.log('정답입니다!');
+        playCorrectAnswerSound(); // 정답 맞췄을 때 효과음 재생
         displayAnswerInfo(sender);
         stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
             sender: '시스템',
@@ -176,8 +188,8 @@ function displayAnswerInfo(sender) {
 
 function hideHint() {
     const hintDisplay = document.getElementById('hint-info');
-    hintDisplay.classList.add('hidden');
-    hintDisplay.textContent = '';
+    hintDisplay.classList.add('none');
+    hintDisplay.textContent = ''
 }
 
 function startCountdown() {

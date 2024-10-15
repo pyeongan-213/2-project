@@ -17,6 +17,7 @@ html, body {
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
+	position: relative;
 }
 
 .quiz-room-main {
@@ -80,10 +81,15 @@ html, body {
 }
 
 .quiz-room-music-icon i {
-	font-size: 100px;
-	color: #6a6ae3;
-	transition: color 0.3s ease;
+    position: absolute;
+    top: 50%; /* 부모 요소의 세로 중앙 */
+    left: 70%; /* 살짝 오른쪽으로 이동 */
+    transform: translate(-0%, -70%); /* 중앙 정렬 유지 */
+    font-size: 100px;
+    color: #6a6ae3;
+    transition: color 0.3s ease;
 }
+
 
 /* 재생 중인 상태 스타일 */
 .quiz-room-music-icon.playing i {
@@ -94,7 +100,7 @@ html, body {
 #answer-info {
 	position: absolute;
 	top: 25%; /* 재생 버튼 위에 위치 */
-	left: 42%; /* 가운데 정렬 */
+	left: 45%; /* 가운데 정렬 */
 	transform: translate(-50%, -50%); /* 수평, 수직 중앙 정렬 */
 	text-align: center;
 	color: #ff66b2;
@@ -162,22 +168,63 @@ html, body {
 }
 
 /* 힌트 */
-.hint-display {
+#hint-info {
     position: absolute;
-    top: 30%;
-    width: 100%;
+    top: 25%; /* 부모 요소의 위쪽에 가까운 위치 */
+    left: 45%; /* 수평 중앙 정렬 */
+    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
     text-align: center;
     font-size: 1.5rem;
     color: #ff66b2;
     font-weight: bold;
-    display: none;
+    display: block; /* 기본적으로 숨김 */
+    z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
+    white-space: nowrap;
 }
+
+#next-quiz-timer {
+    position: absolute;
+    top: 31%; /* 화면 정가운데에서 조금 아래 위치 */
+    left: 46%; /* 수평 중앙 정렬 */
+    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+    font-size: 1.2rem; /* 텍스트 크기 */
+    color: #ffffff; /* 텍스트 색상 */
+    color: rgba(255, 255, 255, 0.85); /* 텍스트 반투명 효과 */
+    padding: 15px 25px; /* 패딩으로 내부 여백 설정 */
+    border-radius: 12px; /* 모서리를 더 둥글게 */
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); 그림자 추가 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    display: block; /* 기본적으로 숨김 */
+    z-index: 20; /* 다른 요소 위에 표시 */
+    white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
+    animation: fade-in 0.5s ease-in-out; /* 페이드인 애니메이션 */
+}
+
+/* 숨김 상태 */
+#next-quiz-timer.hidden {
+    display: none; /* 숨김 상태 */
+}
+
+/* 페이드인 애니메이션 */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+
+
 
 
 .gamebtn {
     position: absolute;
     top: 70%;
-    left: 45%;
+    left: 48%;
     transform: translate(-50%, -50%);
 }
 a {

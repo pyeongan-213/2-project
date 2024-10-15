@@ -66,8 +66,9 @@
 				</div>
 
 				<!-- 힌트 영역 -->
+				<div id = "hintDisplay">
 				<p id="hint-info" class="hidden"></p>
-
+				</div>
 				<!-- 음악 재생/일시정지 버튼 -->
 				<div class="quiz-room-music-icon" id="play-toggle-btn">
 					<i class="bi bi-play-circle-fill" id="play-icon"></i>
