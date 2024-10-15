@@ -54,7 +54,7 @@
 						<!-- 아티스트 정보 동적 출력 -->
 						<c:forEach var="artist" items="${artistList}">
 							<div class="artist">
-								<a href="${root}/search/parseDetail?guid=${artist.link}&type=artist"><img class="artist-img" src="${artist.img}"
+								<a href="${root}/search/crawlingArtistMain?artist=${artist.artist}"><img class="artist-img" src="${artist.img}"
 									alt="${artist.artist}"></a>
 								<div class="artist-info">
 									<h5>${artist.artist}</h5>

@@ -16,6 +16,7 @@ import kr.co.duck.beans.MemberBean;
 import kr.co.duck.crawling.CrawlingAlbumMain;
 import kr.co.duck.crawling.CrawlingAlbumMain.AlbumDetail;
 import kr.co.duck.service.ManiaDBService;
+import kr.co.duck.service.ManiaDBService.ArtistDetail;
 
 @Controller
 public class ManiaDBController {
@@ -87,4 +88,22 @@ public class ManiaDBController {
 		}
 
 	}
+	
+	// 메인페이지에서 상세페이지로 넘어가는 요청을 처리하는 매핑; 앨범 클래스
+		@GetMapping("search/crawlingArtistMain")
+		public String parseArtistToMain(@RequestParam("artist") String artist, Model model) {
+			try {
+				ArtistDetail result = maniaDBService.mainArtistCrawling(artist);
+
+				model.addAttribute("result", result);
+
+				return "search/searchArtistInfo";
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "main";
+			}
+
+		}
+	
 }
