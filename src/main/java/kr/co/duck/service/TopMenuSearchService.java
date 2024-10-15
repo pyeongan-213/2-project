@@ -136,7 +136,11 @@ public class TopMenuSearchService {
 	private ArtistDetail scrapeArtistDetail(Document doc) {
 		ArtistDetail artistDetail = new ArtistDetail();
 		artistDetail.setArtistName(doc.select("div.artist-name").first().text());
-		artistDetail.setImage(doc.select("div#ARTIST_PHOTO a.highslide img").attr("src"));
+		String artistImage = doc.select("div#ARTIST_PHOTO a.highslide img").attr("src");
+		artistImage = artistImage.replace("_t/260", "");
+		artistDetail.setImage(artistImage);
+		
+		
 		artistDetail.setPeriod(doc.select("td.artist-label:contains(ACTIVE) + td div").text());
 		artistDetail.setDescription(doc.select("meta[property=og:description]").first().attr("content"));
 

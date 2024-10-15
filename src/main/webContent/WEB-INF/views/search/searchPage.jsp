@@ -20,7 +20,7 @@
 <link rel="icon" type="image/png" sizes="48x48"
 	href="${root}/img/tabicon.png">
 <!-- CSS 및 Bootstrap 아이콘 추가 -->
-<link href="${root}/css/main.css" rel="stylesheet" type="text/css">
+<link href="${root}/css/searchPage.css" rel="stylesheet" type="text/css">
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet">
@@ -74,9 +74,9 @@
 					</c:forEach>
 				</div>
 			</div>
-			<br />
+
 			<hr />
-			<br />
+
 			<h2>앨범</h2>
 			<!-- MANIADB 에서 앨범 검색 내용 -->
 			<div class="albums-grid">
@@ -89,7 +89,7 @@
 								<img class="card-img-top" src="${album.albumimage}"
 								onerror="${root}/img/img_none_01.png">
 							</a>
-							<div class="card-body">
+							<div class="album-info">
 								<h5 class="fw-bolder">${album.albumName}</h5>
 								<p>${album.albumArtist}</p>
 							</div>

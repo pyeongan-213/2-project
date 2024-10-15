@@ -4,6 +4,12 @@ body {
     color: white;
 }
 
+div#contentContainer{
+	margin-top : 60px;
+	margin-left : 245px;
+}
+
+
 .artist-info {
     position: relative;
     display: flex;
@@ -15,7 +21,7 @@ body {
 
 .artist-photo {
     position: absolute;
-    top: 20px;
+    top: 50px;
     left: 20px;
     width: 360px;
     height: 360px;

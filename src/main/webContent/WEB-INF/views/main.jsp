@@ -50,9 +50,12 @@
 						<!-- 아티스트 정보 동적 출력 -->
 						<c:forEach var="artist" items="${artistList}">
 							<div class="artist">
+								<!-- artistImage 파라미터를 함께 전달 -->
 								<a
-									href="${root}/search/crawlingArtistMain?artist=${artist.artist}"><img
-									class="artist-img" src="${artist.img}" alt="${artist.artist}"></a>
+									href="${root}/search/crawlingArtistMain?artist=${artist.artist}&artistImage=${artist.img}">
+									<img class="artist-img" src="${artist.img}"
+									alt="${artist.artist}">
+								</a>
 								<div class="artist-info">
 									<h5>${artist.artist}</h5>
 									<p>아티스트</p>
@@ -62,6 +65,7 @@
 								</div>
 							</div>
 						</c:forEach>
+
 					</div>
 
 					<hr />
