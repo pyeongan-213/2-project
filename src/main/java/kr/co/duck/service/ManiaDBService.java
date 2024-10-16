@@ -234,7 +234,10 @@ public class ManiaDBService {
         if (description.length() > 1300) {
             description = description.substring(0, 1300); // 최대 200자까지 자르기
         }
-        albumDetail.setDescription(description);albumDetail.setImage(doc.select("div#body img").first().attr("src"));
+        albumDetail.setDescription(description);
+        String albumImage = doc.select("div#body img").first().attr("src");
+        albumImage = albumImage.replace("_t/260", "");
+        albumDetail.setImage(albumImage);
         // 트랙 리스트 가져오기
         Elements trackElements = doc.select("table.album-tracks div.song a");
         List<String> trackList = new ArrayList<String>();

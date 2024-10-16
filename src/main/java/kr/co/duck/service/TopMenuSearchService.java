@@ -189,7 +189,11 @@ public class TopMenuSearchService {
 			description = description.substring(0, 1300); // 최대 1300자까지 자르기
 		}
 		albumDetail.setDescription(description);
-		albumDetail.setImage(doc.select("div#body img").first().attr("src"));
+		String albumImage = doc.select("div#body img").first().attr("src");
+		albumImage = albumImage.replace("_t/260", "");
+		System.out.println(albumImage);
+		albumDetail.setImage(albumImage);
+		
 
 		Elements trackElements = doc.select("table.album-tracks div.song a");
 		List<String> trackList = new ArrayList<>();
