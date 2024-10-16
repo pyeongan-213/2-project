@@ -3,35 +3,39 @@ package kr.co.duck.beans;
 public class QuizRoomBean {
     private int quizRoomId;
     private String quizRoomName;
-    private String quizRoomPassword;
+    private String quizRoomPassword = "";
     private String owner;
     private int status;
     private int memberCount;
     private int maxCapacity;
     private int maxMusic;
-    private String quizQuestionType; // 퀴즈 질문 유형
+    private String quizRoomType; // 퀴즈 질문 유형
 
-    // 기본 생성자: 방 생성 시 멤버 카운트를 0으로 초기화
+
+    // 기본 생성자: 방 생성 시 멤버 카운트를 1로 초기화
     public QuizRoomBean() {
-        this.memberCount = 0; // 생성 시 인원 수를 0으로 초기화
+        this.memberCount = 1; // 생성 시 인원 수를 1으로 초기화
     }
 
-    // 모든 필드를 포함하는 생성자
+    // 모든 필드를 포함한 생성자
     public QuizRoomBean(int quizRoomId, String quizRoomName, String quizRoomPassword, String owner, int status,
-            int maxCapacity, int maxMusic, int memberCount, String quizQuestionType) {
+                        int memberCount, int maxCapacity, int maxMusic, String quizRoomType) {
         this.quizRoomId = quizRoomId;
         this.quizRoomName = quizRoomName;
         this.quizRoomPassword = quizRoomPassword;
         this.owner = owner;
         this.status = status;
-        this.memberCount = 0; // 방 생성 시 멤버 카운트 0으로 설정
+        this.memberCount = memberCount;
         this.maxCapacity = maxCapacity;
-        this.quizQuestionType = quizQuestionType; // 퀴즈 질문 유형 추가
         this.maxMusic = maxMusic;
+        this.quizRoomType = quizRoomType;
+
     }
+   
+   
+     
 
-    // Getter와 Setter 메서드
-
+	// Getter와 Setter 메서드
     public int getQuizRoomId() {
         return quizRoomId;
     }
@@ -96,11 +100,11 @@ public class QuizRoomBean {
         this.maxMusic = maxMusic;
     }
 
-    public String getQuizQuestionType() {
-        return quizQuestionType;
+    public String getQuizRoomType() {
+        return quizRoomType;
     }
 
-    public void setQuizQuestionType(String quizQuestionType) {
-        this.quizQuestionType = quizQuestionType;
+    public void setQuizRoomType(String quizRoomType) {
+        this.quizRoomType = quizRoomType;
     }
 }

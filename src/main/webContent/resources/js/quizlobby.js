@@ -13,29 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
         createRoomForm.addEventListener('submit', createRoom); // 방 생성 폼 제출 시 방 생성
     }
 
-    // 모달 닫기 버튼
+    selectMaxMusicEventListeners(); // 곡 수 선택 버튼 이벤트 등록
+
     const closeModalBtn = document.querySelector('.close');
     if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', () => {
-            closeModal();
-        });
+        closeModalBtn.addEventListener('click', closeModal); // 모달 닫기 버튼 클릭 시 모달 닫기
     }
 
     window.addEventListener('click', (event) => {
         const modal = document.getElementById('create-room-modal');
         if (event.target === modal) {
-            closeModal();
+            closeModal(); // 외부 클릭 시 모달 닫기
         }
     });
 });
 
-// 방 목록을 불러오는 함수
+// 방 목록 불러오기
 async function fetchRooms() {
     try {
         const response = await fetch(`${root}/quiz/rooms`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
         const data = await response.json();
         if (data && data.quizRoomBeanList) {
             updateRoomList(data.quizRoomBeanList);
@@ -47,54 +45,75 @@ async function fetchRooms() {
     }
 }
 
-// 방 목록을 업데이트하는 함수
+// 방 목록 업데이트
 function updateRoomList(rooms) {
     const roomListElement = document.getElementById('room-list');
-    roomListElement.innerHTML = ''; // 기존 목록을 초기화
+    roomListElement.innerHTML = ''; // 기존 목록 초기화
 
     rooms.forEach(room => {
         const listItem = document.createElement('li');
         listItem.innerHTML = `
-            <div class="room-info">
-                <span class="room-name">${room.quizRoomName}</span>
-                <span class="room-users">${room.memberCount} / ${room.maxCapacity}명</span>
-                <button class="join-room-btn" data-room-id="${room.quizRoomId}" 
-                    data-requires-password="${room.quizRoomPassword ? true : false}">
+           <div class="room-info">
+                <div class="room-details">
+                    <!-- 방 이름 표시 -->
+                    <span class="room-name">${room.quizRoomName}</span>
+                    <!-- 방장 이름을 'owner의 방' 형식으로 표시 -->
+                    <span class="room-owner">(${room.owner}의 방)</span>
+                    <!-- 인원 수 표시 -->
+                    <span class="room-users">${room.memberCount} / ${room.maxCapacity}명</span>
+                </div>
+                <button class="join-room-btn" 
+                    data-room-id="${room.quizRoomId}" 
+                    data-requires-password="${room.quizRoomPassword ? 'true' : 'false'}">
                     참여
                 </button>
             </div>`;
         roomListElement.appendChild(listItem);
     });
 
-    // 동적으로 생성된 방 참여 버튼에 클릭 이벤트 추가
-    addJoinRoomEventListeners();
+    addJoinRoomEventListeners(); // 참여 버튼에 이벤트 리스너 추가
 }
 
-// 모달 창 열기 함수 (방 생성)
+// 모달 열기
 function openCreateRoomModal() {
-    const modal = document.getElementById('create-room-modal');
-    modal.style.display = 'block';
+    document.getElementById('create-room-modal').style.display = 'block';
 }
 
-// 모달 창 닫기 함수
+// 모달 닫기
 function closeModal() {
-    const modal = document.getElementById('create-room-modal');
-    modal.style.display = 'none';
+    document.getElementById('create-room-modal').style.display = 'none';
 }
 
-// 방 생성 함수
+// 곡 수 선택 이벤트 리스너 추가
+function selectMaxMusicEventListeners() {
+    const buttons = document.querySelectorAll('.music-button');
+    const maxMusicInput = document.getElementById('maxMusic');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            buttons.forEach(btn => btn.classList.remove('selected')); // 모든 버튼에서 선택 해제
+            button.classList.add('selected'); // 선택된 버튼에 클래스 추가
+            maxMusicInput.value = button.getAttribute('data-value'); // 선택한 값 설정
+        });
+    });
+}
+
+// 방 생성 처리
 async function createRoom(event) {
     event.preventDefault(); // 폼 기본 제출 방지
 
-    const roomName = document.getElementById('roomName').value;
+  	const roomName = document.getElementById('roomName').value;
     const maxCapacity = document.getElementById('maxCapacity').value;
     const maxMusic = document.getElementById('maxMusic').value;
-    const quizType = document.getElementById('quizType').value;
+    const quizRoomType = document.getElementById('quizRoomType').value;
 
-    if (!roomName) {
-        alert('방 이름을 입력해야 합니다.');
+    if (!roomName || !maxCapacity || !maxMusic || !quizRoomType) {
+        console.error('필수 입력 요소가 DOM에 없습니다.');
+        alert('필수 입력 요소를 확인해주세요.');
         return;
     }
+ console.log(`방 이름: ${roomName}, 최대 인원: ${maxCapacity}, 최대 곡 수: ${maxMusic}, 퀴즈 타입: ${quizRoomType}`); // 확인용 로그
+   
 
     try {
         const response = await fetch(`${root}/quiz/rooms/create`, {
@@ -104,41 +123,27 @@ async function createRoom(event) {
                 quizRoomName: roomName,
                 maxCapacity: maxCapacity,
                 maxMusic: maxMusic,
-                quizQuestionType: quizType
+                quizRoomType: quizRoomType
             })
         });
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
 
-        const data = await response.json();
-        if (data.success) {
+        if (response.ok) {
+            const data = await response.json();
             alert('방이 생성되었습니다!');
             currentRoomId = data.roomId;
-            closeModal(); // 모달 창 닫기
+            console.log(`[INFO] 생성된 방 ID: ${currentRoomId}`); // 확인용 로그
+            closeModal(); // 모달 닫기
             window.location.href = `${root}/quiz/rooms/${data.roomId}`;
         } else {
-            alert('방 생성에 실패했습니다: ' + (data.message || '알 수 없는 오류'));
+            alert('방 생성에 실패했습니다.');
         }
     } catch (error) {
         console.error('방 생성 오류:', error);
-        alert('방 생성 중 오류가 발생했습니다: ' + error.message);
+        alert('방 생성 중 오류가 발생했습니다.');
     }
 }
-function selectMaxMusicEventListeners() {
-	document.querySelectorAll('.music-button').forEach(button => {
-    	button.addEventListener('click', () => {
-       	 // 모든 버튼 선택 해제
-       	document.querySelectorAll('.music-button').forEach(btn => btn.classList.remove('selected'));
 
-        // 클릭한 버튼에 선택 표시 및 값 설정
-        button.classList.add('selected');
-        document.getElementById('maxMusic').value = button.getAttribute('data-value');
-    });
-});
-}
-
-// 방 참여 이벤트 리스너 추가 함수
+// 참여 버튼 이벤트 리스너 추가
 function addJoinRoomEventListeners() {
     document.querySelectorAll('.join-room-btn').forEach(button => {
         button.addEventListener('click', () => {
@@ -151,9 +156,9 @@ function addJoinRoomEventListeners() {
             }
 
             if (requiresPassword) {
-                openPasswordModal(roomId);
+                openPasswordModal(roomId); // 비밀번호가 필요하면 모달 열기
             } else {
-                joinRoom(roomId);
+                joinRoom(roomId); // 아니면 바로 참여
             }
         });
     });
@@ -164,18 +169,18 @@ function openPasswordModal(roomId) {
     const passwordModal = document.getElementById('password-modal');
     passwordModal.style.display = 'block';
 
-    document.getElementById('submit-password').onclick = function() {
+    document.getElementById('submit-password').onclick = function () {
         const roomPassword = document.getElementById('roomPassword').value;
-        joinRoom(roomId, roomPassword);
+        joinRoom(roomId, roomPassword); // 비밀번호와 함께 참여 시도
         passwordModal.style.display = 'none';
     };
 
-    document.querySelector('.close-password-modal').onclick = function() {
+    document.querySelector('.close-password-modal').onclick = function () {
         passwordModal.style.display = 'none';
     };
 }
 
-// 방 참여 함수
+// 방 참여 처리
 async function joinRoom(roomId, roomPassword = '') {
     if (!currentUserId) {
         alert('로그인 후 사용해 주세요.');
@@ -195,20 +200,15 @@ async function joinRoom(roomId, roomPassword = '') {
             body: JSON.stringify(requestData)
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (data.success) {
+        if (response.ok) {
             alert('방에 참여하였습니다!');
             currentRoomId = roomId;
             window.location.href = `${root}/quiz/rooms/${roomId}`;
         } else {
-            alert('방 참여에 실패했습니다: ' + (data.message || '알 수 없는 오류'));
+            alert('방 참여에 실패했습니다.');
         }
     } catch (error) {
         console.error('방 참여 오류:', error);
-        alert('방 참여 중 오류가 발생했습니다: ' + error.message);
+        alert('방 참여 중 오류가 발생했습니다.');
     }
 }

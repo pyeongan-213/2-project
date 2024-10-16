@@ -52,22 +52,26 @@
 			<!-- 플레이어 목록 -->
 			<div class="player-list-container">
 				<div class="player-list">
-					<p>플레이어 목록</p>
 					<ul id="players"></ul>
 				</div>
 			</div>
-
+			<!-- 퀴즈 유형 안내 -->
+			<div>
+				<p id="quiz-instruction"></p>
+			</div>
 			<!-- 퀴즈 게임 영역 -->
 			<div class="quiz-room-game-center">
 				<!-- 정답자 및 곡 정보 (재생 버튼 위) -->
 				<div id="answer-info" class="answer-info hidden">
-					<p id="correct-player" class="answer-player"></p><!-- 정답자 -->
-					<p id="song-info" class="song-info"></p><!-- 곡 정보 -->		
+					<p id="correct-player" class="answer-player"></p>
+					<!-- 정답자 -->
+					<p id="song-info" class="song-info"></p>
+					<!-- 곡 정보 -->
 				</div>
 
 				<!-- 힌트 영역 -->
-				<div id = "hintDisplay">
-				<p id="hint-info" class="hidden"></p>
+				<div id="hintDisplay">
+					<p id="hint-info" class="hidden"></p>
 				</div>
 				<!-- 음악 재생/일시정지 버튼 -->
 				<div class="quiz-room-music-icon" id="play-toggle-btn">
@@ -80,12 +84,11 @@
 				<!-- 게임 시작 버튼 -->
 				<!-- <button id="start-quiz-btn" class="quiz-room-btn">게임 시작</button> -->
 				<div class="gamebtn">
-    			<a href="#" id="start-quiz-btn" class="quiz-room-btn">
-       					 <span data-attr="Game"></span>
-        				<span data-attr="Start">Now</span>
-   					 </a>
-					</div>
-					
+					<a href="#" id="start-quiz-btn" class="quiz-room-btn"> <span
+						data-attr="Game"></span> <span data-attr="Start">Now</span>
+					</a>
+				</div>
+
 				<!-- 유튜브 플레이어 -->
 				<div id="quiz-area" class="quiz-room-quiz-area">
 					<iframe id="youtube-player" width="0" height="0" frameborder="0"
@@ -93,6 +96,20 @@
 				</div>
 			</div>
 
+			<!-- 명령어 툴팁 컨테이너 -->
+			<div id="command-tooltip" class="tooltip hidden">
+				<div class="tooltip-header">
+					<span><strong>&nbsp;명령어
+							모음</strong></span>
+					<button id="tooltip-minimize-btn">ㅡ</button>
+				</div>
+				<div id="tooltip-body" class="tooltip-body">
+					<p>&nbsp;!힌트 or !hint</p>
+					<p>&nbsp;!스킵 or !skip</p>
+				</div>	
+			</div>
+				<!-- 최대화 버튼 (초기에는 숨김 처리) -->
+				<button id="tooltip-maximize-btn" class="hidden">+</button>
 			<!-- 채팅 영역 -->
 			<div class="quiz-room-chat-section">
 				<div id="chat-messages" class="quiz-room-chat-messages"></div>
@@ -102,6 +119,7 @@
 					<button id="send-chat-btn" class="quiz-room-chat-btn">전송</button>
 				</div>
 			</div>
+
 		</div>
 	</div>
 

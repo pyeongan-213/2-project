@@ -2,10 +2,6 @@ package kr.co.duck.domain;
 
 import org.springframework.stereotype.Service;
 
-import kr.co.duck.domain.QuizRoom;
-import kr.co.duck.domain.QuizRoomAttendee;
-import kr.co.duck.domain.QuizStartSet;
-import kr.co.duck.domain.Reward;
 import kr.co.duck.repository.QuizRoomAttendeeRepository;
 import kr.co.duck.repository.QuizRoomRepository;
 import kr.co.duck.repository.QuizStartSetRepository;
@@ -31,6 +27,11 @@ public class QuizCommand {
 	////////////// TODO QuizRoom 관련
 	// 퀴즈방 저장하기
 	public void saveQuizRoom(QuizRoom quizRoom) {
+		if (quizRoom.getQuizRoomType() == null || quizRoom.getQuizRoomType().isBlank()) {
+			System.out.println("[ERROR] QuizRoom 엔티티에 quizRoomType이 설정되지 않았습니다.");
+		} else {
+			System.out.println("[INFO] QuizRoom 저장: " + quizRoom);
+		}
 		quizRoomRepository.save(quizRoom);
 	}
 
@@ -66,4 +67,5 @@ public class QuizCommand {
 	public void saveReward(Reward reward) {
 		rewardRepository.save(reward);
 	}
+
 }

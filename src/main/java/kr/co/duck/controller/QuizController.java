@@ -24,76 +24,84 @@ import kr.co.duck.util.CustomException;
 @RequestMapping("/quiz")
 public class QuizController {
 
-    private final QuizService quizService;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final QuizService quizService; // 퀴즈 서비스 객체
+    private final SimpMessagingTemplate messagingTemplate; // 메시지 전송 템플릿(WebSocket)
 
-    // **생성자 주입**
+    // **생성자 주입을 통한 의존성 주입**
     public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate) {
         this.quizService = quizService;
         this.messagingTemplate = messagingTemplate;
     }
 
-    // **퀴즈 생성 (QuizMusic 저장)**
+    // **퀴즈 생성: QuizMusic 객체를 저장**
     @PostMapping("/create")
     public ResponseEntity<String> createQuiz(@RequestBody QuizMusic quizMusic) {
-        quizService.createQuiz(quizMusic);
-        return ResponseEntity.ok("퀴즈가 생성되었습니다.");
+        quizService.createQuiz(quizMusic); // 퀴즈 저장
+        return ResponseEntity.ok("퀴즈가 생성되었습니다."); // 응답 반환
     }
 
     // **모든 퀴즈 목록 가져오기**
     @GetMapping("/list")
     public ResponseEntity<List<QuizMusic>> getAllQuizzes() {
-        List<QuizMusic> quizzes = quizService.getAllQuizzes();
-        return ResponseEntity.ok(quizzes);
+        List<QuizMusic> quizzes = quizService.getAllQuizzes(); // 모든 퀴즈 가져오기
+        return ResponseEntity.ok(quizzes); // 응답으로 퀴즈 목록 반환
     }
 
-    // **특정 퀴즈의 모든 문제 가져오기**
+    // **특정 퀴즈의 모든 문제를 가져오기**
     @GetMapping("/details/{quizId}")
     public ResponseEntity<List<QuizMusic>> getQuizByQuizId(@PathVariable int quizId) {
-        List<QuizMusic> quizList = quizService.getQuizByQuizId(quizId);
-        return ResponseEntity.ok(quizList);
+        List<QuizMusic> quizList = quizService.getQuizByQuizId(quizId); // 특정 퀴즈 문제 조회
+        return ResponseEntity.ok(quizList); // 문제 목록 반환
     }
-    
-    // **퀴즈를 랜덤으로 뽑아옴**
+
+ // **랜덤 퀴즈 시작: 방 ID와 연관된 퀴즈 문제 가져오기**
     @GetMapping("/rooms/{roomId}/random")
     public ResponseEntity<?> quizStart(@PathVariable int roomId) {
+        System.out.println("[INFO] 랜덤 퀴즈 요청: roomId = " + roomId); // 로그 추가
+
         try {
-            QuizMusic quiz = quizService.getRandomQuizQuestion(1); // quiz_id를 1로 명시
+            // **퀴즈 유형 가져오기 (예: songTitle 또는 artistName)**
+            String quizType = quizService.getQuizTypeForRoom(roomId); 
+            System.out.println("[INFO] 퀴즈 유형: " + quizType); // 로그 추가
 
+            // **랜덤 퀴즈 문제 가져오기**
+            QuizMusic quiz = quizService.getRandomQuizQuestion(roomId, quizType);
+            System.out.println("[INFO] 선택된 퀴즈: " + quiz); // 로그 추가
 
-            if (quiz == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("퀴즈를 찾을 수 없습니다.");
-            }
-
-            // WebSocket 메시지 전송
+            // **WebSocket을 통해 퀴즈 문제 전송**
             messagingTemplate.convertAndSend("/sub/quiz/" + roomId, quiz);
-            System.out.println("퀴즈 시작 요청: roomId = " + roomId); // 로그 추가
+            System.out.println("[INFO] 퀴즈 시작 메시지 전송 완료: roomId = " + roomId); // 로그 추가
 
-            // JSON 응답 반환		
-            return ResponseEntity.ok(quiz);
+            // **퀴즈 문제를 JSON 응답으로 반환**
+            Map<String, Object> response = new HashMap<>();
+            response.put("quiz", quiz);
+            response.put("quizType", quizType); // 퀴즈 유형 포함
+
+            return ResponseEntity.ok(response);
         } catch (CustomException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+            System.err.println("[ERROR] CustomException 발생: " + e.getMessage()); // 로그 추가
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
+            System.err.println("[ERROR] 예상치 못한 오류 발생: " + e.getMessage()); // 로그 추가
+            e.printStackTrace(); // 전체 스택 트레이스 출력
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("퀴즈를 가져오는 중 오류가 발생했습니다.");
         }
-
     }
 
 
+    // **사용자 정답 제출 처리**
     @PostMapping("/answer/{memberId}")
     public ResponseEntity<String> submitAnswer(
             @PathVariable int memberId,
             @RequestParam int quizId,
             @RequestParam String answer) {
 
-        // DB에 저장된 정답과 사용자의 입력 비교
+        // 사용자가 제출한 정답과 DB 정답 비교
         boolean isCorrect = quizService.submitAnswer(memberId, quizId, answer.trim());
 
-        // 정답 메시지 생성
         if (isCorrect) {
+            // 정답 메시지 생성
             Map<String, Object> answerMessage = new HashMap<>();
             answerMessage.put("isCorrect", true); // 정답 여부
             answerMessage.put("playerId", memberId); // 정답자 ID
@@ -101,18 +109,18 @@ public class QuizController {
 
             // WebSocket을 통해 정답 메시지 전송
             messagingTemplate.convertAndSend("/sub/quiz/answer/" + quizId, answerMessage);
-            
-            return ResponseEntity.ok("정답입니다!"); // 정답 응답 반환
+
+            // 정답 응답 반환
+            return ResponseEntity.ok("정답입니다!");
         } else {
             return ResponseEntity.ok(""); // 오답일 경우 빈 응답 반환
         }
     }
 
-
     // **퀴즈 삭제**
     @DeleteMapping("/delete/{quizId}")
     public ResponseEntity<String> deleteQuiz(@PathVariable int quizId) {
-        quizService.deleteQuiz(quizId);
-        return ResponseEntity.ok("퀴즈가 삭제되었습니다.");
+        quizService.deleteQuiz(quizId); // 퀴즈 삭제
+        return ResponseEntity.ok("퀴즈가 삭제되었습니다."); // 응답 반환
     }
-} 
+}

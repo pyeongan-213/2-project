@@ -40,8 +40,8 @@ public enum StatusCode {
 	KEYWORD_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "검색 결과가 없습니다."),
 	FILE_DELETE_FAILED(HttpStatus.NOT_FOUND, "404", "파일 삭제 실패"),
 	FILE_CONVERT_FAILED(HttpStatus.NOT_FOUND, "404", "파일 전환 실패"),
-	QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "Quiz not found"), // QUIZ_NOT_FOUND를 enum에 추가
-	
+	QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "퀴즈를 찾을 수 없습니다."), 
+	NOT_FOUND_ROOM(HttpStatus.NOT_FOUND, "404", "방을 찾을 수 없습니다."),
 	// TODO ========================= 성공 응답 코드 ===============================
 	OK(HttpStatus.OK, "200", "응답이 정상 처리 되었습니다."), LOGIN_OK(HttpStatus.OK, "200", "로그인 되셨습니다!"),
 	LOGOUT_OK(HttpStatus.OK, "200", "로그아웃 되셨습니다!"), SIGNUP_OK(HttpStatus.OK, "200", "회원가입에 성공했습니다."),

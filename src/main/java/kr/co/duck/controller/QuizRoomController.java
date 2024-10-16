@@ -67,7 +67,7 @@ public class QuizRoomController {
         try {
             QuizRoomBean quizRoom = quizRoomService.findRoomById(roomId);
             model.addAttribute("room", quizRoom);
-            model.addAttribute("quizQuestionType", quizRoom.getQuizQuestionType());
+            model.addAttribute("quizQuestionType", quizRoom.getQuizRoomType());
 
             return "quiz/quizRoom"; // quizRoom.jsp로 이동
         } catch (CustomException e) {
@@ -79,7 +79,8 @@ public class QuizRoomController {
     // **퀴즈방 생성 API**
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createRoom(@RequestBody QuizRoomBean quizRoomBean, HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
+    	 System.out.println("[INFO] 방 생성 요청: " + quizRoomBean);  // 생성된 방 정보 로그
+    	Map<String, Object> response = new HashMap<>();
         MemberBean loginMemberBean = (MemberBean) session.getAttribute("loginMemberBean");
 
         if (loginMemberBean == null || !loginMemberBean.isMemberLogin()) {
@@ -166,7 +167,11 @@ public class QuizRoomController {
     public ResponseEntity<Map<String, Object>> quizStart(@PathVariable int roomId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            QuizMusic quiz = quizService.getRandomQuizQuestion(roomId);
+            // 방 ID로 퀴즈 유형 가져오기
+            String quizType = quizService.getQuizTypeForRoom(roomId);
+
+            // 방 ID를 사용해 랜덤 퀴즈 가져오기 (quizId를 1로 가정)
+            QuizMusic quiz = quizService.getRandomQuizQuestion(1, quizType); 
 
             response.put("success", true);
             response.put("quiz", quiz);
@@ -181,6 +186,7 @@ public class QuizRoomController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 
 
     // **퀴즈방 나가기 API**
