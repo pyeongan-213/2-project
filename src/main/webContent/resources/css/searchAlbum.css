@@ -41,6 +41,7 @@ body {
 }
 
 .album-info {
+	color: #EEEEEE;
 	display: flex;
 	margin-bottom: 30px;
 	background-color: #1E1E1E;
@@ -50,8 +51,12 @@ body {
 }
 
 .album-art img {
-	width: 400px;
-	height: 400px;
+	width: 30vw; /* 화면 너비의 40% */
+	height: 30vw; /* 화면 너비의 40% */
+	max-width: 400px; /* 최대 크기 설정 */
+	max-height: 400px; /* 최대 크기 설정 */
+	min-width: 150px; /* 최소 크기 설정 */
+	min-height: 150px; /* 최소 크기 설정 */
 	border-radius: 20px;
 	object-fit: cover;
 	margin-top: 20px;
@@ -59,8 +64,15 @@ body {
 }
 
 .album-details {
+	color: #EEEEEE;
 	margin-left: 30px;
 	max-width: 800px;
+}
+
+.album-details h6{
+	font-size : 11px;
+	font-weight: 500;
+	max-width: 720px;
 }
 
 h1 {
@@ -105,13 +117,18 @@ h1 {
 	box-shadow: 0 6px 6px -6px #0E1119;
 }
 
-.album-table th h3 {
+.album-table thead th h3 {
 	font-weight: bold;
 	font-size: 1em;
 	text-align: center;
-	color: #185875;
+	color: #33FF33;
 }
-
+.album-table tbody td {
+	
+	font-size: 1em;
+	text-align: center;
+	color: #EEEEEE;
+}
 .column-count {
 	width: 5%; /* 숫자 열 */
 	text-align: center;

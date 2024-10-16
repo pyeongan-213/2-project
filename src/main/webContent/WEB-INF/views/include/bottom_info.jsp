@@ -13,6 +13,12 @@
 <!-- Footer-->
 	<footer class="py-5 bg-dark">
 		<div class="container">
+			<p class="Makers"><span>Born in Soldesk 903 &emsp;Create by ProjectDuck</span></p>
+			<p> 
+			<span>Thanks to visit our <a href="https://github.com/enrit1016/Project_2">Our Git!</a></span></p>
+			
+			<p class="SoldeInformation"><span>Company &nbsp;&nbsp;:&nbsp;&nbsp;<a href="https://soldesk.com/"> Soldesk </a>&nbsp;/</span><span>&emsp;</span><span>tel&nbsp;&nbsp;:&nbsp;&nbsp;02-456-1234</span></p>
+			<br />
 			<p class="m-0 text-center text-white">Copyright &copy; Your
 				Website 2023</p>
 		</div>

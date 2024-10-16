@@ -45,6 +45,7 @@ public class CrawlingAlbum {
             //System.out.println(album_id);
             String img_src = e.selectFirst("div.cover img").attr("src");
             String img = "https:" + img_src;
+            img = img.replace("200x200", "600x600");
             String title = e.selectFirst("div.info-album a.album-title").text();
             String artist = e.selectFirst("div.info-album a.artist").text();
 
