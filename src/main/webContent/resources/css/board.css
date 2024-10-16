@@ -1,45 +1,31 @@
 @charset "UTF-8";
-
-p {
-	background: white;
-	color: black;
-}
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
 a {
 	text-decoration: none;
-	color: white;
 }
 
 body {
 	color: white;
 	background-color: black;
-	margin: auto;
     padding: 0;
 	background: black;
 	display: flex;
-	justify-content: center;
 	min-height: 100vh;
 	width: 100%;
-	max-width: 1200px;
 	overflow-x: hidden; 
 }
 
-.container {
+.board-container {
 	display: flex;
-	flex-direction: column; /* 수직 방향으로 정렬 */
-	/*width: 70%;  원하는 너비 설정 */
+	flex-direction: column;
 	background: black; /* 배경 색상 추가 (선택 사항) */
-	margin: 0 10px;
+    margin: 80px 30px 20px 250px;
 	justify-content: center;
 }
 
-.content_title{
-	font-weight: bold;
-	font-size: 22px;
-}
-
-button.c_btn {
-	color: white;
+.c_btn {
+	color:white;
 	background-color: black;
 	margin: 10px;
 	border: none; /* 테두리 제거 */
@@ -51,13 +37,25 @@ button.c_btn {
 	transition: background-color 0.3s, transform 0.3s; /* 효과 전환 */
 }
 
-button.c_btn:hover {
+.c_btn > a{
+	color: white;
+}
+
+.c_btn:hover {
 	background: white;
 	color: black;
 }
 
-button.c_btn.active{
+.c_btn:hover a{
+	color: black;
+}
+
+.c_btn.active{
 	background: white;
+	color: black;
+}
+
+.c_btn.active a{
 	color: black;
 }
 
@@ -68,11 +66,14 @@ input {
 	border-bottom: 1px solid gray;
 	margin-bottom: 10px;
 	font-size: 16px;
+	transition: border-image-source 0.5s ease;
+	border-image: linear-gradient(to right, gray 100%, transparent 50%);
+	border-image-slice: 1;
 }
 
 input:focus {
 	outline: none;
-	border-bottom-color: #33FF33;
+	border-image-source: linear-gradient(to right, #33FF33 0%, #33FF33 100%); /* 포커스 시 그라디언트 변경 */
 }
 
 table {
@@ -98,16 +99,26 @@ thead th {
 	background: #74E885;
 	color: black;
 	border: none;
-	border-radius: 3px;
+	border-radius: 4px;
 	padding: 5px 20px;
-	font-size: 14px;
+	font-size: 13px;
 	text-decoration: none;
 	cursor: pointer;
 	transition: background-color 0.3s
 }
 
+.write-btn a {
+	text-decoration: none;
+	color: black;
+}
+
 .write-btn:hover {
 	background: #BC5ADC;
+}
+
+.pagination {
+	margin: 0 auto;
+	text-align: center;
 }
 
 .pagination > ul{
@@ -120,7 +131,8 @@ thead th {
 }
 
 .page-item > a{
-   text-decoration: none;
+	color: white;
+	text-decoration: none;
 }
 
 .page-item-disabled{
@@ -155,38 +167,63 @@ thead th {
 
 .fixed-button {
     display: block; /* 블록 요소로 설정 (flexbox 관련 속성은 사용하지 않음) */
-    width: 65px; /* 버튼의 너비를 40px로 설정 */
-    height: 65px; /* 버튼의 높이를 40px로 설정 */
-    background-color: #007BFF; /* 버튼의 배경색을 파란색으로 설정 */
+    width: 60px; /* 버튼의 너비를 40px로 설정 */
+    height: 60px; /* 버튼의 높이를 40px로 설정 */
+    background-color: #b100ff; /* 버튼의 배경색을 파란색으로 설정 */
+    color: white;
     border: none; /* 버튼의 테두리를 제거 */
     border-radius: 50%; /* 버튼을 원형으로 만듦 */
     font-size: 40px;
     cursor: pointer; /* 버튼 위에 마우스를 올렸을 때 손 모양의 커서 표시 */
     outline: none; /* 버튼의 포커스 아웃라인을 제거 */
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    transform: rotate(0);
+    position: relative;
+}
+
+.fixed-button:active {
+    transform: scale(0.9); /* 클릭 시 약간 줄어드는 효과 */
+}
+
+.fixed-button.active{
+	background: gray;
+	transform: rotate(45deg);
+}
+
+.fixed-button.active:active {
+    transform: scale(0.9); /* 클릭 시 약간 줄어드는 효과 */
 }
 
 .fixed-content {
     display: none; /* 기본적으로 콘텐츠를 숨김 */
     position: absolute; /* 버튼의 절대 위치에 상대적으로 위치 설정 */
-    bottom: 100px; /* 버튼 위 50px 거리에서 시작 */
+    bottom: 85px; /* 버튼 위 85px 거리에서 시작 */
     right: 0; /* 버튼과 같은 우측에 위치 */
     width: 300px; /* 콘텐츠의 너비를 200px로 설정 */
-    background-color: #fff; /* 콘텐츠 배경색을 흰색으로 설정 */
-    border: 1px solid #ddd; /* 콘텐츠 테두리를 연한 회색으로 설정 */
+    height: 548px;
+    background-color: #f7f7f8; /* 콘텐츠 배경색을 흰색으로 설정 */
+    border: 1px solid #f7f7f8; /* 콘텐츠 테두리를 연한 회색으로 설정 */
     border-radius: 4px; /* 콘텐츠의 모서리를 둥글게 설정 */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 콘텐츠에 그림자를 추가하여 입체감을 줌 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 콘텐츠에 그림자를 추가하여 입체감	을 줌 */
     padding: 10px; /* 콘텐츠 내부에 10px의 여백 추가 */
+    opacity: 0; /* 초기 투명도 */
+    transform: translateY(20px); /* 초기 위치를 살짝 아래로 이동 */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* 부드러운 전환 효과 */
 }
 
 .fixed-content h3 {
 	color: black;
-	background: white;
+	background: transparent;
 	margin: 10px 5px;
+}
+
+.fixed-content label {
+	margin-bottom: 5px;
 }
 
 .fixed-content p {
     color: black; /* 글자 색상 설정 */
-    background: white; /* 배경색 설정 (필요한 경우) */
+    background: transparent;
     margin-top: 0px;
     margin-bottom: 2px; /* 단락 간의 여백 조정 */
 }
@@ -208,6 +245,56 @@ thead th {
 	background-color: inherit;
 }
 
+.back {
+	margin: 1em auto;
+	font-family: "Roboto";
+}
+
+.back span {
+	font-size: 3em;
+	color: #4A90E2;
+	background: #1A1F24;
+	display: table-cell;
+	padding: 0 15px;
+	line-height: 100px;
+	animation: jumb 2s infinite;
+}
+
+@keyframes jumb {
+	0% {
+		transform:translateY(0px)
+	}
+	50% {
+		transform:translateY(-30px);
+		box-shadow:0 0 5px rgba(0, 204, 255, 0.8);
+	}
+	100% {
+		transform:translateY(0px) 
+	}
+}
+
+.back span:nth-child(1) {
+	animation-delay: 0s;
+}
+.back span:nth-child(2) {
+	animation-delay: .1s;
+}
+.back span:nth-child(3) {
+	animation-delay: .2s;
+}
+.back span:nth-child(4) {
+	animation-delay: .3s;
+}
+.back span:nth-child(5) {
+	animation-delay: .4s;
+}
+.back span:nth-child(6) {
+	animation-delay: .5s;
+}
+.back span:nth-child(7) {
+	animation-delay: .6s;
+}
+
 .send-mail {
 	background: linear-gradient(to right, #9100f9 , #b700ff 90%);
     color: white;
@@ -216,19 +303,19 @@ thead th {
     padding: 10px 20px;
     text-align: center;
     text-decoration: none; /* 밑줄 제거 */
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     font-size: 16px;
     border-radius: 20px;
     cursor: pointer;
+    margin-top: 7px;
 }
 
 .content_text{
 	text-align: center; 
 	margin: 20px 0;
-}
-
-select option {
-    background-color: white;
 }
 
 .ck-content {
@@ -241,61 +328,178 @@ select option {
     color: black;
 }
 
-select {
-	width: 150px;
-	outline: none;
-	padding: 4px 3px;
+.content-box{
+	background: #303030;
+	margin: 10px;
+	padding: 15px;
+	border-radius: 20px;
+	width: 100%;
+	box-sizing: border-box;
+	margin-bottom: 40px;
+}
+
+
+.content_title{
+	background: #464545;
+	padding: 25px;
+	border-radius: 10px;
+	font-weight: bold;
+	font-size: 20px;
+	margin-bottom: 15px;
+}
+
+.content_text {
+	all: unset;
+	color: white;
+	background: #464545;
+	padding: 10px 25px 32px;
+	border-radius: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	display: inline-block;
+}
+
+.content_text p{
+	background: transparent !important;
+}
+
+.content_text table {
+	border-collapse: collapse;
+}
+
+.content_text td {
+	border: 1px solid white;
+}
+
+.content_text a {
+	text-decoration: underline;
+	color: aqua;
+	cursor: pointer;
+}
+
+.like{
+	line-height: 1;
+	vertical-align: middle;
+}
+
+.content-opt {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    align-items: center; /* 추가: 수직 중앙 정렬 */
+}
+
+.dropdown-menu {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute; /* 드롭다운 메뉴를 절대 위치로 설정 */
+    top: 25px; /* 아이콘 아래로 간격 조정 */
+    right: -30px; /* 아이콘 오른쪽에 정렬 */
+    width: 82px;
+    border-radius: 3px;
+    background-color: #272727; /* 배경색 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+}
+
+.dropdown-item {
+    display: flex; /* Flexbox로 설정 */
+    align-items: center; /* 수직 중앙 정렬 */
+    padding: 5px 10px; /* 패딩 */
+    text-decoration: none; /* 링크 스타일 제거 */
+    color: white; /* 글자 색상 */
+}
+
+.dropdown-icon {
+	filter: brightness(0) invert(1);
+	display: inline-block;
+    width: 18px; /* 아이콘 크기 */
+    height: 18px; /* 아이콘 크기 */
+    margin: 0 8px 0 0; /* 아이콘과 텍스트 간 간격 */
+    vertical-align: middle;
+}
+
+.dropdown-menu a {
+    display: block; /* 각 링크를 블록으로 표시하여 전체 영역 클릭 가능 */
+    text-decoration: none; /* 링크 스타일 제거 */
+    color: white;
+}
+
+.dropdown-menu a:hover {
+    background-color: #505050; /* 마우스 오버 시 배경색 변경 */
+}
+
+.comment{
+	background: #464545;
+	padding: 10px 25px;
+	border-radius: 10px;
+}
+
+.comment-container > div{
+	margin: 10px 0;
+}
+
+.write-reply {
 	border: none;
-	border-bottom: 1px solid gray;
-	appearance: none;
+    color: white;
+    resize: none;
+    font-size: 16px;
+	width: 100%;
+	height: 100px;
+	padding: 10px;
+	background: #272727;
+	border-radius: 10px;
+	position: relative;
+	cursor: text;
+}
+
+.reply-delete{
+	width: 20px;
+	height: 20px;
+	float: right;
+	position: relative;
+	vertical-align: middle;
+}
+
+.tooltip {
+    width: 70px; /* 툴팁 너비 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    border-radius: 3px; /* 모서리 둥글게 */
+    padding: 3px; /* 안쪽 여백 */
+    position: absolute; /* 위치를 절대적으로 설정 */
+    bottom: -130%; /* 아이콘 위쪽에 위치 */
+    left: 10px;
+    transform: translateX(-50%); /* 중앙 정렬 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    font-size: 12px; /* 폰트 크기 */
+    background: #272727 !important; /* 기본 배경색 */
+    color: white; /* 텍스트 색상 */
+    display: none;
+}
+
+select {
+	text-align: center;
+	width: 100px;
+	padding: 4px 3px;
+	border-radius: 6px;
+	border: 1px solid #2F3545;
+	background-color: #151924;
 	font-size: 16px;
-	margin-right: 4px;
+	appearance: none;
+	cursor: pointer;
+	transition: border-color 0.3s;
+}
+
+select option {
+    background-color: #151924;
+    color: white;
+    font-size: 14px;
 }
 
 select:focus {
 	outline: none;
+	border-color: #23C4F8;
 }
 
 option:hover {
 	background-color: blue;
 	color: inherit;
-}
-
-select option {
-	background-color: white;
-	font-size: 14px;
-}
-
-.custom-select {
-	position: relative;
-	width: 200px; /* 원하는 너비 설정 */
-}
-
-.custom-select div {
-	border: none; /* 테두리 없음 */
-	border-bottom: 1px solid gray; /* 아래쪽 테두리 */
-	padding: 10px; /* 안쪽 여백 */
-	margin-bottom: 10px; /* 아래쪽 여백 */
-	background-color: white; /* 배경색 흰색 */
-	color: #333; /* 글자 색상 */
-	cursor: pointer; /* 커서 변경 */
-}
-
-.custom-select::after {
-	content: '▼'; /* 화살표 */
-	position: absolute;
-	right: 10px;
-	top: 50%;
-	transform: translateY(-50%);
-	pointer-events: none; /* 클릭 방지 */
-	font-size: 16px; /* 화살표 크기 조정 */
-	color: gray; /* 화살표 색상 */
-}
-
-.comment-container > div{
-	margin: 5px;
-}
-
-.comment-container > div:nth-child(even) {
-	margin-bottom: 15px;
 }

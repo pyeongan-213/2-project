@@ -49,7 +49,7 @@ public interface BoardMapper {
 			+ "where c.boardpost_id=#{boardpost_id}")
 	List<ReplyBean> getReplyList(int boardpost_id);
 
-	@Select("select c.member_id, c.boardpost_id, c.content_title, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.content_text, c.like_count "
+	@Select("select c.board_id, c.member_id, c.boardpost_id, c.content_title, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.content_text, c.like_count "
 			+ "from boardpost c "
 			+ "join member m on c.member_id = m.member_id "
 			+ "where c.boardpost_id=#{boardpost_id}")
