@@ -170,7 +170,9 @@ public class TopMenuSearchService {
 		List<String> albumGuidList = new ArrayList<>();
 		count = 0;
 		for (Element albumGuid : albumGuidElements) {
-			albumGuidList.add(albumGuid.attr("href"));
+			String albumGuidPrefix = "http://www.maniadb.com" + albumGuid.attr("href");
+			
+			albumGuidList.add(albumGuidPrefix);
 			if (++count >= 10)
 				break; // 최대 10개까지만 가져오기
 		}
