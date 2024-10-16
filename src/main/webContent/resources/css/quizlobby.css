@@ -6,7 +6,7 @@
     background-color: #1f1d2b;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    background-image: url("./../img/QuizLogo.webp"); /* 경로 수정 */
+    background-image: urㅁ("./../img/QuizLogo.webp"); /* 경로 수정 */
     background-size: contain; /* 이미지의 비율을 유지하면서 배경에 맞춤 */
     background-position: center; /* 배경을 가운데 정렬 */
     background-repeat: no-repeat; /* 배경 이미지 반복 금지 */
@@ -164,8 +164,8 @@
 
 /* 모달 콘텐츠 */
 .modal-content {
-    background-color: #fefefe;
-    margin: auto;
+    background-color: none;
+   	margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 400px; /* 너비 조정 */
@@ -215,7 +215,7 @@
 /* 버튼 스타일 */
 button {
     background-color: #4CAF50;
-    color: white;
+    color: none;
     padding: 10px 20px;
     margin: 10px 0;
     border: none;
