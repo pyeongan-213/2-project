@@ -110,3 +110,11 @@ form:errors {
 .non {
     display: none;
 }
+
+h2 {
+    text-align: center;
+    color: #1DB954; /* Spotify 그린 색상 */
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}

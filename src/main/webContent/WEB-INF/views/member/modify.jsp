@@ -138,6 +138,7 @@
 						style="width: 80%; color: #303080; margin-left: 31px;">정보수정</button>
 
 					<div class="input-box info non">
+					<h2>잠시만 기다려주세요</h2>
 						<form:input path="authCode2" type="text"
 							placeholder="Certification Code" />
 						<form:errors path="authCode2" />

@@ -13,6 +13,37 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function checkCapsLock(event) {
+    if (event.getModifierState("CapsLock")) {
+        document.getElementById("message").innerText = "Caps Lock이 활성화된 상태입니다."
+    } else {
+        document.getElementById("message").innerText = ""
+    }
+}
+
+window.onload = function() {
+    document.getElementById("passwordField").onkeyup = function(event) {
+        checkCapsLock(event);
+    };
+};
+
+$(function(){
+    // 눈표시 클릭 시 패스워드 보이기
+    $('.eyes').on('click', function(){
+        var passwordField = $('#passwordField');
+        if(passwordField.attr('type') === 'password') {
+            passwordField.attr('type', 'text');
+            $(this).find('.fa').attr('class', 'fa fa-eye-slash fa-lg');
+        } else {
+            passwordField.attr('type', 'password');
+            $(this).find('.fa').attr('class', 'fa fa-eye fa-lg');
+        }
+    });
+});
+</script>
 </head>
 <body>
 
@@ -33,8 +64,19 @@
 				<h2>회원 탈퇴</h2>
 				
 				<!-- 비밀번호 입력 필드 -->
-				<label for="password">비밀번호 확인:</label>
-				<form:password path="password" id="password" required="true" />
+				<div class="form-group">
+                        <form:label path="password">비밀번호 확인</form:label>
+                        <div class="input-group">
+                            <form:password path="password" class="form-control" id="passwordField"/>
+                            <div class="eyes input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye fa-lg"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="message" style="color:red"></div>
+                        <form:errors path="password" style="color:red" />
+                    </div>
 
 				<!-- 제출 버튼 -->
 				<input type="submit" value="탈퇴하기" />

@@ -16,8 +16,8 @@
   <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
 <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-  
-  
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">  
 </head>
 <script>
 	function checkMemberNameExist(){
@@ -122,6 +122,53 @@
 
         return grade;
     }	
+    
+ // CapsLock 체크 함수
+    function checkCapsLock(event, messageId) {
+        if (event.getModifierState("CapsLock")) {
+            document.getElementById(messageId).innerText = "Caps Lock이 활성화된 상태입니다.";
+        } else {
+            document.getElementById(messageId).innerText = "";
+        }
+    }
+
+    window.onload = function() {
+        // 비밀번호 입력란의 CapsLock 체크
+        document.getElementById("passwordField").onkeyup = function(event) {
+            checkCapsLock(event, 'message');
+        };
+        
+        // 비밀번호 확인 입력란의 CapsLock 체크
+        document.getElementById("passwordField2").onkeyup = function(event) {
+            checkCapsLock(event, 'message2');
+        };
+    };
+
+    $(function(){
+        // 눈표시 클릭 시 패스워드 보이기
+        $('.eyes').on('click', function(){
+            var passwordField = $('#passwordField');
+            if(passwordField.attr('type') === 'password') {
+                passwordField.attr('type', 'text');
+                $(this).find('.fa').attr('class', 'fa fa-eye-slash fa-lg');
+            } else {
+                passwordField.attr('type', 'password');
+                $(this).find('.fa').attr('class', 'fa fa-eye fa-lg');
+            }
+        });
+        
+     // 눈표시 클릭 시 패스워드 보이기 - 비밀번호 확인 입력란
+        $('.eyes-confirm').on('click', function(){
+            var passwordField2 = $('#passwordField2');
+            if(passwordField2.attr('type') === 'password') {
+                passwordField2.attr('type', 'text');
+                $(this).find('.fa').attr('class', 'fa fa-eye-slash fa-lg');
+            } else {
+                passwordField2.attr('type', 'password');
+                $(this).find('.fa').attr('class', 'fa fa-eye fa-lg');
+            }
+        });
+    });
 </script>
 
 <body>
@@ -167,19 +214,38 @@
 							<form:errors path="real_name" style='color:red'/>
 						</div>
 						
-						<div class="form-group">						
-							<form:label path="password">비밀번호</form:label>
-							<form:password path="password" class="form-control" oninput="checkPasswordSecGrade(); checkPasswordEquals();"/>							
-							<form:errors path="password" style='color:red'/>
-						</div>
+						<div class="form-group">
+                                <form:label path="password">비밀번호</form:label>
+                                <div class="input-group">
+                                    <form:password path="password" class="form-control" id="passwordField"/>
+                                    <div class="eyes input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-eye fa-lg"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div id="message" style="color:red"></div>                
+                                <form:errors path="password" style="color:red" />
+                            </div>
+                            
 						<div class="checkOutGrade">
 								보안 등급 : 
 						</div>
+						
 						<div class="form-group">
 							<form:label path="password2">비밀번호 확인</form:label>
-							<form:password path="password2" class="form-control"/>
-							<form:errors path="password2" style='color:red'/>
+							<div class="input-group">
+								<form:password path="password2" class="form-control" id="passwordField2"/>
+								<div class="eyes-confirm input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-eye fa-lg"></i>
+									</span>
+								</div>
+							</div>
+							<div id="message2" style="color:red"></div>
+							<form:errors path="password2" style="color:red"/>
 						</div>
+
 						<div class="form-group">
 							<div class="text-right">
 								<form:button type="submit" class="btn btn-primary">회원가입</form:button>

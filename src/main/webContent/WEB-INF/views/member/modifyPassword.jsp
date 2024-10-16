@@ -15,6 +15,9 @@
 	rel="stylesheet">
 <script
 	src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+	rel="stylesheet">
 <script>
 
 	var myVar = true;
@@ -87,6 +90,53 @@
             validateFields();
         });
     });
+	
+	// CapsLock 체크 함수
+    function checkCapsLock(event, messageId) {
+        if (event.getModifierState("CapsLock")) {
+            document.getElementById(messageId).innerText = "Caps Lock이 활성화된 상태입니다.";
+        } else {
+            document.getElementById(messageId).innerText = "";
+        }
+    }
+
+    window.onload = function() {
+        // 비밀번호 입력란의 CapsLock 체크
+        document.getElementById("passwordField").onkeyup = function(event) {
+            checkCapsLock(event, 'message');
+        };
+        
+        // 비밀번호 확인 입력란의 CapsLock 체크
+        document.getElementById("passwordField2").onkeyup = function(event) {
+            checkCapsLock(event, 'message2');
+        };
+    };
+
+    $(function(){
+        // 눈표시 클릭 시 패스워드 보이기
+        $('.eyes').on('click', function(){
+            var passwordField = $('#passwordField');
+            if(passwordField.attr('type') === 'password') {
+                passwordField.attr('type', 'text');
+                $(this).find('.fa').attr('class', 'fa fa-eye-slash fa-lg');
+            } else {
+                passwordField.attr('type', 'password');
+                $(this).find('.fa').attr('class', 'fa fa-eye fa-lg');
+            }
+        });
+        
+     // 눈표시 클릭 시 패스워드 보이기 - 비밀번호 확인 입력란
+        $('.eyes-confirm').on('click', function(){
+            var passwordField2 = $('#passwordField2');
+            if(passwordField2.attr('type') === 'password') {
+                passwordField2.attr('type', 'text');
+                $(this).find('.fa').attr('class', 'fa fa-eye-slash fa-lg');
+            } else {
+                passwordField2.attr('type', 'password');
+                $(this).find('.fa').attr('class', 'fa fa-eye fa-lg');
+            }
+        });
+    });
 </script>
 </head>
 <body>
@@ -113,14 +163,30 @@
 
 			<div class="input-box">
 				<form:label path="password">새 비밀번호</form:label>
-				<form:password path="password" class="input_control" />
-				<form:errors path="password" style='color:red' />
+				<div class="input-group">
+					<form:password path="password" class="input_control"
+						id="passwordField" />
+					<div class="eyes input-group-append">
+						<span class="input-group-text"> <i class="fa fa-eye fa-lg"></i>
+						</span>
+					</div>
+				</div>
+				<div id="message" style="color: red"></div>
+				<form:errors path="password" style="color:red" />
 			</div>
 
 			<div class="input-box">
 				<form:label path="password2">새 비밀번호 확인</form:label>
-				<form:password path="password2" class="input_control" />
-				<form:errors path="password2" style='color:red' />
+				<div class="input-group">
+					<form:password path="password2" class="input_control"
+						id="passwordField2" />
+					<div class="eyes-confirm input-group-append">
+						<span class="input-group-text"> <i class="fa fa-eye fa-lg"></i>
+						</span>
+					</div>
+				</div>
+				<div id="message2" style="color: red"></div>
+				<form:errors path="password2" style="color:red" />
 			</div>
 
 			<div>
