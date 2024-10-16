@@ -303,7 +303,10 @@ thead th {
     padding: 10px 20px;
     text-align: center;
     text-decoration: none; /* 밑줄 제거 */
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     font-size: 16px;
     border-radius: 20px;
     cursor: pointer;

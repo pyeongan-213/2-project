@@ -318,7 +318,9 @@ function toggleContent() {
 					required></textarea>
 				</p>
 				
-				<button class="send-mail" type="submit">전송하기 ✉️</button>
+				<button class="send-mail" type="submit"> <span style="font-size: 17px;">전송하기&nbsp;</span> <img src="${root}/img/send-icon.png" alt="메일 전송" 
+						style="width: 15px; height: 15px; margin:0; filter: brightness(0) invert(1);"/>
+				</button>
 			</form:form>
 		</div>
 		
