@@ -26,4 +26,10 @@ public class TempController {
 		return "temp/modalUI";
 	}
 	
+
+	@GetMapping("/payment")
+	public String payment() {
+		return "temp/slide_popup";
+	}
+	
 }
