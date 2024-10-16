@@ -148,7 +148,9 @@ public class TopMenuSearchService {
 		List<String> albumImageList = new ArrayList<>();
 		int count = 0;
 		for (Element img : imgElements) {
-			albumImageList.add(img.attr("src"));
+			String albumImage = img.attr("src");
+        	albumImage = albumImage.replace("_t/150", "");
+            albumImageList.add(albumImage);
 			if (++count >= 10)
 				break; // 최대 10개까지만 가져오기
 		}
