@@ -51,6 +51,12 @@ function updateRoomList(rooms) {
     roomListElement.innerHTML = ''; // 기존 목록 초기화
 
     rooms.forEach(room => {
+        const currentMembers = room.memberCount; // 현재 인원 수
+        const maxCapacity = room.maxCapacity; // 최대 인원 수
+
+        // 최대 인원 표시할 때 방장의 수를 고려하여 계산된 최대 인원으로 표시 (1명 추가)
+        const displayedMaxCapacity = maxCapacity + 1; // 방장 포함
+
         const listItem = document.createElement('li');
         listItem.innerHTML = `
            <div class="room-info">
@@ -60,7 +66,7 @@ function updateRoomList(rooms) {
                     <!-- 방장 이름을 'owner의 방' 형식으로 표시 -->
                     <span class="room-owner">(${room.owner}의 방)</span>
                     <!-- 인원 수 표시 -->
-                    <span class="room-users">${room.memberCount} / ${room.maxCapacity}명</span>
+                    <span class="room-users">${currentMembers} / ${displayedMaxCapacity}명</span>
                 </div>
                 <button class="join-room-btn" 
                     data-room-id="${room.quizRoomId}" 
@@ -74,8 +80,42 @@ function updateRoomList(rooms) {
     addJoinRoomEventListeners(); // 참여 버튼에 이벤트 리스너 추가
 }
 
+
 // 모달 열기
 function openCreateRoomModal() {
+    const roomNameInput = document.getElementById('roomName');
+    const maxCapacityInput = document.getElementById('maxCapacity');
+    const maxMusicInput = document.getElementById('maxMusic');
+
+    // 방 이름과 최대 인원 디폴트 값 설정
+    roomNameInput.value = '새로운 퀴즈방';
+    maxCapacityInput.value = '10';
+    
+    // 100곡 버튼 기본 선택 설정
+    const defaultMusicButton = document.querySelector('.music-button[data-value="100"]');
+    if (defaultMusicButton) {
+        defaultMusicButton.click(); // 100곡 버튼 클릭하여 선택
+    }
+
+    // 디폴트 값 드래그 상태 설정
+    roomNameInput.focus();
+    roomNameInput.select();
+    maxCapacityInput.select();
+
+    // 방 이름 입력창 클릭 시 빈칸으로 초기화
+    roomNameInput.addEventListener('click', () => {
+        if (roomNameInput.value === '새로운 퀴즈방') {
+            roomNameInput.value = ''; // 기본값일 때만 빈칸으로
+        }
+    });
+
+    // 최대 인원 입력창 클릭 시 빈칸으로 초기화
+    maxCapacityInput.addEventListener('click', () => {
+        if (maxCapacityInput.value === '10') {
+            maxCapacityInput.value = ''; // 기본값일 때만 빈칸으로
+        }
+    });
+
     document.getElementById('create-room-modal').style.display = 'block';
 }
 
@@ -102,18 +142,36 @@ function selectMaxMusicEventListeners() {
 async function createRoom(event) {
     event.preventDefault(); // 폼 기본 제출 방지
 
-  	const roomName = document.getElementById('roomName').value;
-    const maxCapacity = document.getElementById('maxCapacity').value;
-    const maxMusic = document.getElementById('maxMusic').value;
+    const roomNameInput = document.getElementById('roomName');
+    const maxCapacityInput = document.getElementById('maxCapacity');
+    const maxMusicInput = document.getElementById('maxMusic');
     const quizRoomType = document.getElementById('quizRoomType').value;
 
-    if (!roomName || !maxCapacity || !maxMusic || !quizRoomType) {
-        console.error('필수 입력 요소가 DOM에 없습니다.');
+    // 필드 값 읽기 (디폴트 값 포함)
+    let roomName = roomNameInput.value;
+    let maxCapacity = maxCapacityInput.value;
+    let maxMusic = maxMusicInput.value || '100'; // 기본 값으로 '100곡' 선택
+
+    // 필수 입력 요소가 비어있지 않은지 확인
+    if (!roomName) {
+        roomName = '새로운 퀴즈방';  // 디폴트 값 설정
+    }
+
+    if (!maxCapacity) {
+        maxCapacity = '10';  // 디폴트 값 설정
+    }
+
+    // 최대 인원 수에서 서버가 기본적으로 한 명을 추가한 것 반영하여 1명 줄이기
+    const adjustedMaxCapacity = parseInt(maxCapacity, 10) - 1;
+
+    // 필수 입력 요소 확인
+    if (!maxMusic || !quizRoomType) {
+        console.error('필수 입력 요소가 누락되었습니다.');
         alert('필수 입력 요소를 확인해주세요.');
         return;
     }
- console.log(`방 이름: ${roomName}, 최대 인원: ${maxCapacity}, 최대 곡 수: ${maxMusic}, 퀴즈 타입: ${quizRoomType}`); // 확인용 로그
-   
+
+    console.log(`방 이름: ${roomName}, 최대 인원: ${adjustedMaxCapacity}, 최대 곡 수: ${maxMusic}, 퀴즈 타입: ${quizRoomType}`);
 
     try {
         const response = await fetch(`${root}/quiz/rooms/create`, {
@@ -121,7 +179,7 @@ async function createRoom(event) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 quizRoomName: roomName,
-                maxCapacity: maxCapacity,
+                maxCapacity: adjustedMaxCapacity, // 조정된 인원 수 전송
                 maxMusic: maxMusic,
                 quizRoomType: quizRoomType
             })
@@ -131,14 +189,13 @@ async function createRoom(event) {
             const data = await response.json();
             alert('방이 생성되었습니다!');
             currentRoomId = data.roomId;
-            console.log(`[INFO] 생성된 방 ID: ${currentRoomId}`); // 확인용 로그
             closeModal(); // 모달 닫기
             window.location.href = `${root}/quiz/rooms/${data.roomId}`;
         } else {
             alert('방 생성에 실패했습니다.');
         }
     } catch (error) {
-        console.error('방 생성 오류:', error);
+        console.error('방 생성 중 오류:', error);
         alert('방 생성 중 오류가 발생했습니다.');
     }
 }

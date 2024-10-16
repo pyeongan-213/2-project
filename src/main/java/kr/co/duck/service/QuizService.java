@@ -120,22 +120,22 @@ public class QuizService {
     
     @Transactional(readOnly = true)
     public QuizMusic getRandomQuizQuestion(int quizId, String quizType) {
-        System.out.println("[INFO] 랜덤 퀴즈 요청: roomId = " + quizId);
-        System.out.println("[INFO] 퀴즈 유형: " + quizType);
+       // System.out.println("[INFO] 랜덤 퀴즈 요청: roomId = " + quizId);
+        //System.out.println("[INFO] 퀴즈 유형: " + quizType);
 
         // 퀴즈 목록 조회
         List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
-        System.out.println("[INFO] 조회된 퀴즈 목록 크기: " + quizList.size());
+        //System.out.println("[INFO] 조회된 퀴즈 목록 크기: " + quizList.size());
 
         // 퀴즈가 없는 경우 예외 처리
         if (quizList.isEmpty()) {
-            System.out.println("[WARN] 퀴즈가 없습니다: quizId = " + quizId);
+            //System.out.println("[WARN] 퀴즈가 없습니다: quizId = " + quizId);
             throw new CustomException(StatusCode.NOT_FOUND_QUIZ, "해당 퀴즈에 문제가 없습니다.");
         }
 
         // 랜덤한 문제 선택
         QuizMusic quizMusic = quizList.get(random.nextInt(quizList.size()));
-        System.out.println("[INFO] 선택된 퀴즈: " + quizMusic);
+        //System.out.println("[INFO] 선택된 퀴즈: " + quizMusic);
 
         // 노래 제목과 가수 이름 분리
         String[] nameParts = quizMusic.getName() != null ?
@@ -143,26 +143,26 @@ public class QuizService {
         String songTitle = nameParts[0].trim();
         String artistName = nameParts.length > 1 ? nameParts[1].trim() : "알 수 없음";
 
-        System.out.println("[INFO] 노래 제목: " + songTitle + ", 가수 이름: " + artistName);
+        //System.out.println("[INFO] 노래 제목: " + songTitle + ", 가수 이름: " + artistName);
 
         // 퀴즈 유형을 정규화 (대소문자 무시, 공백 제거)
         String normalizedQuizType = quizType.trim().replaceAll("\\s+", "").toLowerCase();
-        System.out.println("[INFO] 전달된 퀴즈 유형: " + quizType + " -> 정규화된 유형: " + normalizedQuizType);
+        //System.out.println("[INFO] 전달된 퀴즈 유형: " + quizType + " -> 정규화된 유형: " + normalizedQuizType);
 
         // 퀴즈 타입에 따라 정답 설정
         switch (normalizedQuizType) {
             case "artistname":
             case "가수이름맞히기":  // 한국어 유형 추가
                 quizMusic.setAnswer(Collections.singletonList(artistName)); // 가수 이름 맞히기
-                System.out.println("[INFO] 정답 설정: 가수 이름 (" + artistName + ")");
+               // System.out.println("[INFO] 정답 설정: 가수 이름 (" + artistName + ")");
                 break;
             case "songtitle":
             case "노래제목맞히기":  // 한국어 유형 추가
                 quizMusic.setAnswer(Collections.singletonList(songTitle)); // 노래 제목 맞히기
-                System.out.println("[INFO] 정답 설정: 노래 제목 (" + songTitle + ")");
+                //System.out.println("[INFO] 정답 설정: 노래 제목 (" + songTitle + ")");
                 break;
             default:
-                System.out.println("[ERROR] 잘못된 퀴즈 유형: " + quizType);
+               // System.out.println("[ERROR] 잘못된 퀴즈 유형: " + quizType);
                 throw new CustomException(StatusCode.BAD_REQUEST, "잘못된 퀴즈 유형입니다.");
         }
 
@@ -180,10 +180,10 @@ public class QuizService {
 
         // 조회된 quizRoomType 로그 출력
         String quizType = quizRoom.getQuizRoomType();
-        System.out.println("[DEBUG] 방 ID: " + roomId + ", DB에서 조회된 quizRoomType: " + quizType);
+        //System.out.println("[DEBUG] 방 ID: " + roomId + ", DB에서 조회된 quizRoomType: " + quizType);
 
         if (quizType == null || quizType.isBlank()) {
-            System.err.println("[ERROR] quizType이 null이거나 빈 문자열입니다. 기본값 'songTitle' 사용.");
+            //System.err.println("[ERROR] quizType이 null이거나 빈 문자열입니다. 기본값 'songTitle' 사용.");
             quizType = "songTitle";
         }
 
@@ -197,22 +197,22 @@ public class QuizService {
 
     @Transactional
     public void startNextQuiz(int roomId) {
-        System.out.println("[INFO] 랜덤 퀴즈 요청: roomId = " + roomId);
+        //System.out.println("[INFO] 랜덤 퀴즈 요청: roomId = " + roomId);
 
         // 방 ID에 해당하는 퀴즈 유형 가져오기
         String quizType = getQuizTypeForRoom(roomId);
-        System.out.println("[INFO] 퀴즈 유형: " + quizType);
+        //System.out.println("[INFO] 퀴즈 유형: " + quizType);
 
         // 랜덤한 퀴즈 문제 가져오기
         QuizMusic nextQuiz = getRandomQuizQuestion(roomId, quizType);
 
         if (nextQuiz != null) {
-            System.out.println("[INFO] 선택된 퀴즈: " + nextQuiz);
+            //System.out.println("[INFO] 선택된 퀴즈: " + nextQuiz);
 
             // 채팅 메시지를 통해 다음 퀴즈 알림
             chatService.sendQuizMessage(roomId, QuizMessage.MessageType.NEXT, nextQuiz, "시스템");
         } else {
-            System.out.println("[WARN] 다음 퀴즈를 찾을 수 없습니다.");
+            //System.out.println("[WARN] 다음 퀴즈를 찾을 수 없습니다.");
         }
     }
 

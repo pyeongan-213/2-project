@@ -77,10 +77,10 @@
             <h2>방 생성</h2>
             <form id="create-room-form">
                 <label for="roomName">방 이름:</label> 
-                <input type="text" id="roomName" name="roomName" required><br>
+                <input type="text" id="roomName" name="roomName" value="새로운 퀴즈방" required><br>
 
                 <label for="maxCapacity">최대 인원수:</label> 
-                <input type="number" id="maxCapacity" name="maxCapacity" min="1" required><br>
+                <input type="number" id="maxCapacity" name="maxCapacity" min="1" max="10" value="10" required><br>
 
                 <label>최대 곡 수 선택:</label>
                 <div class="max-music-buttons">

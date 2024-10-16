@@ -104,11 +104,10 @@ public class QuizRoomService {
         member.getMemberGameStats().setMakeRoomNum(member.getMemberGameStats().getMakeRoomNum() + 1);
         memberCommand.saveMember(member);
 
-        System.out.println("[INFO] 방 생성 요청: " + quizRoomBean);
+    
 
         String quizRoomType = quizRoomBean.getQuizRoomType();
-        if (quizRoomType == null || quizRoomType.isBlank()) {
-            System.out.println("[WARN] quizRoomType 값이 null 또는 빈 문자열입니다. 기본값 'songTitle'로 설정합니다.");
+        if (quizRoomType == null || quizRoomType.isBlank()) { 
             quizRoomType = "songTitle";
         }
 
@@ -121,7 +120,7 @@ public class QuizRoomService {
         quizCommand.saveQuizRoom(quizRoom);
         quizRoomRepository.flush();
 
-        System.out.println("[DEBUG] 저장된 방의 roomId: " + quizRoom.getQuizRoomId());
+
 
         // 랜덤 퀴즈 가져오기 (기존 엔티티를 수정하지 않고 새로운 엔티티로 저장)
         int maxSongs = quizRoomBean.getMaxMusic();

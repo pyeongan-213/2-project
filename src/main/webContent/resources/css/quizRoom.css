@@ -343,7 +343,7 @@ html, body {
 #tooltip-maximize-btn {
     position: absolute;
     top: 70px;
-    left: 76%;
+    left: 76%; 
     background-color: #2d2d4f;
     border: none;
     border-radius: 50%;
@@ -354,7 +354,8 @@ html, body {
     display: none;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, top 0.3s ease, left 0.3s ease; /* 위치 변화를 부드럽게 */
+    z-index: 1000; /* 다른 요소 위에 표시되도록 */
 }
 
 #tooltip-maximize-btn.show {

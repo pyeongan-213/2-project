@@ -6,10 +6,6 @@
     background-color: #1f1d2b;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    background-image: urㅁ("./../img/QuizLogo.webp"); /* 경로 수정 */
-    background-size: contain; /* 이미지의 비율을 유지하면서 배경에 맞춤 */
-    background-position: center; /* 배경을 가운데 정렬 */
-    background-repeat: no-repeat; /* 배경 이미지 반복 금지 */
     background-color: rgba(31, 29, 43, 0.9); /* 반투명 배경색을 적용 */
 }
 
@@ -22,16 +18,9 @@
     padding: 20px;
 }
 
-/* 로고와 제목을 가로로 배치 */
-.quiz-lobby .header-left {
-    display: flex;
-    align-items: center;
-}
-
 .quiz-lobby .header-left h1 {
     font-size: 28px;
     font-weight: bold;
-    margin-left: 10px;
 }
 
 .quiz-lobby .header button {
@@ -69,28 +58,40 @@
     border-radius: 10px;
     padding: 20px;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     color: #fff;
     width: 100%;
-    height: 150px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
 }
 
-/* 방 이름과 인원 정보 */
+/* 방 제목, 방장 이름, 인원수 정보 배치 */
 .quiz-lobby .room-details {
-    margin-left: 10px;
-    flex-grow: 1;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .quiz-lobby .room-name {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
-    color: #1db954; /* 음악에 어울리는 밝은 녹색 */
+    color: #1db954;
+    margin-bottom: 5px;
+}
+
+.quiz-lobby .room-info-bottom {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.quiz-lobby .room-owner {
+    font-size: 16px;
+    color: #9aa0a6;
 }
 
 .quiz-lobby .room-users {
@@ -102,7 +103,7 @@
 .quiz-lobby .room-info:hover {
     transform: scale(1.05);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    background-color: #1db954; /* 호버 시 녹색으로 변환 */
+    background-color: none;
     color: #fff;
 }
 
@@ -126,7 +127,7 @@
 /* 방의 그리드 레이아웃 */
 .quiz-lobby .room-list-container ul {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 각 방을 사각형 모양으로 배치 */
+    grid-template-columns: repeat(3, 1fr); /* 3줄로 표시 */
     gap: 20px;
     list-style: none;
     padding: 0;
@@ -137,42 +138,30 @@
     list-style: none;
 }
 
-/* 방 아이콘 추가 */
-.quiz-lobby .room-info::before {
-    content: '\f001'; /* 음악 아이콘 (FontAwesome 사용 가능) */
-    font-family: "FontAwesome"; /* 또는 Bootstrap Icons 사용 */
-    font-size: 30px;
-    color: #fff;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-}
-
 /* 모달 창 기본 스타일 */
 .modal {
-    display: none; /* 기본적으로 숨김 처리 */
-    position: fixed; /* fixed로 설정하여 화면 중앙에 고정 */
+    display: none;
+    position: fixed;
     z-index: 1000;
-    left: 50%; /* 가로 중앙 */
-    top: 50%; /* 세로 중앙 */
-    transform: translate(-50%, -50%); /* 중앙 정렬을 위해 -50% 이동 */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4); /* 배경 어둡게 처리 */
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 /* 모달 콘텐츠 */
 .modal-content {
-    background-color: none;
-   	margin: auto;
+    background-color: #fff;
+    margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 400px; /* 너비 조정 */
+    width: 400px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
     animation: modalFadeIn 0.5s ease;
-    top: 0; /* 고정된 중앙에서의 상대적 위치 조정 필요 없음 */
 }
 
 /* 닫기 버튼 스타일 */
@@ -215,7 +204,7 @@
 /* 버튼 스타일 */
 button {
     background-color: #4CAF50;
-    color: none;
+    color: white;
     padding: 10px 20px;
     margin: 10px 0;
     border: none;
@@ -233,12 +222,12 @@ button:hover {
     border: 1px solid #000;
     background-color: #f0f0f0;
     cursor: pointer;
-    transition: box-shadow 1s ease-out; /* 부드러운 전환 */
+    transition: box-shadow 1s ease-out;
 }
 
 .music-button:hover {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
-    animation: pulse 0.5s ease-out; /* 짧은 애니메이션 */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    animation: pulse 0.5s ease-out;
 }
 
 .music-button.selected {
@@ -251,7 +240,7 @@ button:hover {
         transform: scale(1);
     }
     50% {
-        transform: scale(1.05); /* 조금만 확대 */
+        transform: scale(1.05);
     }
     100% {
         transform: scale(1);
