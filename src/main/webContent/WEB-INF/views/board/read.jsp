@@ -22,9 +22,7 @@
 		<!-- top_menu.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
 		<!-- Sidebar 포함 -->
-		<div class="sidebar">
-		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
-		</div>
+		<jsp:include page="/WEB-INF/views/include/HJ_sidebar.jsp" />
 	</header>
 	<div class="board-container">
 		<h1>커뮤니티</h1>

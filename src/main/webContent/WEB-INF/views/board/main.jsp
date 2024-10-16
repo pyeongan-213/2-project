@@ -53,8 +53,8 @@ function toggleContent() {
 		<!-- top_menu.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
 		<!-- Sidebar 포함 -->
-		<div class="sidebar">
-		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
+		<div>
+		<jsp:include page="/WEB-INF/views/include/HJ_sidebar.jsp" />
 		</div>
 	</header>
 	
@@ -295,7 +295,10 @@ function toggleContent() {
 		
 		<div class="fixed-content">
 			<form:form id="emailForm" action="${root }board/receiveEmail/${loginMemberBean.email}" method="post">
-				<h3 style="background: transparent;">🦆DuckMusic</h3>
+				<div class="message-container">
+				<h3>🦆DuckMusic</h3>
+				<div class="message">문의 사항 또는 불편한 점을 알려주세요!</div>
+				</div>
 				<p>
 				<label for="name">이름</label>
 				<textarea id="name" name="name" rows="1" readonly>${loginMemberBean.real_name}</textarea>
@@ -314,7 +317,7 @@ function toggleContent() {
 				<p>
 				<label for="body">문의 내용</label>
 				<textarea id="body" name="body"
-					style="width: 100%; height: 250px; padding: 5px; line-height: normal;"
+					style="width: 100%; height: 215px; padding: 5px; line-height: normal;"
 					required></textarea>
 				</p>
 				
