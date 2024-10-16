@@ -2,43 +2,144 @@ package kr.co.duck.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
-import kr.co.duck.domain.ChatMessage; 
+import kr.co.duck.domain.ChatMessage;
+import kr.co.duck.domain.QuizMessage;
 
-// 기능 : 메시지 제어 및 카메라 제어
+/**
+ * 기능: 채팅 메시지와 퀴즈 메시지 전송 관리
+ */
 @Service
 public class ChatService {
 
-	private static final Logger log = LoggerFactory.getLogger(ChatService.class);
-	private final SimpMessageSendingOperations sendingOperations;
+    private static final Logger log = LoggerFactory.getLogger(ChatService.class);
+    private final SimpMessageSendingOperations sendingOperations;
+    private QuizService quizService; // Setter로 주입
 
-	// 생성자
-	public ChatService(SimpMessageSendingOperations sendingOperations) {
-		this.sendingOperations = sendingOperations;
-	}
+    public ChatService(SimpMessageSendingOperations sendingOperations) {
+        this.sendingOperations = sendingOperations;
+    }
 
-	// 메시지 제어
-	public void message(ChatMessage message) {
-		ChatMessage exportMessage = new ChatMessage(); // ChatMessage 객체 생성
+    @Autowired
+    public void setQuizService(QuizService quizService) {
+        this.quizService = quizService;
+    }
 
-		exportMessage.setType(message.getType());
-		exportMessage.setSender(message.getSender());
-		exportMessage.setMessage(message.getMessage());
+    /**
+     * 일반 채팅 메시지 전송 메서드
+     * @param roomId 방 ID
+     * @param sender 메시지 보낸 사람 (닉네임)
+     * @param content 메시지 내용
+     */
+    public void sendChatMessage(int roomId, String sender, String content) {
+        if (content.equalsIgnoreCase("!힌트")) {
+            sendHintMessage(); // 힌트 메시지 전송
+            return;
+        }
 
-		sendingOperations.convertAndSend("/sub/gameRoom/" + message.getRoomId(), exportMessage);
-		log.info("Message sent: {}", exportMessage); // 로그 추가
-	}
+        if (content.equalsIgnoreCase("!스킵")) {
+            skipQuiz(roomId, sender); // 스킵 처리
+            return;
+        }
 
-	// 카메라 제어 (카메라를 끈 유저를 알기 위한 API)
-	public void cameraControl(ChatMessage message) {
-		ChatMessage exportMessage = new ChatMessage(); // ChatMessage 객체 생성
+        ChatMessage<String> chatMessage = new ChatMessage<>();
+        chatMessage.setRoomId(String.valueOf(roomId));
+        chatMessage.setSender(sender);
+        chatMessage.setMessage(content);
 
-		exportMessage.setType(message.getType());
-		exportMessage.setNickname(message.getNickname());
+        sendingOperations.convertAndSend("/sub/chatRoom/" + roomId, chatMessage);
+        log.info("Chat message sent: {}", chatMessage);
+    }
 
-		sendingOperations.convertAndSend("/sub/gameRoom/" + message.getRoomId(), exportMessage);
-		log.info("Camera control message sent: {}", exportMessage); // 로그 추가
-	}
+    /**
+     * 힌트 메시지 전송 메서드
+     */
+    private void sendHintMessage() {
+        QuizMessage<String> hintMessage = new QuizMessage<>();
+        hintMessage.setType(QuizMessage.MessageType.HINT);
+        hintMessage.setSender("시스템");
+        hintMessage.setContent("힌트가 제공되었습니다.");
+
+        sendingOperations.convertAndSend("/sub/quizRoom/1", hintMessage); // Room ID 1 예시
+        log.info("Hint message sent.");
+    }
+
+    /**
+     * 스킵 명령 처리 메서드
+     * @param roomId 방 ID
+     * @param sender 명령을 입력한 사용자
+     */
+    private void skipQuiz(int roomId, String sender) {
+        // 스킵 알림 메시지 전송
+        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, 
+            new QuizMessage<>("시스템", sender + "님이 문제를 스킵했습니다. 다음 문제로 이동합니다."));
+
+        // 다음 퀴즈 시작
+        quizService.startNextQuiz(roomId);
+        log.info("Quiz skipped by: {}", sender);
+    }
+
+    /**
+     * 카메라 제어 메시지 전송 메서드
+     * @param message 카메라 제어 메시지
+     */
+    public <T> void cameraControl(ChatMessage<T> message) {
+        ChatMessage<T> exportMessage = new ChatMessage<>();
+        exportMessage.setType(message.getType());
+        exportMessage.setNickname(message.getNickname());
+
+        sendingOperations.convertAndSend("/sub/gameRoom/" + message.getRoomId(), exportMessage);
+        log.info("Camera control message sent: {}", exportMessage);
+    }
+
+    /**
+     * 메시지 전송 메서드 (일반 메시지 전송)
+     * @param message ChatMessage 객체
+     */
+    public <T> void message(ChatMessage<T> message) {
+        log.info("Processing chat message: {}", message);
+
+        sendingOperations.convertAndSend("/sub/chat/" + message.getRoomId(), message);
+    }
+
+    /**
+     * 퀴즈 메시지 전송 메서드
+     * @param roomId 방 ID
+     * @param messageType 메시지 유형 (예: START, CORRECT, INCORRECT 등)
+     * @param content 메시지 내용 (정답 여부 등)
+     * @param sender 메시지 보낸 사람 (관리자 또는 참여자)
+     */
+    public <T> void sendQuizMessage(int roomId, QuizMessage.MessageType messageType, T content, String sender) {
+        String senderName = sender == null ? "관리자" : sender;
+
+        QuizMessage<T> quizMessage = new QuizMessage<>();
+        quizMessage.setQuizRoomId(roomId);
+        quizMessage.setType(messageType);
+        quizMessage.setSender(senderName);
+        quizMessage.setContent(content);
+
+        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, quizMessage);
+        log.info("Quiz message sent: {}", quizMessage);
+    }
+
+    /**
+     * 정답 메시지 전송 메서드
+     * @param roomId 방 ID
+     * @param memberId 정답을 제출한 멤버 ID
+     * @param isCorrect 정답 여부 (true: 정답, false: 오답)
+     */
+    public void sendAnswerMessage(int roomId, int memberId, boolean isCorrect) {
+        String messageContent = isCorrect ? "정답입니다!" : "오답입니다!";
+        QuizMessage<String> answerMessage = new QuizMessage<>();
+        answerMessage.setQuizRoomId(roomId);
+        answerMessage.setType(isCorrect ? QuizMessage.MessageType.CORRECT : QuizMessage.MessageType.INCORRECT);
+        answerMessage.setSender(String.valueOf(memberId));
+        answerMessage.setContent(messageContent);
+
+        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, answerMessage);
+        log.info("Answer message sent: {}", answerMessage);
+    }
 }

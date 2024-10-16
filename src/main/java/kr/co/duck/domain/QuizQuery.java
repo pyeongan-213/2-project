@@ -17,6 +17,10 @@ public class QuizQuery {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	public QuizQuery() {
+		
+	}
+	
 	// 퀴즈 방 전체 조회 (페이징 처리)
 	public Page<QuizRoom> findQuizRoomByPageable(Pageable pageable) {
 		if (pageable == null) {

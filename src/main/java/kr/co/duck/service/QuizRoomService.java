@@ -1,9 +1,6 @@
 package kr.co.duck.service;
 
-import static kr.co.duck.util.StatusCode.NOT_EXIST_ROOMS;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,10 +16,12 @@ import kr.co.duck.domain.Member;
 import kr.co.duck.domain.MemberCommand;
 import kr.co.duck.domain.MemberGameStats;
 import kr.co.duck.domain.QuizCommand;
-import kr.co.duck.domain.QuizMessage;
+import kr.co.duck.domain.QuizMusic;
 import kr.co.duck.domain.QuizQuery;
 import kr.co.duck.domain.QuizRoom;
 import kr.co.duck.domain.QuizRoomAttendee;
+import kr.co.duck.repository.QuizMusicRepository;
+import kr.co.duck.repository.QuizRoomAttendeeRepository;
 import kr.co.duck.repository.QuizRoomRepository;
 import kr.co.duck.repository.SessionRepository;
 import kr.co.duck.util.CustomException;
@@ -30,215 +29,242 @@ import kr.co.duck.util.StatusCode;
 
 @Service
 public class QuizRoomService {
-	private final QuizService quizService;
-	private final MemberCommand memberCommand;
-	private final QuizQuery quizQuery;
-	private final QuizCommand quizCommand;
-	private final SessionRepository sessionRepository;
-	private final QuizRoomRepository quizRoomRepository;
 
-	public QuizRoomService(QuizService quizService, MemberCommand memberCommand, QuizQuery quizQuery,
-			QuizCommand quizCommand, SessionRepository sessionRepository, QuizRoomRepository quizRoomRepository) {
-		this.quizService = quizService;
-		this.memberCommand = memberCommand;
-		this.quizQuery = quizQuery;
-		this.quizCommand = quizCommand;
-		this.sessionRepository = sessionRepository;
-		this.quizRoomRepository = quizRoomRepository;
-	}
+    private final MemberCommand memberCommand;
+    private final QuizQuery quizQuery;
+    private final QuizCommand quizCommand;
+    private final SessionRepository sessionRepository;
+    private final QuizRoomRepository quizRoomRepository;
+    private final ChatService chatService;
+    private final QuizRoomAttendeeRepository quizRoomAttendeeRepository;
+    private final QuizMusicRepository quizMusicRepository;
 
-	// MemberGameStats가 null인 경우 생성하여 설정하는 메서드
-	private void ensureMemberGameStats(Member member) {
-		if (member.getMemberGameStats() == null) {
-			member.setMemberGameStats(new MemberGameStats(member));
-		}
-	}
+    
+    
+    // **생성자 주입을 통한 의존성 주입**
+    public QuizRoomService(MemberCommand memberCommand, QuizQuery quizQuery, QuizCommand quizCommand,
+                           SessionRepository sessionRepository, QuizRoomRepository quizRoomRepository,
+                           ChatService chatService, QuizRoomAttendeeRepository quizRoomAttendeeRepository, QuizMusicRepository quizMusicRepository) {
+        this.memberCommand = memberCommand;
+        this.quizQuery = quizQuery;
+        this.quizCommand = quizCommand;
+        this.sessionRepository = sessionRepository;
+        this.quizRoomRepository = quizRoomRepository;
+        this.chatService = chatService;
+        this.quizRoomAttendeeRepository = quizRoomAttendeeRepository;
+        this.quizMusicRepository = quizMusicRepository;
+    }
 
-	// 퀴즈방 ID로 퀴즈방 조회
-	@Transactional(readOnly = true)
-	public QuizRoomBean findRoomById(int roomId) {
-		QuizRoom quizRoom = quizQuery.findQuizRoomByRoomId(roomId);
-		if (quizRoom == null) {
-			throw new CustomException(NOT_EXIST_ROOMS);
-		}
+    // **게임 통계 초기화 메서드**: 멤버의 게임 통계가 없을 경우 생성합니다.
+    private void ensureMemberGameStats(Member member) {
+        if (member.getMemberGameStats() == null) {
+            member.setMemberGameStats(new MemberGameStats(member));
+        }
+    }
 
-		List<QuizRoomAttendee> quizRoomAttendeeList = quizQuery.findAttendeeByQuizRoom(quizRoom);
-		List<MemberBean> memberList = new ArrayList<>();
-		for (QuizRoomAttendee quizRoomAttendee : quizRoomAttendeeList) {
-			Member eachMember = memberCommand.findMemberById(quizRoomAttendee.getMember().getMemberId());
-			MemberBean memberBean = new MemberBean(eachMember.getMemberId(), eachMember.getNickname(),
-					eachMember.getEmail());
-			memberList.add(memberBean);
-		}
+ // **퀴즈 방 목록 조회 (페이지네이션 지원)**
+    @Transactional(readOnly = true)
+    public QuizRoomListBean getAllQuizRooms(Pageable pageable) {
+        Page<QuizRoom> rooms = quizQuery.findQuizRoomByPageable(pageable);
 
-		String membersString = memberList.stream().map(member -> String.valueOf(member.getMember_id()))
-				.reduce((a, b) -> a + "," + b).orElse("");
+        if (rooms.isEmpty()) {
+            throw new CustomException(StatusCode.NOT_EXIST_ROOMS, "퀴즈 방이 존재하지 않습니다.");
+        }
 
-		return new QuizRoomBean(quizRoom.getQuizRoomId(), quizRoom.getQuizRoomName(), quizRoom.getQuizRoomPassword(),
-				quizRoom.getOwner(), quizRoom.getStatus(), memberList.size(), membersString);
-	}
+        List<QuizRoomBean> quizRoomList = new ArrayList<>();
+        rooms.forEach(room -> {
+            // 퀴즈 타입이 유효한지 확인
+            String quizQuestionType = getValidQuizType(room.getQuizRoomType());
 
-	// 퀴즈방 목록 조회
-	@Transactional
-	public QuizRoomListBean getAllQuizRooms(Pageable pageable) {
-		Page<QuizRoom> rooms = quizQuery.findQuizRoomByPageable(pageable);
-		List<QuizRoomBean> quizRoomList = new ArrayList<>();
+            quizRoomList.add(new QuizRoomBean(
+                    room.getQuizRoomId(), room.getQuizRoomName(), room.getQuizRoomPassword(),
+                    room.getOwner(), room.getStatus(), room.getMemberCount(),
+                    room.getMaxCapacity(), room.getMaxMusic(), quizQuestionType));
+        });
 
-		for (QuizRoom room : rooms) {
-			List<QuizRoomAttendee> quizRoomAttendeeList = quizQuery.findAttendeeByQuizRoom(room);
-			List<MemberBean> memberList = new ArrayList<>();
+        return new QuizRoomListBean(rooms.getTotalPages(), quizRoomList);
+    }
 
-			for (QuizRoomAttendee quizRoomAttendee : quizRoomAttendeeList) {
-				Member eachMember = memberCommand.findMemberById(quizRoomAttendee.getMember().getMemberId());
-				MemberBean memberBean = new MemberBean(eachMember.getMemberId(), eachMember.getNickname(),
-						eachMember.getEmail());
-				memberList.add(memberBean);
-			}
+    // **유효한 퀴즈 타입 반환 메서드**
+    private String getValidQuizType(String quizRoomType) {
+        if ("노래 제목 맞히기".equals(quizRoomType) || "가수 이름 맞히기".equals(quizRoomType)) {
+            return quizRoomType;
+        } else {
+            return "노래 제목 맞히기"; // 기본값 설정
+        }
+    }
 
-			String membersString = memberList.stream().map(member -> String.valueOf(member.getMember_id()))
-					.reduce((a, b) -> a + "," + b).orElse("");
 
-			QuizRoomBean quizRoomBean = new QuizRoomBean(room.getQuizRoomId(), room.getQuizRoomName(),
-					room.getQuizRoomPassword(), room.getOwner(), room.getStatus(), memberList.size(), membersString);
-			quizRoomList.add(quizRoomBean);
-		}
+    @Transactional
+    public QuizRoomBean createRoom(QuizRoomBean quizRoomBean, MemberBean memberBean) {
+        // 멤버 조회 및 게임 통계 업데이트
+        Member member = memberCommand.findMemberById(memberBean.getMember_id());
+        ensureMemberGameStats(member);
 
-		int totalPage = rooms.getTotalPages();
-		return new QuizRoomListBean(totalPage, quizRoomList);
-	}
+        member.getMemberGameStats().setMakeRoomNum(member.getMemberGameStats().getMakeRoomNum() + 1);
+        memberCommand.saveMember(member);
 
-	// 퀴즈방 검색
-	public QuizRoomListBean searchQuizRoom(Pageable pageable, String keyword) {
-		Page<QuizRoom> rooms = quizRoomRepository.findByQuizRoomNameContaining(pageable, keyword);
+        System.out.println("[INFO] 방 생성 요청: " + quizRoomBean);
 
-		if (rooms.isEmpty()) {
-			throw new CustomException(NOT_EXIST_ROOMS);
-		}
+        String quizRoomType = quizRoomBean.getQuizRoomType();
+        if (quizRoomType == null || quizRoomType.isBlank()) {
+            System.out.println("[WARN] quizRoomType 값이 null 또는 빈 문자열입니다. 기본값 'songTitle'로 설정합니다.");
+            quizRoomType = "songTitle";
+        }
 
-		List<QuizRoomBean> quizRoomList = new ArrayList<>();
-		for (QuizRoom room : rooms) {
-			List<QuizRoomAttendee> quizRoomAttendeeList = quizQuery.findAttendeeByQuizRoom(room);
-			List<MemberBean> memberList = new ArrayList<>();
+        // 방 객체 생성 및 저장
+        QuizRoom quizRoom = new QuizRoom(
+                quizRoomBean.getQuizRoomName(), quizRoomBean.getQuizRoomPassword(),
+                member.getNickname(), 1, 1,
+                quizRoomBean.getMaxCapacity(), quizRoomBean.getMaxMusic(), quizRoomType
+        );
+        quizCommand.saveQuizRoom(quizRoom);
+        quizRoomRepository.flush();
 
-			for (QuizRoomAttendee quizRoomAttendee : quizRoomAttendeeList) {
-				Member eachMember = memberCommand.findMemberById(quizRoomAttendee.getMember().getMemberId());
-				MemberBean memberBean = new MemberBean(eachMember.getMemberId(), eachMember.getNickname(),
-						eachMember.getEmail());
-				memberList.add(memberBean);
-			}
+        System.out.println("[DEBUG] 저장된 방의 roomId: " + quizRoom.getQuizRoomId());
 
-			String membersString = memberList.stream().map(member -> String.valueOf(member.getMember_id()))
-					.reduce((a, b) -> a + "," + b).orElse("");
+        // 랜덤 퀴즈 가져오기 (기존 엔티티를 수정하지 않고 새로운 엔티티로 저장)
+        int maxSongs = quizRoomBean.getMaxMusic();
+        List<QuizMusic> selectedQuizzes = quizMusicRepository.findRandomQuizzes(maxSongs);
 
-			QuizRoomBean quizRoomBean = new QuizRoomBean(room.getQuizRoomId(), room.getQuizRoomName(),
-					room.getQuizRoomPassword(), room.getOwner(), room.getStatus(), memberList.size(), membersString);
-			quizRoomList.add(quizRoomBean);
-		}
+        selectedQuizzes.forEach(quiz -> {
+            // 새로운 QuizMusic 객체 생성 (기존 엔티티 수정 방지)
+            QuizMusic newQuiz = new QuizMusic();
+            newQuiz.setQuizId(quizRoom.getQuizRoomId());  // 방 ID 매핑
+            newQuiz.setMusicId(quiz.getMusicId());
+            newQuiz.setName(quiz.getName());
+            newQuiz.setCode(quiz.getCode());
+            newQuiz.setStart(quiz.getStart());
+            newQuiz.setTags(quiz.getTags());
+            newQuiz.setAnswer(quiz.getAnswer());
 
-		int totalPage = rooms.getTotalPages();
-		return new QuizRoomListBean(totalPage, quizRoomList);
-	}
+            quizMusicRepository.save(newQuiz);  // 새 엔티티로 저장
+        });
 
-	// 퀴즈방 생성
-	@Transactional
-	public QuizRoomBean createRoom(QuizRoomBean quizRoomBean, MemberBean memberBean) {
-		Member member = memberCommand.findMemberById(memberBean.getMember_id());
-		ensureMemberGameStats(member);
+        quizCommand.saveQuizRoomAttendee(new QuizRoomAttendee(quizRoom, member));
 
-		// 게임 통계 업데이트
-		MemberGameStats stats = member.getMemberGameStats();
-		stats.setMakeRoomNum(stats.getMakeRoomNum() + 1);
+        return new QuizRoomBean(
+                quizRoom.getQuizRoomId(), quizRoom.getQuizRoomName(), quizRoom.getQuizRoomPassword(),
+                quizRoom.getOwner(), quizRoom.getStatus(), quizRoom.getMemberCount(),
+                quizRoom.getMaxCapacity(), quizRoom.getMaxMusic(), quizRoom.getQuizRoomType()
+        );
+    }
 
-		memberCommand.saveMember(member);
 
-		QuizRoom quizRoom = new QuizRoom(quizRoomBean.getQuizRoomName(), quizRoomBean.getQuizRoomPassword(),
-				member.getNickname(), 1, quizRoomBean.getMemberCount(), quizRoomBean.getMembers());
 
-		quizCommand.saveQuizRoom(quizRoom);
 
-		QuizRoomAttendee quizRoomAttendee = new QuizRoomAttendee(quizRoom, member);
-		quizCommand.saveQuizRoomAttendee(quizRoomAttendee);
+    // **방 검색 기능 (페이지네이션 + 키워드 검색)**
+    @Transactional
+    public QuizRoomListBean searchQuizRoom(Pageable pageable, String keyword) {
+        var rooms = quizRoomRepository.findByQuizRoomNameContaining(pageable, keyword);
+        if (rooms.isEmpty()) {
+            throw new CustomException(StatusCode.NOT_EXIST_ROOMS);
+        }
 
-		return new QuizRoomBean(quizRoom.getQuizRoomId(), quizRoom.getQuizRoomName(), quizRoom.getQuizRoomPassword(),
-				quizRoom.getOwner(), quizRoom.getStatus(), quizRoom.getMemberCount(), quizRoomBean.getMembers());
-	}
+        List<QuizRoomBean> quizRoomList = new ArrayList<>();
+        rooms.forEach(room -> {
+            quizRoomList.add(new QuizRoomBean(
+                    room.getQuizRoomId(), room.getQuizRoomName(), room.getQuizRoomPassword(),
+                    room.getOwner(), room.getStatus(), room.getMemberCount(),
+                    room.getMaxCapacity(), room.getMaxMusic(), room.getQuizRoomType()
+            ));
+        });
 
-	// 퀴즈방 입장
-	@Transactional
-	public Map<String, String> enterQuizRoom(int roomId, MemberBean memberBean, String roomPassword) {
-		Member member = memberCommand.findMemberById(memberBean.getMember_id());
-		QuizRoom enterQuizRoom = quizQuery.findQuizRoomByRoomIdLock(roomId);
+        return new QuizRoomListBean(rooms.getTotalPages(), quizRoomList);
+    }
 
-		// 중복된 사용자 방 참여 방지
-		List<QuizRoomAttendee> quizRoomAttendeeList = quizQuery.findAttendeeByQuizRoom(enterQuizRoom);
-		boolean isAlreadyParticipant = quizRoomAttendeeList.stream()
-				.anyMatch(attendee -> attendee.getMember().getMemberId() == member.getMemberId());
-		if (isAlreadyParticipant) {
-			throw new CustomException(StatusCode.MEMBER_DUPLICATED, "이미 방에 참여 중입니다.");
-		}
+    // **퀴즈 방 입장 처리**
+    @Transactional
+    public Map<String, String> enterQuizRoom(int roomId, MemberBean memberBean, String roomPassword) {
+        Member member = memberCommand.findMemberById(memberBean.getMember_id());
+        QuizRoom quizRoom = quizQuery.findQuizRoomByRoomIdLock(roomId);
 
-		// 비밀번호가 필요한 방일 경우에만 비밀번호 확인
-		if (enterQuizRoom.getQuizRoomPassword() != null && !enterQuizRoom.getQuizRoomPassword().isEmpty()) {
-			if (!enterQuizRoom.getQuizRoomPassword().equals(roomPassword)) {
-				throw new CustomException(StatusCode.BAD_REQUEST, "비밀번호가 올바르지 않습니다.");
-			}
-		}
+        List<QuizRoomAttendee> attendees = quizQuery.findAttendeeByQuizRoom(quizRoom);
+        if (attendees.stream().anyMatch(att -> att.getMember().getMemberId() == member.getMemberId())) {
+            throw new CustomException(StatusCode.MEMBER_DUPLICATED, "이미 방에 참여 중입니다.");
+        }
 
-		ensureMemberGameStats(member);
+        String quizRoomPassword = quizRoom.getQuizRoomPassword() != null ? quizRoom.getQuizRoomPassword() : "";
 
-		MemberGameStats stats = member.getMemberGameStats();
-		stats.setEnterGameNum(stats.getEnterGameNum() + 1);
-		memberCommand.saveMember(member);
+        if (!quizRoomPassword.isEmpty() && !quizRoomPassword.equals(roomPassword)) {
+            throw new CustomException(StatusCode.BAD_REQUEST, "비밀번호가 올바르지 않습니다.");
+        }
 
-		QuizRoomAttendee newAttendee = new QuizRoomAttendee(enterQuizRoom, member);
-		quizCommand.saveQuizRoomAttendee(newAttendee);
+        ensureMemberGameStats(member);
+        member.getMemberGameStats().setEnterGameNum(member.getMemberGameStats().getEnterGameNum() + 1);
+        memberCommand.saveMember(member);
 
-		Map<String, String> roomInfo = new HashMap<>();
-		roomInfo.put("quizRoomName", enterQuizRoom.getQuizRoomName());
-		roomInfo.put("roomId", String.valueOf(enterQuizRoom.getQuizRoomId()));
-		roomInfo.put("owner", enterQuizRoom.getOwner());
-		roomInfo.put("status", String.valueOf(enterQuizRoom.getStatus()));
+        quizCommand.saveQuizRoomAttendee(new QuizRoomAttendee(quizRoom, member));
+        quizRoom.setMemberCount(quizRoom.getMemberCount() + 1);
+        quizCommand.saveQuizRoom(quizRoom);
 
-		return roomInfo;
-	}
+        return Map.of(
+                "quizRoomName", quizRoom.getQuizRoomName(),
+                "roomId", String.valueOf(quizRoom.getQuizRoomId()),
+                "owner", quizRoom.getOwner(),
+                "status", String.valueOf(quizRoom.getStatus())
+        );
+    }
 
-	// 방 나가기
-	@Transactional
-	public void roomExit(int roomId, MemberBean memberBean) {
-		Member member = memberCommand.findMemberById(memberBean.getMember_id());
-		QuizRoom enterQuizRoom = quizQuery.findQuizRoomByRoomId(roomId);
+    // **일반 채팅 메시지 처리**
+    public void processChatMessage(int roomId, String sender, String content) {
+        chatService.sendChatMessage(roomId, sender, content);
+    }
 
-		// 참여자가 방에 있는지 확인하고, 참여자를 제거
-		QuizRoomAttendee quizRoomAttendee = quizQuery.findAttendeeByMemberAndRoom(member, enterQuizRoom);
-		if (quizRoomAttendee != null) {
-			quizCommand.deleteQuizRoomAttendee(quizRoomAttendee);
-		} else {
-			throw new CustomException(StatusCode.BAD_REQUEST, "방에 참여 중인 사용자가 아닙니다.");
-		}
+    // **방 나가기 처리**
+    @Transactional
+    public void roomExit(int roomId, MemberBean memberBean) {
+        Member member = memberCommand.findMemberById(memberBean.getMember_id());
+        QuizRoom quizRoom = quizQuery.findQuizRoomByRoomId(roomId);
 
-		// 방의 현재 참여자 목록을 업데이트
-		List<QuizRoomAttendee> existingAttendees = quizQuery.findAttendeeByQuizRoom(enterQuizRoom);
+        QuizRoomAttendee attendee = quizQuery.findAttendeeByMemberAndRoom(member, quizRoom);
+        if (attendee == null) {
+            throw new CustomException(StatusCode.BAD_REQUEST, "방에 참여 중인 사용자가 아닙니다.");
+        }
 
-		// 방에 남은 참여자가 없으면 방을 삭제
-		if (existingAttendees.isEmpty()) {
-			quizCommand.deleteQuizRoom(enterQuizRoom);
-			sessionRepository.deleteAllClientsInRoom(roomId);
-			return;
-		}
+        quizCommand.deleteQuizRoomAttendee(attendee);
+        quizRoom.setMemberCount(quizRoom.getMemberCount() - 1);
+        quizCommand.saveQuizRoom(quizRoom);
 
-		// 방에서 나가는 사용자에 대한 메시지 전송
-		Map<String, Object> contentSet = new HashMap<>();
-		contentSet.put("memberCount", existingAttendees.size());
-		contentSet.put("alert", member.getNickname() + " 님이 방을 나가셨습니다!");
+        chatService.sendChatMessage(roomId, "알림", member.getNickname() + " 님이 나갔습니다!");
 
-		quizService.sendQuizMessage(roomId, QuizMessage.MessageType.LEAVE, contentSet, null, member.getNickname());
+        if (quizRoom.getMemberCount() == 0) {
+            quizCommand.deleteQuizRoom(quizRoom);
+            sessionRepository.deleteAllClientsInRoom(roomId);
+        }
+    }
 
-		// 방 소유자가 방을 나갔고, 남아있는 참여자가 있으면 새 소유자를 할당
-		if (member.getNickname().equals(enterQuizRoom.getOwner()) && !existingAttendees.isEmpty()) {
-			String nextOwner = existingAttendees.get((int) (Math.random() * existingAttendees.size()))
-					.getMemberNickname();
-			enterQuizRoom.setOwner(nextOwner);
-			quizService.sendQuizMessage(roomId, QuizMessage.MessageType.NEWOWNER, null, null, nextOwner);
-		}
-	}
+    // **방 ID로 퀴즈 방 조회**
+    @Transactional(readOnly = true)
+    public QuizRoomBean findRoomById(int roomId) {
+        QuizRoom quizRoom = quizQuery.findQuizRoomByRoomId(roomId);
+        if (quizRoom == null) {
+            throw new CustomException(StatusCode.NOT_EXIST_ROOMS);
+        }
+
+        List<QuizRoomAttendee> attendees = quizRoomAttendeeRepository.findByQuizRoom(quizRoom);
+        int memberCount = attendees.size();
+
+        return new QuizRoomBean(
+                quizRoom.getQuizRoomId(), quizRoom.getQuizRoomName(), quizRoom.getQuizRoomPassword(),
+                quizRoom.getOwner(), quizRoom.getStatus(), memberCount,
+                quizRoom.getMaxCapacity(), quizRoom.getMaxMusic(), quizRoom.getQuizRoomType()
+        );
+    }
+
+    // **참가자들의 닉네임 목록 가져오기**
+    @Transactional(readOnly = true)
+    public List<String> getAttendeesNicknamesByRoomId(int roomId) {
+        List<QuizRoomAttendee> attendees = quizRoomAttendeeRepository.findByQuizRoomQuizRoomId(roomId);
+
+        if (attendees.isEmpty()) {
+            throw new CustomException(StatusCode.NOT_FOUND_MEMBER, "참가자가 존재하지 않습니다.");
+        }
+
+        List<String> nicknames = new ArrayList<>();
+        for (QuizRoomAttendee attendee : attendees) {
+            nicknames.add(attendee.getMember().getNickname());
+        }
+        return nicknames;
+    }
 }

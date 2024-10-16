@@ -147,3 +147,113 @@
     top: 20px;
     left: 20px;
 }
+
+/* 모달 창 기본 스타일 */
+.modal {
+    display: none; /* 기본적으로 숨김 처리 */
+    position: fixed; /* fixed로 설정하여 화면 중앙에 고정 */
+    z-index: 1000;
+    left: 50%; /* 가로 중앙 */
+    top: 50%; /* 세로 중앙 */
+    transform: translate(-50%, -50%); /* 중앙 정렬을 위해 -50% 이동 */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* 배경 어둡게 처리 */
+}
+
+/* 모달 콘텐츠 */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 400px; /* 너비 조정 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: modalFadeIn 0.5s ease;
+    top: 0; /* 고정된 중앙에서의 상대적 위치 조정 필요 없음 */
+}
+
+/* 닫기 버튼 스타일 */
+.close, .close-password-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close-password-modal:hover {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 모달 애니메이션 */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 모달 창 내의 입력 폼 스타일 */
+.modal input[type="text"], .modal input[type="password"], .modal input[type="number"], .modal select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* 버튼 스타일 */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.music-button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: 1px solid #000;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: box-shadow 1s ease-out; /* 부드러운 전환 */
+}
+
+.music-button:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+    animation: pulse 0.5s ease-out; /* 짧은 애니메이션 */
+}
+
+.music-button.selected {
+    background-color: #4caf50;
+    color: white;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05); /* 조금만 확대 */
+    }
+    100% {
+        transform: scale(1);
+    }
+}
