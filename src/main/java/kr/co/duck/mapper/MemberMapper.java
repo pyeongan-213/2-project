@@ -44,8 +44,8 @@ public interface MemberMapper {
 	@Select("select password from member where member_id = #{member_id}")
 	String getMemberPassword(int member_id);
 	
-	@Update("update member set password = #{password} where member_id = #{member_id}")
-	void modifyMemberPassword(@Param("password") String password, @Param("member_id") int member_id);
+	@Update("update member set password = #{password} where email = #{email}")
+	void modifyMemberPassword(@Param("password") String password, @Param("email") String email);
 	
 
 }

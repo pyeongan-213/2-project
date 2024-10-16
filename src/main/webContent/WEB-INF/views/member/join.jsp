@@ -13,13 +13,25 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="${root }css/join.css" />
   
+  <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  
+  
 </head>
 <script>
 	function checkMemberNameExist(){
 		var membername = $("#membername").val()
 		
 		if(membername.length == 0){
-			alert('아이디를 입력해주세요')
+			Swal.fire({
+				icon: 'warning',
+				title: '아이디를 입력해주세요',
+				background: '#3A3A3A',  // 배경색
+				color: '#fff',  // 텍스트 색상
+				confirmButtonColor: '#1db954',  // 확인 버튼 색상
+				confirmButtonText: '확인'
+			});
 			 return
 		}
 		
@@ -29,10 +41,24 @@
 			dataType : 'text',
 			success : function(result){
 				if(result.trim() == 'true'){
-					alert('사용할 수 있는 아이디 입니다')
+					Swal.fire({
+						icon: 'success',
+						title: '사용할 수 있는 아이디 입니다',
+						background: '#3A3A3A',  // 배경색
+						color: '#fff',  // 텍스트 색상
+						confirmButtonColor: '#1db954',  // 확인 버튼 색상
+						confirmButtonText: '확인'
+					});
 					$("#memberNameExist").val('true')
 				}else if(result.trim() == 'false') {
-					alert('사용할 수 없는 아이디 입니다')
+					Swal.fire({
+						icon: 'error',
+						title: '사용할 수 없는 아이디 입니다',
+						background: '#3A3A3A',  // 배경색
+						color: '#fff',  // 텍스트 색상
+						confirmButtonColor: '#1db954',  // 확인 버튼 색상
+						confirmButtonText: '확인'
+					});
 					$("#memberNameExist").val('false')
 				}
 			}
@@ -95,14 +121,14 @@
         }
 
         return grade;
-    }
-	
+    }	
 </script>
+
 <body>
 
 <c:import url="/WEB-INF/views/include/top_menu.jsp"/>
 
-<div class="container" style="margin-top:100px">
+<div class="container_join" style="margin-top:100px">
 	<div class="row">
 		<div class="col-sm-3"></div>
 		<div class="col-sm-6">
@@ -163,9 +189,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-3"></div>
 	</div>
 </div>
+
+<!-- 회원가입 성공 시 SweetAlert 표시 -->
+<c:if test="${joinSuccess == true}">
+<script>
+    Swal.fire({
+        title: '가입이 완료되었습니다',
+        text: '로그인 화면으로 이동합니다.',
+        icon: 'success',
+        background: '#3A3A3A',  // 회색 배경색
+        color: '#fff',  // 텍스트 색상 흰색
+        confirmButtonColor: '#1db954',  // 확인 버튼 색상 (Spotify 그린)
+        confirmButtonText: '확인'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // 확인 버튼을 누르면 로그인 페이지로 리디렉션
+            window.location.href = "${root}member/login";
+        }
+    });
+</script>
+</c:if>
 
 <c:import url="/WEB-INF/views/include/bottom_info.jsp"/>
 

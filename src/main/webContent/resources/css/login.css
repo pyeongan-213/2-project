@@ -10,10 +10,11 @@ body {
     color: #fff; /* 기본 텍스트 색상 */
     margin: 0;
     padding: 0;
+    overflow: scroll;
 }
 
 /* 컨테이너 설정 */
-.container {
+.container_login {
     max-width: 600px;
     margin: 100px auto; /* 화면 가운데 정렬 */
     padding: 20px;
@@ -78,23 +79,26 @@ label {
     background-color: #1ed760; /* 호버 시 밝은 그린 */
 }
 
-/* 회원가입 버튼 스타일 */
-.btn-danger {
-    background-color: transparent;
-    color: #ff4757;
-    border: 2px solid #ff4757;
-    border-radius: 50px;
-    width: 100%;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 10px;
+/* 회원가입 및 비밀번호 찾기 링크 스타일 */
+.form-group.text-center {
+    text-align: center; /* 중앙 정렬 */
+    margin-top: 20px; /* 위쪽 여백 추가 */
 }
 
-.btn-danger:hover {
-    background-color: #ff4757;
-    color: white;
+.btn-link {
+    background-color: transparent;
+    color: #fff;
+    border: none; /* 테두리 제거 */
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none; /* 밑줄 제거 */
+    margin: 0 5px; /* 좌우 여백 추가 */
 }
+
+.btn-link:hover {
+    color: #ff6b6b; /* 호버 시 색상 변경 */
+}
+
 
 /* 구글 로그인 버튼 스타일 */
 .googleSignUp button {
@@ -139,4 +143,24 @@ label {
     .form-control {
         padding: 10px;
     }
+}
+
+/* Footer 스타일 */
+footer {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #1f1d2b;
+    text-align: center;
+    color: white;
+    position: relative;
+    bottom: 0;
+    clear: both;
+    margin-top: auto;
+    border-top: 1px solid #333;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
 }
