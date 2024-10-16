@@ -97,10 +97,10 @@
 			</section>
 		</div>
 	</div>
-	<footer>
+	
 		<!-- bottom_info.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
-	</footer>
+	
 	<!-- JavaScript 파일 -->
 	<script src="${root}/js/main.js"></script>
 </body>

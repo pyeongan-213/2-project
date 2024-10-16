@@ -121,5 +121,9 @@ public class MemberService {
     public Member findMemberById(int memberId) {
         return memberRepository.findById(memberId).orElse(null);
     }
+    
+    public void modifyMemberPassword(String Password, String email) {
+    	memberDao.modifyMemberPassword(Password, email);
+    }
 	
 }

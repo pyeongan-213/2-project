@@ -48,7 +48,7 @@ public class MemberController {
 	        session.setAttribute("redirectURI", referer);  // 세션에 redirectURI 저장
 	    }
 
-	    System.out.println("RedirectURI set to: " + referer);  // 로그로 출력
+	    //System.out.println("RedirectURI set to: " + referer);  // 로그로 출력
 
 	    return "member/login";  // 로그인 페이지로 이동
 	}
@@ -56,7 +56,7 @@ public class MemberController {
 
 	@PostMapping("/login_pro")
 	public String login_pro(@Valid @ModelAttribute("tempLoginMemberBean") MemberBean tempLoginMemberBean,
-	                        BindingResult result, HttpSession session, HttpServletRequest request) {
+	                        BindingResult result, HttpSession session, HttpServletRequest request, Model model) {
 	    if (result.hasErrors()) {
 	        return "member/login";
 	    }
@@ -84,7 +84,8 @@ public class MemberController {
 	        return "redirect:/";
 	    } else {
 	        // 로그인 실패 시 처리
-	        return "member/login_fail";
+	    	model.addAttribute("fail", true);
+	        return "member/login";
 	    }
 	}
 
@@ -114,13 +115,16 @@ public class MemberController {
 	}
 
 	@PostMapping("/join_pro")
-	public String join_pro(@Valid @ModelAttribute("joinMemberBean") MemberBean joinMemberBean, BindingResult result) {
+	public String join_pro(@Valid @ModelAttribute("joinMemberBean") MemberBean joinMemberBean, BindingResult result, Model model) {
 
 		if (result.hasErrors()) {
 			return "member/join";
 		}
 		memberService.addMemberInfo(joinMemberBean);
-		return "member/join_success";
+		
+		// 회원가입 성공 플래그를 설정
+	    model.addAttribute("joinSuccess", true);
+		return "member/join";
 	}
 
 	@GetMapping("/info")
@@ -141,28 +145,31 @@ public class MemberController {
 
 	@PostMapping("/modify_pro")
 	public String modify_pro(@Valid @ModelAttribute("modifyMemberBean") MemberBean modifyMemberBean,
-			BindingResult result, HttpSession session) {
+	        BindingResult result, HttpSession session, Model model) {
 
-		if (result.hasErrors()) {
-			/*
-			 * result.getAllErrors().forEach(error -> { System.out.println("Error: " +
-			 * error.getDefaultMessage()); }); //bindingresult 객체 오류 확인용
-			 */
-			return "member/modify_fail";
-		}
+	    if (result.hasErrors()) {
+	        
+	        return "member/modify";  // 다시 수정 페이지로 이동
+	    }
 
-		memberService.modifyMemberInfo(modifyMemberBean);
+	    // 수정 작업 수행
+	    memberService.modifyMemberInfo(modifyMemberBean);
 
-		// 세션에 있는 로그인 된 회원 정보 갱신
-		loginMemberBean.setAge(modifyMemberBean.getAge());
-		loginMemberBean.setNickname(modifyMemberBean.getNickname());
-		loginMemberBean.setReal_name(modifyMemberBean.getReal_name());
+	    // 세션에 있는 로그인 된 회원 정보 갱신
+	    loginMemberBean.setAge(modifyMemberBean.getAge());
+	    loginMemberBean.setNickname(modifyMemberBean.getNickname());
+	    loginMemberBean.setReal_name(modifyMemberBean.getReal_name());
 
-		// 세션에 갱신된 객체 설정
-		session.setAttribute("loginMemberBean", loginMemberBean);
+	    // 세션에 갱신된 객체 설정
+	    session.setAttribute("loginMemberBean", loginMemberBean);
 
-		return "member/modify_success";
+	    // 성공 메시지를 모델에 추가
+	    model.addAttribute("status", "success");
+	    model.addAttribute("message", "정보가 수정되었습니다.");
+
+	    return "member/modify";  // 수정 페이지로 다시 이동
 	}
+
 
 	@GetMapping("/delete_account")
 	public String deleteAccount(@ModelAttribute("deleteMemberBean") MemberBean deleteMemberBean) {
@@ -190,7 +197,28 @@ public class MemberController {
 		// 세션 무효화 (로그아웃 처리)
 		session.invalidate();
 
-		return "member/delete_account_success"; // 탈퇴 성공 화면으로 이동
+		// 성공 시 success 값을 true로 설정
+		model.addAttribute("success", true);
+		return "member/delete_account"; // 탈퇴 성공 화면으로 이동
+	}
+
+	
+	@GetMapping("/modifyPassword")
+	public String modifyPassword(@ModelAttribute("modifyPasswordBean") MemberBean modifyPasswordBean) {
+		return "member/modifyPassword";
+	}
+	
+	@PostMapping("/modifyPassword_pro")
+	public String modifyPassword_pro(@Valid @ModelAttribute("modifyPasswordBean") MemberBean modifyPasswordBean, BindingResult result, Model model) {
+		if(result.hasErrors()) {
+			return "member/modifyPassword";
+		}
+		System.out.println(modifyPasswordBean.getPassword());
+		memberService.modifyMemberPassword(modifyPasswordBean.getPassword(),modifyPasswordBean.getEmail());
+		
+		model.addAttribute("success", true);
+		
+		return "member/modifyPassword";
 	}
 
 	@InitBinder

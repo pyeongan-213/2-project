@@ -13,13 +13,25 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="${root }css/join.css" />
   
+  <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">  
 </head>
 <script>
 	function checkMemberNameExist(){
 		var membername = $("#membername").val()
 		
 		if(membername.length == 0){
-			alert('아이디를 입력해주세요')
+			Swal.fire({
+				icon: 'warning',
+				title: '아이디를 입력해주세요',
+				background: '#3A3A3A',  // 배경색
+				color: '#fff',  // 텍스트 색상
+				confirmButtonColor: '#1db954',  // 확인 버튼 색상
+				confirmButtonText: '확인'
+			});
 			 return
 		}
 		
@@ -29,10 +41,24 @@
 			dataType : 'text',
 			success : function(result){
 				if(result.trim() == 'true'){
-					alert('사용할 수 있는 아이디 입니다')
+					Swal.fire({
+						icon: 'success',
+						title: '사용할 수 있는 아이디 입니다',
+						background: '#3A3A3A',  // 배경색
+						color: '#fff',  // 텍스트 색상
+						confirmButtonColor: '#1db954',  // 확인 버튼 색상
+						confirmButtonText: '확인'
+					});
 					$("#memberNameExist").val('true')
 				}else if(result.trim() == 'false') {
-					alert('사용할 수 없는 아이디 입니다')
+					Swal.fire({
+						icon: 'error',
+						title: '사용할 수 없는 아이디 입니다',
+						background: '#3A3A3A',  // 배경색
+						color: '#fff',  // 텍스트 색상
+						confirmButtonColor: '#1db954',  // 확인 버튼 색상
+						confirmButtonText: '확인'
+					});
 					$("#memberNameExist").val('false')
 				}
 			}
@@ -95,14 +121,61 @@
         }
 
         return grade;
+    }	
+    
+ // CapsLock 체크 함수
+    function checkCapsLock(event, messageId) {
+        if (event.getModifierState("CapsLock")) {
+            document.getElementById(messageId).innerText = "Caps Lock이 활성화된 상태입니다.";
+        } else {
+            document.getElementById(messageId).innerText = "";
+        }
     }
-	
+
+    window.onload = function() {
+        // 비밀번호 입력란의 CapsLock 체크
+        document.getElementById("passwordField").onkeyup = function(event) {
+            checkCapsLock(event, 'message');
+        };
+        
+        // 비밀번호 확인 입력란의 CapsLock 체크
+        document.getElementById("passwordField2").onkeyup = function(event) {
+            checkCapsLock(event, 'message2');
+        };
+    };
+
+    $(function(){
+        // 눈표시 클릭 시 패스워드 보이기
+        $('.eyes').on('click', function(){
+            var passwordField = $('#passwordField');
+            if(passwordField.attr('type') === 'password') {
+                passwordField.attr('type', 'text');
+                $(this).find('.fa').attr('class', 'fa fa-eye-slash fa-lg');
+            } else {
+                passwordField.attr('type', 'password');
+                $(this).find('.fa').attr('class', 'fa fa-eye fa-lg');
+            }
+        });
+        
+     // 눈표시 클릭 시 패스워드 보이기 - 비밀번호 확인 입력란
+        $('.eyes-confirm').on('click', function(){
+            var passwordField2 = $('#passwordField2');
+            if(passwordField2.attr('type') === 'password') {
+                passwordField2.attr('type', 'text');
+                $(this).find('.fa').attr('class', 'fa fa-eye-slash fa-lg');
+            } else {
+                passwordField2.attr('type', 'password');
+                $(this).find('.fa').attr('class', 'fa fa-eye fa-lg');
+            }
+        });
+    });
 </script>
+
 <body>
 
 <c:import url="/WEB-INF/views/include/top_menu.jsp"/>
 
-<div class="container" style="margin-top:100px">
+<div class="container_join" style="margin-top:100px">
 	<div class="row">
 		<div class="col-sm-3"></div>
 		<div class="col-sm-6">
@@ -141,19 +214,38 @@
 							<form:errors path="real_name" style='color:red'/>
 						</div>
 						
-						<div class="form-group">						
-							<form:label path="password">비밀번호</form:label>
-							<form:password path="password" class="form-control" oninput="checkPasswordSecGrade(); checkPasswordEquals();"/>							
-							<form:errors path="password" style='color:red'/>
-						</div>
+						<div class="form-group">
+                                <form:label path="password">비밀번호</form:label>
+                                <div class="input-group">
+                                    <form:password path="password" class="form-control" id="passwordField"/>
+                                    <div class="eyes input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-eye fa-lg"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div id="message" style="color:red"></div>                
+                                <form:errors path="password" style="color:red" />
+                            </div>
+                            
 						<div class="checkOutGrade">
 								보안 등급 : 
 						</div>
+						
 						<div class="form-group">
 							<form:label path="password2">비밀번호 확인</form:label>
-							<form:password path="password2" class="form-control"/>
-							<form:errors path="password2" style='color:red'/>
+							<div class="input-group">
+								<form:password path="password2" class="form-control" id="passwordField2"/>
+								<div class="eyes-confirm input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-eye fa-lg"></i>
+									</span>
+								</div>
+							</div>
+							<div id="message2" style="color:red"></div>
+							<form:errors path="password2" style="color:red"/>
 						</div>
+
 						<div class="form-group">
 							<div class="text-right">
 								<form:button type="submit" class="btn btn-primary">회원가입</form:button>
@@ -163,9 +255,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-3"></div>
 	</div>
 </div>
+
+<!-- 회원가입 성공 시 SweetAlert 표시 -->
+<c:if test="${joinSuccess == true}">
+<script>
+    Swal.fire({
+        title: '가입이 완료되었습니다',
+        text: '로그인 화면으로 이동합니다.',
+        icon: 'success',
+        background: '#3A3A3A',  // 회색 배경색
+        color: '#fff',  // 텍스트 색상 흰색
+        confirmButtonColor: '#1db954',  // 확인 버튼 색상 (Spotify 그린)
+        confirmButtonText: '확인'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // 확인 버튼을 누르면 로그인 페이지로 리디렉션
+            window.location.href = "${root}member/login";
+        }
+    });
+</script>
+</c:if>
 
 <c:import url="/WEB-INF/views/include/bottom_info.jsp"/>
 
