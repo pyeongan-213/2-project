@@ -77,7 +77,7 @@ public class ManiaDBController {
 	public String parseAlbumToMain(@RequestParam("album_id") String album_id, Model model) {
 		try {
 			AlbumDetail result = crawlingAlbumMain.getAlbumDetail(album_id);
-			
+
 			model.addAttribute("result", result);
 
 			return "search/searchAlbumInfo";
@@ -88,22 +88,24 @@ public class ManiaDBController {
 		}
 
 	}
-	
+
 	// 메인페이지에서 상세페이지로 넘어가는 요청을 처리하는 매핑; 앨범 클래스
-		@GetMapping("search/crawlingArtistMain")
-		public String parseArtistToMain(@RequestParam("artist") String artist, Model model) {
-			try {
-				ArtistDetail result = maniaDBService.mainArtistCrawling(artist);
+	@GetMapping("search/crawlingArtistMain")
+	public String parseArtistToMain(@RequestParam("artist") String artist,
+			@RequestParam(value = "artistImage", required = false) String artistImage, Model model) {
+		try {
+			ArtistDetail result = maniaDBService.mainArtistCrawling(artist);
 
-				model.addAttribute("result", result);
+			// 메인 페이지 이미지와 크롤링된 결과를 모델에 추가
+			model.addAttribute("result", result);
+			model.addAttribute("artistImage", artistImage); // 메인 페이지 이미지 추가
 
-				return "search/searchArtistInfo";
+			return "search/searchArtistInfo";
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				return "main";
-			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "main";
 		}
-	
+	}
+
 }

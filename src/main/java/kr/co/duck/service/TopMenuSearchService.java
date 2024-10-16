@@ -136,7 +136,11 @@ public class TopMenuSearchService {
 	private ArtistDetail scrapeArtistDetail(Document doc) {
 		ArtistDetail artistDetail = new ArtistDetail();
 		artistDetail.setArtistName(doc.select("div.artist-name").first().text());
-		artistDetail.setImage(doc.select("div#ARTIST_PHOTO a.highslide img").attr("src"));
+		String artistImage = doc.select("div#ARTIST_PHOTO a.highslide img").attr("src");
+		artistImage = artistImage.replace("_t/260", "");
+		artistDetail.setImage(artistImage);
+		
+		
 		artistDetail.setPeriod(doc.select("td.artist-label:contains(ACTIVE) + td div").text());
 		artistDetail.setDescription(doc.select("meta[property=og:description]").first().attr("content"));
 
@@ -144,7 +148,9 @@ public class TopMenuSearchService {
 		List<String> albumImageList = new ArrayList<>();
 		int count = 0;
 		for (Element img : imgElements) {
-			albumImageList.add(img.attr("src"));
+			String albumImage = img.attr("src");
+        	albumImage = albumImage.replace("_t/150", "");
+            albumImageList.add(albumImage);
 			if (++count >= 10)
 				break; // 최대 10개까지만 가져오기
 		}
@@ -164,7 +170,9 @@ public class TopMenuSearchService {
 		List<String> albumGuidList = new ArrayList<>();
 		count = 0;
 		for (Element albumGuid : albumGuidElements) {
-			albumGuidList.add(albumGuid.attr("href"));
+			String albumGuidPrefix = "http://www.maniadb.com" + albumGuid.attr("href");
+			
+			albumGuidList.add(albumGuidPrefix);
 			if (++count >= 10)
 				break; // 최대 10개까지만 가져오기
 		}
@@ -183,7 +191,11 @@ public class TopMenuSearchService {
 			description = description.substring(0, 1300); // 최대 1300자까지 자르기
 		}
 		albumDetail.setDescription(description);
-		albumDetail.setImage(doc.select("div#body img").first().attr("src"));
+		String albumImage = doc.select("div#body img").first().attr("src");
+		albumImage = albumImage.replace("_t/260", "");
+		System.out.println(albumImage);
+		albumDetail.setImage(albumImage);
+		
 
 		Elements trackElements = doc.select("table.album-tracks div.song a");
 		List<String> trackList = new ArrayList<>();

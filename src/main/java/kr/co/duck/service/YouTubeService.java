@@ -55,10 +55,14 @@ public class YouTubeService {
                 MusicBean musicBean = new MusicBean();
                 musicBean.setmusic_Name(result.getSnippet().getTitle());
                 musicBean.setArtist(result.getSnippet().getChannelTitle());
-                musicBean.setThumbnailUrl(result.getSnippet().getThumbnails().getDefault().getUrl());
+                String thumbnailUrl = result.getSnippet().getThumbnails().getDefault().getUrl();
+                thumbnailUrl = thumbnailUrl.replace("default.jpg", "maxresdefault.jpg");
+                
+                System.out.println(thumbnailUrl);
+                musicBean.setThumbnailUrl(thumbnailUrl);
                 musicBean.setVideoUrl("https://www.youtube.com/watch?v=" + result.getId().getVideoId());
 
-                System.out.println("검색 결과: " + musicBean.getmusic_Name() + " - " + musicBean.getArtist());
+                //System.out.println("검색 결과: " + musicBean.getmusic_Name() + " - " + musicBean.getArtist());
 
                 musicBeans.add(musicBean);
             }
