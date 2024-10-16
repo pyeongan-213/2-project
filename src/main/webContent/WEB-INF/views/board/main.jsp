@@ -295,8 +295,7 @@ function toggleContent() {
 		
 		<div class="fixed-content">
 			<form:form id="emailForm" action="${root }board/receiveEmail/${loginMemberBean.email}" method="post">
-				<h3 style="background: transparent;">문의하기</h3>
-				
+				<h3 style="background: transparent;">🦆DuckMusic</h3>
 				<p>
 				<label for="name">이름</label>
 				<textarea id="name" name="name" rows="1" readonly>${loginMemberBean.real_name}</textarea>
@@ -319,7 +318,7 @@ function toggleContent() {
 					required></textarea>
 				</p>
 				
-				<button class="send-mail" type="submit">메일보내기 ✉️</button>
+				<button class="send-mail" type="submit">전송하기 ✉️</button>
 			</form:form>
 		</div>
 		
@@ -343,7 +342,6 @@ function toggleContent() {
 	</span>
 	</div>
 
-<script src="${root}js/finisher-header.es5.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script>
 	let currentBoardId = 0; // 전역 변수로 선언
@@ -447,43 +445,6 @@ function toggleContent() {
              		});
                 }
             });
-        });
-    });
-	
-	$(document).ready(function() {
-        new FinisherHeader({
-            "count": 100,
-            "size": {
-                "min": 2,
-                "max": 11,
-                "pulse": 0.4
-            },
-            "speed": {
-                "x": {
-                    "min": 0,
-                    "max": 0.6
-                },
-                "y": {
-                    "min": 0,
-                    "max": 0.9
-                }
-            },
-            "colors": {
-                "background": "#201e30",
-                "particles": [
-                    "#1ee99a",
-                    "#c783d7",
-                    "#f1cb49",
-                    "#00ffef"
-                ]
-            },
-            "blending": "overlay",
-            "opacity": {
-                "center": 1,
-                "edge": 0.1
-            },
-            "skew": 0,
-            "shapes": ["c"]
         });
     });
 </script>
