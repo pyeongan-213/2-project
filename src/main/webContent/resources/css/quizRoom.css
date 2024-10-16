@@ -44,6 +44,7 @@ html, body {
     z-index: 1000;
     text-align: center;
     background: transparent; /* 배경 제거 */
+    list-style-type: none;
 }
 
 /* 플레이어 목록 제목 스타일 */
@@ -76,6 +77,7 @@ html, body {
     width: 150px;
     background: rgba(255, 255, 255, 0.8); /* 살짝 투명한 흰색 배경 */
     transition: background-color 0.3s ease, transform 0.3s ease; /* 부드러운 hover 효과 */
+	list-style-type: none;
 }
 
 /* 마지막 플레이어 항목에만 적용되는 스타일 제거 */
@@ -212,52 +214,56 @@ html, body {
 
 /* 채팅 및 메시지 스타일 */
 .quiz-room-chat-section {
-	width: 300px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	padding: 20px;
-	background-color: #1f1d2b;
-	border-radius: 10px;
-	margin: 20px;
+    width: 300px;
+    height: 90%;
+    left:0.9%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #1f1d2b;
+    border-radius: 10px;
+    margin: 20px;
+    position: relative; /* position 추가 */
+    bottom: -42px; /* 아래로 이동할 값 조정 */
 }
 
 .quiz-room-chat-messages {
-	flex: 1;
-	overflow-y: auto;
-	background-color: #252545;
-	border-radius: 10px;
-	padding: 10px;
-	margin-bottom: 10px;
+    flex: 1;
+    overflow-y: auto;
+    background-color: #252545;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .quiz-room-chat-input-wrapper {
-	display: flex;
-	gap: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .quiz-room-chat-input {
-	flex: 1;
-	padding: 10px;
-	border-radius: 8px;
-	background-color: #252545;
-	color: white;
-	border: none;
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #252545;
+    color: white;
+    border: none;
 }
 
 .quiz-room-chat-btn {
-	background-color: #ff66b2;
-	padding: 10px 20px;
-	border-radius: 8px;
-	border: none;
-	cursor: pointer;
+    background-color: #ff66b2;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
 }
 
 /* 툴팁 전체 컨테이너 */
 #command-tooltip {
     position: absolute;
     top: 62px;
-    left: 63.8%;
+    left: 62.5%;
     right: 350px;
     width: 250px;
     background-color: #1f1f33;
@@ -337,7 +343,7 @@ html, body {
 #tooltip-maximize-btn {
     position: absolute;
     top: 70px;
-    left: 77%;
+    left: 76%;
     background-color: #2d2d4f;
     border: none;
     border-radius: 50%;
