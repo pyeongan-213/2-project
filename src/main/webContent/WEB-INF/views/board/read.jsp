@@ -60,9 +60,9 @@
 			
 
 			<div style="display: flex;">
-				<span id="likeButton_${readContentBean.boardpost_id}"
-					style="cursor: pointer;">♡</span> 
-				<span id="likeCount">${readContentBean.like_count}</span>
+				<span class="like" id="likeButton_${readContentBean.boardpost_id}"
+					style="cursor: pointer;">♡&nbsp;</span> 
+				<span class="like" id="likeCount">${readContentBean.like_count}</span>
 
 				<c:if
 					test="${loginMemberBean.member_id == readContentBean.member_id}">
@@ -101,11 +101,11 @@
 						</span>
 					</c:if>
 
-					<div style="font-size: 14px;">
+					<div style="margin-bottom: 5px; font-size: 14px;">
 						<span>${obj.reply_writer_name }</span> <span style="color: gray;">${obj.reply_date }</span>
 					</div>
 
-					<div>
+					<div style="padding: 0 10px;">
 						${obj.reply_text }	
 					</div>					
 				</div>
@@ -254,6 +254,8 @@
 	        text: "삭제 후 복구할 수 없습니다!",
 	        icon: 'warning',
 	        showCancelButton: true,
+	        background: '#3A3A3A',  // 배경색
+    		color: '#fff',  // 텍스트 색상
 	        confirmButtonColor: '#d33',
 	        cancelButtonColor: '#3085d6',
 	        confirmButtonText: '삭제',

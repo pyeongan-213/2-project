@@ -20,6 +20,8 @@
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/board.css">
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <title>Board</title>
 <script>
@@ -101,7 +103,7 @@ function toggleContent() {
 								href="${root }board/read?board_id=${obj.board_id }&boardpost_id=${obj.boardpost_id}"
 								style="color: #fea443;"> 🔥${obj.content_title}</a></td>
 							<td style="width: 20%; color: gray; font-size: 14px;">${obj.writedate}</td>
-							<td style="width: 10%; text-align: left; color: gray; font-size: 14px;">♡${obj.like_count}</td>
+							<td style="width: 10%; text-align: left; color: gray; font-size: 14px;">♡ ${obj.like_count}</td>
 						</tr>
 					</tbody>
 				</c:forEach>
@@ -152,7 +154,7 @@ function toggleContent() {
 									${obj.content_title} </a></td>
 							<td style="width: 15%; color: gray; font-size: 14px;">${obj.membername}</td>
 							<td style="width: 15%; color: gray; font-size: 14px;">${obj.writedate}</td>
-							<td style="width: 15%; color: gray; font-size: 14px;">♡${obj.like_count}</td>
+							<td style="width: 15%; color: gray; font-size: 14px;">♡ ${obj.like_count}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -378,7 +380,14 @@ function toggleContent() {
 	    if (query) {
 	        return true; 
 	    } else {
-	    	swal("검색어를 입력해 주세요.","", {icon: "warning"});
+	    	Swal.fire({
+                icon: 'warning',
+                title: '검색어를 입력해 주세요.',
+                background: '#3A3A3A',  // 배경색
+                color: '#fff',  // 텍스트 색상
+                confirmButtonColor: '#1db954',  // 확인 버튼 색상
+                confirmButtonText: '확인'
+             });
 	        return false;
 	    }
 	}
@@ -414,15 +423,28 @@ function toggleContent() {
                 data: $(this).serialize(),
                 success: function() {
                     // 성공적으로 메일이 전송되면 알림창을 띄운다.
-                    swal("메일이 성공적으로 전송되었습니다!", "", { icon: "success" })
-                        .then(() => {
-                            // 메인 페이지로 이동
-                            window.location.href = '${root}board/main';
-                        });
+                    Swal.fire({
+                  		icon: 'success',
+                 		title: '메일이 성공적으로 전송되었습니다!',
+                  		background: '#3A3A3A',  // 배경색
+                  		color: '#fff',  // 텍스트 색상
+                  		confirmButtonColor: '#1db954',  // 확인 버튼 색상
+                  		confirmButtonText: '확인'
+               		}).then(() => {
+                        // 메인 페이지로 이동
+                        window.location.href = '${root}board/main';
+                    });
                 },
                 error: function() {
                     // 에러 발생 시 알림창을 띄운다.
-                    swal("메일 전송에 실패했습니다.", "", { icon: "error" });
+                    Swal.fire({
+                		icon: 'error',
+                		title: '메일 전송에 실패했습니다.',
+                		background: '#3A3A3A',  // 배경색
+                		color: '#fff',  // 텍스트 색상
+                		confirmButtonColor: '#1db954',  // 확인 버튼 색상
+                		confirmButtonText: '확인'
+             		});
                 }
             });
         });

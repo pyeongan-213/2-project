@@ -17,6 +17,8 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/board.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -118,7 +120,14 @@
                 var boardId = $('#drop-down').val();
                 if (boardId === "-1") {
                     // 에러 메시지 표시
-                    swal("카테고리를 선택해 주세요.","", {icon: "warning"});
+                    Swal.fire({
+                		icon: 'warning',
+                		title: '카테고리를 선택해 주세요.',
+                		background: '#3A3A3A',  // 배경색
+                		color: '#fff',  // 텍스트 색상
+                		confirmButtonColor: '#1db954',  // 확인 버튼 색상
+                		confirmButtonText: '확인'
+             		});
 					$(this).prop('disabled', false); // 버튼 활성화
                     return; // 폼 제출 중단
                 }

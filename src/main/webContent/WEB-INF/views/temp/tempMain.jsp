@@ -19,11 +19,11 @@
     <script type="text/javascript">
         $(document).ready(function() {
             new FinisherHeader({
-                "count": 100,
+                "count": 80,
                 "size": {
                     "min": 2,
-                    "max": 5,
-                    "pulse": 0.2
+                    "max": 7,
+                    "pulse": 0.1
                 },
                 "speed": {
                     "x": {

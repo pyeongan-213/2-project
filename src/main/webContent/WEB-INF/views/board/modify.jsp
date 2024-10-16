@@ -8,9 +8,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="${root}/css/main.css" rel="stylesheet" type="text/css">
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"> 
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <link href="//bootswatch.com/3/darkly/bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/board.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
@@ -30,17 +32,22 @@
 </style>
 </head>
 <body>
-	<c:import url="/WEB-INF/views/include/sidebar.jsp" />
-	<div class="container">
-		<div style="font-size: 13px; margin: 20px 0;">
-			<div>${loginMemberBean.nickname }</div>
+	<header>
+		<!-- top_menu.jsp 포함 -->
+		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
+		<!-- Sidebar 포함 -->
+		<div class="sidebar">
+		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
 		</div>
-		<div style="margin-left: 30px">
+	</header>
+	<div class="board-container">
+		<div style="margin-left: 50px">
 		<form:form action="${root}board/modify_pro" method="post" modelAttribute="modifyContentBean" enctype="multipart/form-data">
 			<div style="margin-bottom: 20px;">
 				
 				<form:hidden path="boardpost_id"/>
-				<form:input path="content_title" style="font-size: 16px; padding: 3px; margin-right: 20px;"/>
+				<form:input path="content_title" style="width: 400px; font-size: 16px; padding: 3px; margin-right: 20px;" 
+				placeholder="제목" />
 				<form:errors path="content_title" style='color:red'></form:errors>
 				
 			</div>
@@ -49,13 +56,17 @@
         		<textarea name="content_text" id="summernote">${modifyContentBean.content_text}</textarea>
     		</div>
 			
-			<span style="float: right; margin: 30px 0">
-				<form:button type="reset" class="write-btn"><a href="${root }board/read?boardpost_id=${boardpost_id}">취소</a></form:button>
+			<span style="float: right; margin: 15px 0">
+				<form:button type="reset" class="write-btn"><a href="${root }board/read?boardpost_id=${boardpost_id}" style="text-decoration: none; color: black;">취소</a></form:button>
 				<form:button class="write-btn" id="saveButton">작성</form:button>
 			</span>
 		</form:form>
 		</div>
 	</div>
+	<footer>
+	<!-- bottom_info.jsp 포함 -->
+    <jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
+	</footer>
 	<script>
         $(document).ready(function() {
             $('#summernote').summernote({

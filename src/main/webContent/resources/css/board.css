@@ -325,10 +325,6 @@ thead th {
     color: black;
 }
 
-.comment-container > div{
-	margin: 10px 0;
-}
-
 .content-box{
 	background: #303030;
 	margin: 10px;
@@ -353,11 +349,15 @@ thead th {
 	all: unset;
 	color: white;
 	background: #464545;
-	padding: 10px 25px;
+	padding: 10px 25px 32px;
 	border-radius: 10px;
 	width: 100%;
 	box-sizing: border-box;
 	display: inline-block;
+}
+
+.content_text p{
+	background: transparent !important;
 }
 
 .content_text table {
@@ -370,8 +370,13 @@ thead th {
 
 .content_text a {
 	text-decoration: underline;
-	color: blue;
+	color: aqua;
 	cursor: pointer;
+}
+
+.like{
+	line-height: 1;
+	vertical-align: middle;
 }
 
 .content-opt {
@@ -423,6 +428,10 @@ thead th {
 	background: #464545;
 	padding: 10px 25px;
 	border-radius: 10px;
+}
+
+.comment-container > div{
+	margin: 10px 0;
 }
 
 .write-reply {
