@@ -82,30 +82,34 @@ function onPlayerReady(event) {
 
 	// AJAX로 특정 순서의 곡을 로드하는 함수
 	function loadMusicByOrder(playOrder) {
-    $.ajax({
-        url: `/Project_2/musicPlayer/play/${playlistId}/${playOrder}`,
-        method: 'GET',
-        success: function(music) {
-            if (music) {
-                // 기존 플레이어를 삭제한 후 새로 생성
-                player.destroy();
-                player = new YT.Player('musicPlayer', {
-                    videoId: music.videoUrl,
-                    events: {
-                        'onReady': onPlayerReady,
-                        'onStateChange': onPlayerStateChange
-                    }
-                });
-                $('#currentSongTitle').text(music.music_Name);
-                $('#currentArtist').text(music.artist);
-            }
-        },
-        error: function(err) {
-            alert('곡을 가져오는 데 오류가 발생했습니다.');
-        }
-    });
-}
+		$.ajax({
+			url: `/Project_2/musicPlayer/play/${playlistId}/${playOrder}`,  // 요청 URL
+			method: 'GET',
+			dataType: 'json',  // JSON 데이터 형식으로 요청
+			success: function(music) {
+				if (music) {
+					console.log(music);  // 데이터 확인용 로그
 
+					// 기존 iframe을 삭제
+					$('#musicPlayer').remove();
+
+					// 새로운 iframe을 동적으로 생성하여 추가
+					$('.player-wrapper').append(`
+                    <iframe id="musicPlayer" src="https://www.youtube.com/embed/${music.videoUrl}?enablejsapi=1&autoplay=1" 
+                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                `);
+
+					// 현재 곡 제목과 아티스트 정보 업데이트
+					$('#currentSongTitle').text(music.music_Name);
+					$('#currentArtist').text(music.artist);
+				}
+			},
+			error: function(err) {
+				alert('곡을 가져오는 데 오류가 발생했습니다.');
+				console.log(err);  // 에러 로그
+			}
+		});
+	}
 
 	$('#shuffleBtn').off('click').on('click', function() {
 		// 셔플 기능 로직 작성
@@ -147,3 +151,15 @@ $(document).ready(function() {
 $(document).on('ajaxComplete', function() {
 	loadYouTubeIframeAPI();
 });
+
+function loadVideo(videoUrl, musicName, artist) {
+    console.log("Video URL: " + videoUrl);  // 호출 확인용 로그
+
+    // iframe의 src 속성만 변경
+    $('#musicPlayer').attr('src', `https://www.youtube.com/embed/${videoUrl}?enablejsapi=1&autoplay=1`);
+
+    // 현재 곡 제목과 아티스트 정보 업데이트
+    $('#currentSongTitle').text(musicName);
+    $('#currentArtist').text(artist);
+}
+
