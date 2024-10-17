@@ -21,10 +21,8 @@
 	<header>
 		<!-- top_menu.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
-		<!-- Sidebar 포함 -->
-		<div class="sidebar">
-		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
-		</div>
+		<%-- <!-- Sidebar 포함 -->
+		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" /> --%>
 	</header>
 	<div class="board-container">
 		<h1>커뮤니티</h1>
@@ -236,17 +234,20 @@
 	    dropdownMenu.style.display = 'none';
 	});
 
-	const aElement = document.querySelector('.reply-delete');
-	const bElement = document.querySelector('.tooltip');
+	const aElements = document.querySelectorAll('.reply-delete'); // 모든 reply-delete 요소 선택
+	const tooltips = document.querySelectorAll('.tooltip'); // 모든 tooltip 요소 선택
 
-	aElement.addEventListener('mouseenter', () => {
-		bElement.style.display = 'block';
-		bElement.style.background = '#303030';
+	aElements.forEach((aElement, index) => {
+	    aElement.addEventListener('mouseenter', () => {
+	        tooltips[index].style.display = 'block'; // 해당 툴팁 표시
+	        tooltips[index].style.background = '#303030';
+	    });
+
+	    aElement.addEventListener('mouseleave', () => {
+	        tooltips[index].style.display = 'none'; // 해당 툴팁 숨김
+	    });
 	});
 
-	aElement.addEventListener('mouseleave', () => {
-		bElement.style.display = 'none';
-	});
 
 	function confirmDelete(event, url) {
 	    Swal.fire({
