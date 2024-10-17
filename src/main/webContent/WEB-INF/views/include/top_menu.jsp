@@ -19,7 +19,7 @@
 		<!-- 고정된 상단 메뉴 -->
 		<!-- 로고 영역 -->
 		<div class="navbar-logo">
-			<a href="${root}/main" class="logo-link">DuckMusic</a>
+			<a href="${root}/main" class="logo-link"> <img alt="로고" src="${root}/img/logo2.png" style="display:inline; width: 40px; height: 40px; vertical-align: middle;"> DuckMusic</a>
 		</div>
 
 		<!-- 중앙 정렬: 검색창 -->
