@@ -7,44 +7,45 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "playlist_music")
-public class PlaylistMusic {
+public class Playlist_Music {
 
     @Id
     @Column(name = "playlist_id")
-    private int playlistid;
+    private int playlist_id;
+    
 
     @Column(name = "music_id")
-    private int musicid;
+    private int music_id;
 
     @Column(name = "member_id")
-    private int memberid;
+    private int member_id;
 
     @Column(name = "playorder")
     private int playorder;
 
     // Getter와 Setter 추가
-    public int getPlaylistid() {
-        return playlistid;
+    public int getPlaylist_id() {
+        return playlist_id;
     }
 
-    public void setPlaylistid(int playlistid) {
-        this.playlistid = playlistid;
+    public void setPlaylist_id(int playlist_id) {
+        this.playlist_id = playlist_id;
     }
 
-    public int getMusicid() {
-        return musicid;
+    public int getMusic_id() {
+        return music_id;
     }
 
-    public void setMusicid(int musicid) {
-        this.musicid = musicid;
+    public void setMusic_id(int music_id) {
+        this.music_id = music_id;
     }
 
-    public int getMemberid() {
-        return memberid;
+    public int getMember_id() {
+        return member_id;
     }
 
-    public void setMemberid(int memberid) {
-        this.memberid = memberid;
+    public void setMember_id(int member_id) {
+        this.member_id = member_id;
     }
 
     public int getPlayorder() {

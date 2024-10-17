@@ -4,6 +4,9 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <title>YouTube Search</title>
 <style>
 .album-table {
@@ -113,11 +116,27 @@
                 },
                 success: function(response) {
                     // 성공적으로 추가되었을 경우
-                    alert('플레이리스트에 추가되었습니다!');
+                    Swal.fire({
+                icon: 'success',
+                title: '플레이리스트에 추가되었어요',
+                text: '',
+                background: '#3A3A3A',
+                color: '#fff',
+                confirmButtonColor: '#1db954',
+                confirmButtonText: '확인'
+            });
                     $('.modal-wrapper').removeClass('open');  // 모달 닫기
                 },
                 error: function() {
-                    alert('플레이리스트에 추가하는 데 실패했습니다.');
+                	Swal.fire({
+                        icon: 'error',
+                        title: '플레이리스트에 추가할 수 없어요',
+                        text: '',
+                        background: '#3A3A3A',
+                        color: '#fff',
+                        confirmButtonColor: '#1db954',
+                        confirmButtonText: '확인'
+                    });
                 }
             });
         });

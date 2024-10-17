@@ -92,11 +92,12 @@
         </div>
     </div>
 
-    <script src="${root}/js/playlist.js"></script>
+    
     <footer>
         <!-- bottom_info.jsp 포함 -->
         <jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
     </footer>
+    <script src="${root}/js/playlist.js"></script>
 </body>
 
 </html>

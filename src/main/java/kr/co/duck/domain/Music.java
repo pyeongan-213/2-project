@@ -11,7 +11,7 @@ public class Music {
 
 	@Id
 	@Column(name="music_id")
-	private int musicId;
+	private int music_Id;
 	
 	@Column(name="music_name")
 	private String music_Name;
@@ -27,14 +27,14 @@ public class Music {
 	
 	@Column(name="thumbnailurl")
 	private String thumbNailUrl;
-	public int getMusicId() {
-		return musicId;
+	public int getMusic_Id() {
+		return music_Id;
 	}
 	
 	
 	
-	public void setMusicId(int musicId) {
-		this.musicId = musicId;
+	public void setMusic_Id(int music_Id) {
+		this.music_Id = music_Id;
 	}
 	public String getMusic_Name() {
 		return music_Name;

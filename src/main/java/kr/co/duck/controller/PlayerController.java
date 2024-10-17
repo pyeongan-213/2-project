@@ -51,4 +51,6 @@ public class PlayerController {
 		model.addAttribute("playlistId", playlistId); // 현재 플레이리스트 ID도 전달
 		return "playlist/playlist"; // playlist.jsp로 이동
 	}
+	
+	
 }

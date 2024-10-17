@@ -16,9 +16,9 @@ import kr.co.duck.domain.QuizMusicId;
 public interface PlaylistRepository extends JpaRepository<QuizMusic, QuizMusicId> {
 
     // 플레이리스트와 Music 엔티티를 join 해서 플레이리스트의 곡 정보를 가져옴
-    @Query("SELECT m FROM PlaylistMusic pm " +
-           "JOIN Music m ON pm.musicid = m.musicId " +
-           "WHERE pm.playlistid = :playlistId " +
+    @Query("SELECT m FROM Playlist_Music pm " +
+           "JOIN Music m ON pm.music_id = m.music_Id " +
+           "WHERE pm.playlist_id = :playlist_Id " +
            "ORDER BY pm.playorder")
-    List<Music> findMusicInPlaylist(@Param("playlistId") int playlistId);
+    List<Music> findMusicInPlaylist(@Param("playlist_Id") int playlistId);
 }

@@ -25,9 +25,9 @@ public interface MusicDAO {
 
     // 특정 음악 조회
     @Select("SELECT MUSIC_ID, MUSIC_NAME, ARTIST, VIDEOURL, THUMBNAILURL FROM MUSIC WHERE MUSIC_ID = #{musicId}")
-    MusicBean getMusicById(int musicId);
+    MusicBean getMusicById(int music_Id);
 
     // 음악 삭제
     @Delete("DELETE FROM MUSIC WHERE MUSIC_ID = #{musicId}")
-    void deleteMusic(int musicId);
+    void deleteMusic(int music_Id);
 }

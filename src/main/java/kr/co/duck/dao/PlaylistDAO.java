@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.data.jpa.repository.Query;
 
 import kr.co.duck.beans.MusicBean;
 import kr.co.duck.beans.PlaylistBean;
@@ -69,4 +70,9 @@ public interface PlaylistDAO {
     // 플레이리스트 삭제
     @Delete("DELETE FROM PLAYLIST WHERE PLAYLIST_ID = #{playlistId}")
     void deletePlaylist(int playlistId);
+    
+    
+    @Query("SELECT m FROM Music m JOIN Playlist_Music pm ON m.musicId = pm.musicId WHERE pm.playlist_Id = :playlist_Id")
+    List<Music> findMusicInPlaylist(@Param("playlistId") int playlistId);
+
 }
