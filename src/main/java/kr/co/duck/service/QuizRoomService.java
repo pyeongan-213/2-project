@@ -172,38 +172,70 @@ public class QuizRoomService {
         return new QuizRoomListBean(rooms.getTotalPages(), quizRoomList);
     }
 
-    // **퀴즈 방 입장 처리**
+ // **퀴즈 방 입장 처리**
     @Transactional
     public Map<String, String> enterQuizRoom(int roomId, MemberBean memberBean, String roomPassword) {
-        Member member = memberCommand.findMemberById(memberBean.getMember_id());
-        QuizRoom quizRoom = quizQuery.findQuizRoomByRoomIdLock(roomId);
+        try {
+            // 로그 추가: 입장 시도 로그
+            System.out.println("퀴즈 방 입장 시도: roomId=" + roomId + ", memberId=" + memberBean.getMember_id());
 
-        List<QuizRoomAttendee> attendees = quizQuery.findAttendeeByQuizRoom(quizRoom);
-        if (attendees.stream().anyMatch(att -> att.getMember().getMemberId() == member.getMemberId())) {
-            throw new CustomException(StatusCode.MEMBER_DUPLICATED, "이미 방에 참여 중입니다.");
+            // Member 조회
+            Member member = memberCommand.findMemberById(memberBean.getMember_id());
+            System.out.println("회원 조회 성공: memberId=" + member.getMemberId());
+
+            // QuizRoom 조회 및 잠금
+            QuizRoom quizRoom = quizQuery.findQuizRoomByRoomIdLock(roomId);
+            System.out.println("퀴즈 방 조회 성공: quizRoomId=" + quizRoom.getQuizRoomId());
+
+            // 참가자 목록 조회
+            List<QuizRoomAttendee> attendees = quizQuery.findAttendeeByQuizRoom(quizRoom);
+            System.out.println("참가자 목록 조회 성공: " + attendees.size() + "명");
+
+            // 중복 참여 확인
+            if (attendees.stream().anyMatch(att -> att.getMember().getMemberId() == member.getMemberId())) {
+                throw new CustomException(StatusCode.MEMBER_DUPLICATED, "이미 방에 참여 중입니다.");
+            }
+
+            // 방 비밀번호 확인
+            String quizRoomPassword = quizRoom.getQuizRoomPassword() != null ? quizRoom.getQuizRoomPassword() : "";
+            if (!quizRoomPassword.isEmpty() && !quizRoomPassword.equals(roomPassword)) {
+                throw new CustomException(StatusCode.BAD_REQUEST, "비밀번호가 올바르지 않습니다.");
+            }
+
+            // Member 게임 상태 업데이트
+            ensureMemberGameStats(member);
+            member.getMemberGameStats().setEnterGameNum(member.getMemberGameStats().getEnterGameNum() + 1);
+            memberCommand.saveMember(member);
+            System.out.println("회원 게임 상태 업데이트 성공: enterGameNum=" + member.getMemberGameStats().getEnterGameNum());
+
+            // QuizRoomAttendee 추가
+            quizCommand.saveQuizRoomAttendee(new QuizRoomAttendee(quizRoom, member));
+            System.out.println("참가자 추가 성공: memberId=" + member.getMemberId());
+
+            // 퀴즈 방 인원 수 증가
+            quizRoom.setMemberCount(quizRoom.getMemberCount() + 1);
+            quizCommand.saveQuizRoom(quizRoom);
+            System.out.println("퀴즈 방 인원 수 증가 성공: memberCount=" + quizRoom.getMemberCount());
+
+            // 성공 응답 반환
+            return Map.of(
+                    "quizRoomName", quizRoom.getQuizRoomName(),
+                    "roomId", String.valueOf(quizRoom.getQuizRoomId()),
+                    "owner", quizRoom.getOwner(),
+                    "status", String.valueOf(quizRoom.getStatus())
+            );
+        } catch (CustomException e) {
+            // 예외 로그 출력
+            System.err.println("CustomException 발생: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            // 일반 예외 처리 및 로그 출력
+            System.err.println("예상치 못한 오류 발생: " + e.getMessage());
+            e.printStackTrace();
+            throw new CustomException(StatusCode.INTERNAL_SERVER_ERROR, "퀴즈 방 입장 중 문제가 발생했습니다.");
         }
-
-        String quizRoomPassword = quizRoom.getQuizRoomPassword() != null ? quizRoom.getQuizRoomPassword() : "";
-
-        if (!quizRoomPassword.isEmpty() && !quizRoomPassword.equals(roomPassword)) {
-            throw new CustomException(StatusCode.BAD_REQUEST, "비밀번호가 올바르지 않습니다.");
-        }
-
-        ensureMemberGameStats(member);
-        member.getMemberGameStats().setEnterGameNum(member.getMemberGameStats().getEnterGameNum() + 1);
-        memberCommand.saveMember(member);
-
-        quizCommand.saveQuizRoomAttendee(new QuizRoomAttendee(quizRoom, member));
-        quizRoom.setMemberCount(quizRoom.getMemberCount() + 1);
-        quizCommand.saveQuizRoom(quizRoom);
-
-        return Map.of(
-                "quizRoomName", quizRoom.getQuizRoomName(),
-                "roomId", String.valueOf(quizRoom.getQuizRoomId()),
-                "owner", quizRoom.getOwner(),
-                "status", String.valueOf(quizRoom.getStatus())
-        );
     }
+
 
     // **일반 채팅 메시지 처리**
     public void processChatMessage(int roomId, String sender, String content) {

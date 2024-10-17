@@ -275,7 +275,7 @@ function processChatMessage(sender, content) {
         // 퀴즈가 진행 중이 아닐 경우 일반 채팅 메시지로 처리
         displayChatMessage(sender, content);
         return; // 정답 체크를 하지 않고 함수 종료
-    }
+    } 	
 
     // 퀴즈가 진행 중일 때만 정답 처리
     if (['!스킵', '!skip'].includes(message)) {
@@ -387,27 +387,29 @@ function skipQuiz(sender) {
 // 괄호 안의 문자열과 불필요한 문자를 제거하는 정규 표현식을 사용하여 정답을 처리
 function normalizeAnswer(answer) {
     return answer.replace(/\(.*?\)/g, '') // 괄호 안의 내용을 제거
-                 .replace(/[^\w\s]|_/g, '') // 점(.), 특수문자 제거
+                 .replace(/[^\w\s가-힣]|_/g, '') // 특수문자 제거, 한글 범위 추가
                  .replace(/\s+/g, '') // 모든 공백 제거
                  .trim();  // 양쪽 공백을 제거
 }
 
-// 괄호 안의 문자열과 불필요한 문자를 제거하는 정규 표현식을 사용하여 정답을 처리
-function normalizeAnswer(answer) {
-    return answer.replace(/\(.*?\)/g, '') // 괄호 안의 내용을 제거
-                 .replace(/[^\w\s]|_/g, '') // 점(.), 특수문자 제거
-                 .trim();  // 양쪽 공백을 제거
+// 정답과 사용자 입력이 정확히 일치하는지 확인하는 함수
+function isExactMatch(userAnswer, correctAnswer) {
+    const normalizedUserAnswer = normalizeAnswer(userAnswer);
+    const normalizedCorrectAnswer = normalizeAnswer(correctAnswer);
+
+    // 입력한 답과 정답이 정확히 일치하는지 확인
+    return normalizedUserAnswer === normalizedCorrectAnswer;
 }
 
+// 정답 체크 함수
 function checkAnswer(sender, userAnswer) {
+    const normalizedUserAnswer = normalizeAnswer(userAnswer);
 
-    // 사용자 입력 정규화: 공백 제거 및 소문자 변환
-    const normalizedUserAnswer = normalizeAnswer(userAnswer.replace(/\s+/g, '').toLowerCase());
-
-    // 정답 리스트에서 각 정답을 공백 제거 및 소문자 변환 후 비교
-    const isCorrect = currentAnswers.some(answer => 
-        normalizeAnswer(answer.replace(/\s+/g, '').toLowerCase()) === normalizedUserAnswer
-    );
+    // 정답 리스트를 순회하며 정확한 일치를 확인
+    const isCorrect = currentAnswers.some(correctAnswer => {
+        const normalizedCorrectAnswer = normalizeAnswer(correctAnswer);
+        return normalizedUserAnswer === normalizedCorrectAnswer;  // 전체 일치 확인
+    });
 
     if (isCorrect) {
         console.log('정답입니다!');
@@ -424,8 +426,6 @@ function checkAnswer(sender, userAnswer) {
         console.log('오답입니다.');
     }
 }
-
-
 
 
 // **정답 정보 표시 함수**
