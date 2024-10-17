@@ -12,6 +12,7 @@ footer {
     clear: both;
     margin-top: auto;
     border-top: 1px solid #333;
+    z-index: 1020;
 }
 
 footer p {

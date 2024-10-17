@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.google.api.services.youtube.model.Member;
+
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.beans.MusicBean;
 import kr.co.duck.beans.PlaylistBean;
@@ -29,26 +31,28 @@ public class PlaylistController {
 	private PlaylistManagementService playlistManagementService;
 
 	// YouTube 검색 요청 처리 및 플레이리스트 가져오기
-	/*
-	 * @GetMapping("/youtubeSearch") public String
-	 * searchYouTube(@RequestParam("query") String query, Model model, HttpSession
-	 * session) { // 세션에서 loginMemberBean을 가져옴 MemberBean member = (MemberBean)
-	 * session.getAttribute("loginMemberBean");
-	 * 
-	 * // 로그인 정보가 없으면 로그인 페이지로 리다이렉트 if (member == null) { return "redirect:/login";
-	 * }
-	 * 
-	 * // YouTube 검색 결과 가져오기 List<MusicBean> searchResults =
-	 * playlistService.searchAndAddToPlaylist(query);
-	 * 
-	 * // 로그인한 사용자의 플레이리스트 가져오기 List<PlaylistBean> userPlaylists =
-	 * playlistService.getUserPlaylists(member.getMember_id());
-	 * 
-	 * model.addAttribute("searchResults", searchResults);
-	 * model.addAttribute("userPlaylists", userPlaylists);
-	 * 
-	 * return "playlist/youtubeSearch"; }
-	 */
+	
+	  @GetMapping("/youtubeSearch") public String
+	  searchYouTube(@RequestParam("query") String query, Model model, HttpSession
+	  session) { 
+		  // 세션에서 loginMemberBean을 가져옴 
+		  MemberBean member = (MemberBean)session.getAttribute("loginMemberBean");
+	  
+	  // 로그인 정보가 없으면 로그인 페이지로 리다이렉트 
+	  if (member == null) { return "redirect:/login";
+	  }
+	  
+	  // YouTube 검색 결과 가져오기 
+	  List<MusicBean> searchResults = playlistService.searchAndAddToPlaylist(query);
+	  
+	  // 로그인한 사용자의 플레이리스트 가져오기
+	  List<PlaylistBean> userPlaylists = playlistService.getUserPlaylists(member.getMember_id());
+	  
+	  model.addAttribute("searchResults", searchResults);
+	  model.addAttribute("userPlaylists", userPlaylists);
+	  
+	  return "playlist/youtubeSearch"; }
+	 
 
 	// 플레이리스트 페이지로 이동
 	/*
@@ -117,7 +121,7 @@ public class PlaylistController {
 		// 플레이리스트에 음악 추가
 		playlistService.addMusicToPlaylist(playlistId, music, member.getMember_id());
 
-		return "redirect:/playlist/view?playlistId=" + playlistId;
+		return "redirect:/playlist/view?playlistId=" + playlistId; //TODO 여기를 바꿔서 404 를 해결해야함.
 	}
 
 	// 새 플레이리스트 생성
