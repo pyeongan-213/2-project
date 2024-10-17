@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,31 +99,32 @@ public class PlaylistController {
 	 */
 
 	// 플레이리스트에 YouTube 동영상 추가
-	@PostMapping("/playlist/addToPlaylist")
-	public String addToPlaylist(@RequestParam("playlistId") int playlistId, @RequestParam("videoUrl") String videoUrl,
-			@RequestParam("music_Name") String music_Name, @RequestParam("artist") String artist,
-			@RequestParam("thumbnailUrl") String thumbnailUrl, HttpSession session) {
+	  @PostMapping("/playlist/addToPlaylist")
+	  public ResponseEntity<String> addToPlaylist(@RequestParam("playlistId") int playlistId, 
+	                                              @RequestParam("videoUrl") String videoUrl,
+	                                              @RequestParam("music_Name") String music_Name,
+	                                              @RequestParam("artist") String artist,
+	                                              @RequestParam("thumbnailUrl") String thumbnailUrl, 
+	                                              HttpSession session) {
 
-		// 세션에서 loginMemberBean을 가져옴
-		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
+	      // 세션에서 loginMemberBean을 가져옴
+	      MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
 
-		// MusicBean 생성 및 정보 설정
-		MusicBean music = new MusicBean();
-		System.out.println(videoUrl);
-		videoUrl = videoUrl.replace("https://www.youtube.com/watch?v=", "");
-		System.out.println(videoUrl);
-		music.setVideoUrl(videoUrl);
-		music.setmusic_Name(music_Name);
-		music.setArtist(artist);
-		music.setThumbnailUrl(thumbnailUrl);
+	      // MusicBean 생성 및 정보 설정
+	      MusicBean music = new MusicBean();
+	      videoUrl = videoUrl.replace("https://www.youtube.com/watch?v=", "");
+	      music.setVideoUrl(videoUrl);
+	      music.setmusic_Name(music_Name);
+	      music.setArtist(artist);
+	      music.setThumbnailUrl(thumbnailUrl);
 
-		System.out.println("Music ID: " + music.getMusicId()); // 값이 0인지 출력 확인
+	      // 플레이리스트에 음악 추가
+	      playlistService.addMusicToPlaylist(playlistId, music, member.getMember_id());
 
-		// 플레이리스트에 음악 추가
-		playlistService.addMusicToPlaylist(playlistId, music, member.getMember_id());
+	      // JSON 응답 반환
+	      return ResponseEntity.ok("Success");
+	  }
 
-		return "redirect:/playlist/view?playlistId=" + playlistId; //TODO 여기를 바꿔서 404 를 해결해야함.
-	}
 
 	// 새 플레이리스트 생성
 	@PostMapping("/playlist/create")
