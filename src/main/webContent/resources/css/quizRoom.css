@@ -81,9 +81,9 @@ html, body {
 	list-style-type: none;
 	background-image: url('../img/플레이어아이콘_quiz.png'); /* 이미지 경로 */
     background-size: 40px 40px; /* 이미지 크기 */
-    background-position: left center; /* 이미지 위치 */
+    background-position: 10px center; /* 이미지 위치 */
     background-repeat: no-repeat; /* 이미지 반복 안 함 */
-    padding-left: 20px; /* 이미지와 텍스트 간격 */
+    padding-left: 30px; /* 이미지와 텍스트 간격 */
 }
 
 /* 마지막 플레이어 항목에만 적용되는 스타일 제거 */
