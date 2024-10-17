@@ -60,14 +60,12 @@ public class PlaylistService {
         playlistDAO.insertPlaylist(playlist);
     }
     
-    public List<PlaylistBean> getUserPlaylists(int memberId) {
-        // PlaylistDAO에서 member_id로 플레이리스트를 가져오는 메서드 호출
-        return playlistDAO.getPlaylistsByMemberId(memberId);
-    }
-    
- // 특정 플레이리스트의 음악 목록 가져오기
-    public List<MusicBean> getMusicListForPlaylist(int playlistId) {
-        return playlistDAO.getMusicListByPlaylistId(playlistId);
-    }
-
+	/*
+	 * public List<PlaylistBean> getUserPlaylists(int memberId) { // PlaylistDAO에서
+	 * member_id로 플레이리스트를 가져오는 메서드 호출 return
+	 * playlistDAO.getPlaylistsByMemberId(memberId); }
+	 * 
+	 * // 특정 플레이리스트의 음악 목록 가져오기 public List<MusicBean> getMusicListForPlaylist(int
+	 * playlistId) { return playlistDAO.getMusicListByPlaylistId(playlistId); }
+	 */
 }

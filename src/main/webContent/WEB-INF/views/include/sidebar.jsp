@@ -29,7 +29,7 @@
       <a href="${pageContext.request.contextPath}/temp/tempMain">Temp</a>
     </li>
     <li class="link">
-      <a href="${pageContext.request.contextPath}/temp/maniadbSearch">maniadbSearch</a>
+      <a href="${pageContext.request.contextPath}/playlist/selectPlaylist">Select Playlist</a>
     </li>
     <li class="link">
       <a href="${pageContext.request.contextPath}/quiz/quizlobby">Quiz</a>
