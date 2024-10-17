@@ -384,9 +384,19 @@ function skipQuiz(sender) {
 
 
 
-// 괄호 안의 문자열을 제거하는 정규 표현식을 사용하여 정답을 처리
+// 괄호 안의 문자열과 불필요한 문자를 제거하는 정규 표현식을 사용하여 정답을 처리
 function normalizeAnswer(answer) {
-    return answer.replace(/\(.*?\)/g, '').trim();  // 괄호 안의 내용을 제거하고 양쪽 공백을 제거
+    return answer.replace(/\(.*?\)/g, '') // 괄호 안의 내용을 제거
+                 .replace(/[^\w\s]|_/g, '') // 점(.), 특수문자 제거
+                 .replace(/\s+/g, '') // 모든 공백 제거
+                 .trim();  // 양쪽 공백을 제거
+}
+
+// 괄호 안의 문자열과 불필요한 문자를 제거하는 정규 표현식을 사용하여 정답을 처리
+function normalizeAnswer(answer) {
+    return answer.replace(/\(.*?\)/g, '') // 괄호 안의 내용을 제거
+                 .replace(/[^\w\s]|_/g, '') // 점(.), 특수문자 제거
+                 .trim();  // 양쪽 공백을 제거
 }
 
 function checkAnswer(sender, userAnswer) {
@@ -414,6 +424,7 @@ function checkAnswer(sender, userAnswer) {
         console.log('오답입니다.');
     }
 }
+
 
 
 
