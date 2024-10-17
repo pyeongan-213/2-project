@@ -31,11 +31,30 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <!-- 유튜브 API 로드 -->
 
+<% 
+    // JSP에서 로그인된 사용자 정보 추출
+    String userId = (session.getAttribute("loginMemberBean") != null)
+        ? String.valueOf(((kr.co.duck.beans.MemberBean) session.getAttribute("loginMemberBean")).getMember_id())
+        : "null";
+    userId = userId.trim();
+
+    String userNickname = (session.getAttribute("loginMemberBean") != null)
+        ? String.valueOf(((kr.co.duck.beans.MemberBean) session.getAttribute("loginMemberBean")).getNickname())
+        : "익명";
+%>
+
 <script>
 	console.log('Root:', '${root}');
 	window.root = '${root}';
 	window.roomId = '${room.quizRoomId}';
 	window.roomName = '${room.quizRoomName}';
+
+    // 로그인된 사용자 ID와 닉네임을 JavaScript 변수로 전달
+    const loggedInUserId = "<%= userId %>"; 
+    const loggedInUserNickname = "<%= userNickname %>"; 
+
+    console.log('Logged In User ID:', loggedInUserId);
+    console.log('Logged In User Nickname:', loggedInUserNickname);
 </script>
 </head>
 <body>
@@ -99,8 +118,7 @@
 			<!-- 명령어 툴팁 컨테이너 -->
 			<div id="command-tooltip" class="tooltip hidden">
 				<div class="tooltip-header">
-					<span><strong>&nbsp;명령어
-							모음</strong></span>
+					<span><strong>&nbsp;명령어 모음</strong></span>
 					<button id="tooltip-minimize-btn">ㅡ</button>
 				</div>
 				<div id="tooltip-body" class="tooltip-body">
@@ -110,6 +128,7 @@
 			</div>
 				<!-- 최대화 버튼 (초기에는 숨김 처리) -->
 				<button id="tooltip-maximize-btn" class="hidden">+</button>
+			
 			<!-- 채팅 영역 -->
 			<div class="quiz-room-chat-section">
 				<div id="chat-messages" class="quiz-room-chat-messages"></div>
@@ -123,6 +142,7 @@
 		</div>
 	</div>
 
+	<!-- quizRoom.js 스크립트 로드 -->
 	<script src="<c:out value='${root}/js/quizRoom.js' />"></script>
 </body>
 </html>

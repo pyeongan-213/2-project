@@ -79,7 +79,6 @@ public class QuizRoomController {
     // **퀴즈방 생성 API**
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createRoom(@RequestBody QuizRoomBean quizRoomBean, HttpSession session) {
-    	 System.out.println("[INFO] 방 생성 요청: " + quizRoomBean);  // 생성된 방 정보 로그
     	Map<String, Object> response = new HashMap<>();
         MemberBean loginMemberBean = (MemberBean) session.getAttribute("loginMemberBean");
 

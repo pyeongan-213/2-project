@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.duck.domain.QuizMusic;
+import kr.co.duck.service.ChatService;
 import kr.co.duck.service.QuizService;
 import kr.co.duck.util.CustomException;
 
@@ -26,11 +28,15 @@ public class QuizController {
 
     private final QuizService quizService; // 퀴즈 서비스 객체
     private final SimpMessagingTemplate messagingTemplate; // 메시지 전송 템플릿(WebSocket)
-
+    
+    @Autowired
+    private ChatService chatService;
+    
     // **생성자 주입을 통한 의존성 주입**
-    public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate) {
+    public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate, ChatService chatService) {
         this.quizService = quizService;
         this.messagingTemplate = messagingTemplate;
+        this.chatService = chatService;
     }
 
     // **퀴즈 생성: QuizMusic 객체를 저장**
@@ -88,7 +94,6 @@ public class QuizController {
                     .body("퀴즈를 가져오는 중 오류가 발생했습니다.");
         }
     }
-
 
     // **사용자 정답 제출 처리**
     @PostMapping("/answer/{memberId}")

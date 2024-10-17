@@ -124,6 +124,37 @@ function closeModal() {
     document.getElementById('create-room-modal').style.display = 'none';
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const modalContent = document.querySelector('.modal-content');
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // 모달 상단을 드래그할 수 있도록 이벤트 추가 (모달의 헤더 또는 제목 부분)
+    modalContent.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - modalContent.getBoundingClientRect().left;
+        offsetY = e.clientY - modalContent.getBoundingClientRect().top;
+        modalContent.style.position = 'absolute';  // 드래그 가능하도록 position 설정
+        modalContent.style.cursor = 'move';  // 드래그 중 커서 변경
+    });
+
+    // 마우스 움직임에 따라 모달 이동
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            modalContent.style.left = `${e.clientX - offsetX}px`;
+            modalContent.style.top = `${e.clientY - offsetY}px`;
+        }
+    });
+
+    // 마우스를 떼면 드래그 멈춤
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        modalContent.style.cursor = 'default';  // 드래그 끝난 후 커서 기본값으로
+    });
+});
+
+
 // 곡 수 선택 이벤트 리스너 추가
 function selectMaxMusicEventListeners() {
     const buttons = document.querySelectorAll('.music-button');

@@ -1,13 +1,18 @@
 package kr.co.duck.service;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.duck.domain.Chat;
 import kr.co.duck.domain.ChatMessage;
 import kr.co.duck.domain.QuizMessage;
+import kr.co.duck.repository.ChatRepository;
 
 /**
  * 기능: 채팅 메시지와 퀴즈 메시지 전송 관리
@@ -23,6 +28,10 @@ public class ChatService {
         this.sendingOperations = sendingOperations;
     }
 
+    @Autowired
+    private ChatRepository chatRepository;
+
+    
     @Autowired
     public void setQuizService(QuizService quizService) {
         this.quizService = quizService;
@@ -124,7 +133,7 @@ public class ChatService {
         sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, quizMessage);
         log.info("Quiz message sent: {}", quizMessage);
     }
-
+    
     /**
      * 정답 메시지 전송 메서드
      * @param roomId 방 ID
@@ -142,4 +151,26 @@ public class ChatService {
         sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, answerMessage);
         log.info("Answer message sent: {}", answerMessage);
     }
+    
+
+    public void saveChatMessage(int room_Id, int member_Id, String content) {
+        log.info("채팅 저장 시도 - roomId: {}, memberId: {}, content: {}", room_Id, member_Id, content);
+
+        try {
+            Chat chat = new Chat();
+            chat.setRoom_Id(room_Id);
+            chat.setMember_Id(member_Id);
+            chat.setChat_Text(content);
+            chat.setChat_Time(LocalDateTime.now().toString());
+
+            log.info("저장할 채팅 엔티티: {}", chat);
+
+            chatRepository.save(chat);
+            log.info("채팅 저장 성공");
+        } catch (Exception e) {
+            log.error("채팅 저장 중 오류 발생: {}", e.getMessage(), e);
+            throw e; // 예외를 던져 디버깅 시 더 상세한 스택 트레이스 확인 가능
+        }
+    }
+
 }
