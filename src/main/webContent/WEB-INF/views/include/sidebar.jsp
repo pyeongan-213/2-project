@@ -4,8 +4,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css"
-   href="${pageContext.request.contextPath}/css/HJ_sidebar.css">
+<link rel="stylesheet" type="text/css" 
+	href="${pageContext.request.contextPath}/css/sideBar.css">
 <title>Insert title here</title>
 </head>
 <body>
@@ -29,7 +29,7 @@
       <a href="${pageContext.request.contextPath}/temp/tempMain">Temp</a>
     </li>
     <li class="link">
-      <a href="${pageContext.request.contextPath}/playlist/selectPlaylist">Select Playlist</a>
+      <a href="${pageContext.request.contextPath}/temp/maniadbSearch">maniadbSearch</a>
     </li>
     <li class="link">
       <a href="${pageContext.request.contextPath}/quiz/quizlobby">Quiz</a>

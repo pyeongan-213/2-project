@@ -1,61 +1,116 @@
 @charset "UTF-8";
 
-/* 사이드바 구분선에 그림자 추가 */
-.sidebar {
-    width: 220px;
-    background-color: #121212;
-    height: 100vh;
-    position: fixed;
-    top: 60px;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: auto;
-    border-right: 1px solid #333;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* 빛나는 효과 */
+nav {
+  --transition-time: 500ms;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  transform: translateX(-100%);
+  transition: all 800ms cubic-bezier(0.8, 0, 0.33, 1);
+  z-index: 4000;
 }
 
-/* 사이드바 내용 설정 */
-.sidebar .side-wrapper {
-    padding: 20px;
-    width: 100%;
+nav a {
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-decoration: none;
+  user-select: none;
+  color: #fff;
 }
 
-.sidebar-header {
-    color: #fff;
-    font-size: 30px;
-    margin-bottom: 20px;
-    text-align: center;
+.nav-links {
+  --link-height: 60px;
+  position: relative;
+  width: 100%;
 }
 
-.sidebar-link {
-    display: block;
-    color: #fff;
-    text-decoration: none;
-    margin: 10px 0;
-    font-size: 20px;
-    text-align: center;
+.nav-links li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: var(--link-height);
+  list-style: none;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: all var(--transition-time) cubic-bezier(0.8, 0, 0.33, 0.9);
+  transition-delay: calc(30ms + var(--delay));
+  cursor: pointer;
+  z-index: 8000;
 }
 
-.sidebar-link:hover {
-    color: #007bff;
+.menu-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  --icon-width: 25px;
+  position: absolute;
+  top: 8%;
+  right: -20%;
+  width: calc(var(--icon-width) + 25px);
+  height: calc(var(--icon-width) + 25px);
+  flex-direction: column;
+  transition: all calc(100ms + var(--transition-time)) cubic-bezier(0.8, 0, 0.33, 1.25);
+  cursor: pointer;
+  z-index: 10000;
 }
 
-
-
-/* playlist Modal 스타일 */
-.sidebar .modal { 
-    z-index: 1050; 
-    position: fixed; 
+.menu-btn.close .line__1 {
+  transform: rotate(45deg) translate(2px, -3px);
 }
 
-.sidebar .modal-dialog {
-    max-width: 500px;
-    margin: 1.75rem auto;
+.menu-btn.close .line__2 {
+  transform: rotate(-45deg);
 }
 
-.sidebar .modal-content {
-    padding: 20px;
+.menu-btn.close .line__3 {
+  transform: rotate(45deg) translate(-2px, 3px);
+}
+
+.menu-btn .line {
+  width: var(--icon-width);
+  background: #fff;
+  height: 2px;
+  margin: 3px 0;
+  transition: all calc(var(--transition-time) + 100ms) cubic-bezier(0.9, 0, 0.33, 1);
+}
+
+.menu-btn .line__1,
+.menu-btn .line__2,
+.menu-btn .line__3 {
+  width: var(--icon-width);
+}
+
+.menu-btn .line__1 {
+  transform-origin: left;
+}
+
+.menu-btn .line__2 {
+  transform-origin: center;
+}
+
+.menu-btn .line__3 {
+  transform-origin: right;
+}
+
+nav.nav-open {
+  transform: translateX(0%);
+}
+
+nav.nav-open .menu-btn {
+  right: 5%;
+}
+
+nav.nav-open .nav-links li {
+  transform: translateX(0);
+  opacity: 1;
 }

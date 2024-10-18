@@ -31,6 +31,7 @@ public interface BoardMapper {
 	@Select("select c.board_id, c.boardpost_id, c.content_title, c.content_text, m.nickname as membername, to_char(c.writedate, 'yyyy-mm-dd') as writedate, c.like_count "
 			+ "from boardpost c "
 			+ "join member m on c.member_id = m.member_id "
+			+ "where c.like_count > 0 "
 			+ "order by like_count desc "
 			+ "fetch first 5 rows only")
 	List<ContentBean> getBestList();

@@ -44,9 +44,9 @@
 		<!-- top_menu.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
 		<!-- Sidebar 포함 -->
-		<div class="sidebar">
+		<%-- <div class="sidebar">
 		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
-		</div>
+		</div> --%>
 	</header>
 	<div class="board-container">
 		<div style="margin-left: 30px">

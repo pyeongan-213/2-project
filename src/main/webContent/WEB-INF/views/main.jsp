@@ -14,8 +14,8 @@
 <title>DuckMusic</title>
 
 <!-- 탭 아이콘 추가 -->
-<link rel="icon" type="image/png" sizes="48x48"
-	href="${root}/img/tabicon.png">
+<link rel="icon" type="image/png" sizes="80x80"
+	href="${root}/img/favicon.png">
 <!-- CSS 및 Bootstrap 아이콘 추가 -->
 <link href="${root}/css/main.css" rel="stylesheet" type="text/css">
 <link

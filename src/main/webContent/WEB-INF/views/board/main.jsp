@@ -53,9 +53,8 @@ function toggleContent() {
 		<!-- top_menu.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
 		<!-- Sidebar 포함 -->
-		<div>
 		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
-		</div>
+
 	</header>
 	
 	<div id="main-content">
@@ -113,9 +112,8 @@ function toggleContent() {
 		<div>
 			<h3>🗨️최신 게시글</h3>
 			<div class="on-table">
-				<form id="searchForm" action="${root}board/search" method="get"
-					onsubmit="return searchPosts()">
-					<input id="searchInput" name="query" placeholder="search">
+				<form id="searchForm" action="${root}board/search" method="get">
+					<input id="searchInput" name="query" placeholder="search" required>
 					<input type="hidden" id="boardId" name="board_id" value="0">
 				</form>
 				<span style="margin-left: auto; margin-right: 20px;"> <a href="${root }board/write"
@@ -370,28 +368,6 @@ function toggleContent() {
 	        // URL에 board_id가 없으면 기본값 0 설정
 	        currentBoardId = 0;
 	        document.getElementById('boardId').value = 0;
-	    }
-	}
-
-	// 검색어 입력 시 호출되는 함수
-	function searchPosts() {
-	    const input = document.getElementById('searchInput');
-	    const query = input.value.trim();
-
-	    console.log("Searching with query:", query, "and board ID:", currentBoardId);
-
-	    if (query) {
-	        return true; 
-	    } else {
-	    	Swal.fire({
-                icon: 'warning',
-                title: '검색어를 입력해 주세요.',
-                background: '#3A3A3A',  // 배경색
-                color: '#fff',  // 텍스트 색상
-                confirmButtonColor: '#1db954',  // 확인 버튼 색상
-                confirmButtonText: '확인'
-             });
-	        return false;
 	    }
 	}
 
