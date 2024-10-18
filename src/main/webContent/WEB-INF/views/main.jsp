@@ -21,14 +21,15 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 페이지가 로드되면 premium-section에 show 클래스를 추가하여 애니메이션 실행
-    const premiumSection = document.querySelector('.premium-section');
-    setTimeout(function() {
-        premiumSection.classList.add('show');
-    }, 500);  // 0.5초 딜레이 후 애니메이션 시작
-});
+	document.addEventListener('DOMContentLoaded', function() {
+		// 페이지가 로드되면 premium-section에 show 클래스를 추가하여 애니메이션 실행
+		const premiumSection = document.querySelector('.premium-section');
+		setTimeout(function() {
+			premiumSection.classList.add('show');
+		}, 500); // 0.5초 딜레이 후 애니메이션 시작
+	});
 </script>
 </head>
 <body>
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				<!-- 인기 아티스트 섹션 -->
 				<div class="section">
 					<div
-						style="display: flex; justify-content: space-between; align-items: center; postion:sticky;">
+						style="display: flex; justify-content: space-between; align-items: center; postion: sticky;">
 						<h2 class="section-artist">인기 아티스트</h2>
 						<%-- <a href="${root}/artists/all" class="see-all-link">모두 표시</a> --%>
 					</div>
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 					<hr />
 					<div
-						style="display: flex; justify-content: space-between; align-items: center; postion:sticky;" >
+						style="display: flex; justify-content: space-between; align-items: center; postion: sticky;">
 						<h2 class="section-title">인기 앨범</h2>
 						<%-- <a href="${root}/artists/all" class="see-all-link">모두 표시</a> --%>
 					</div>
@@ -108,19 +109,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	</div>
 
 	<!-- 프리미엄 섹션 -->
-    <c:if test="${!isPremiumMember}">
-        <div class="premium-section">
-            <div class="premium-content">
-                <div class="premium-text">
-                    <p>DuckMusic 미리 듣기</p>
-                    <p>좋아하는 국내 음악과 세계 최고의 플레이리스트를 들어보세요.</p>
-                </div>
-                <div class="premium-button-container">
-                    <a href="${root}/premium" class="premium-button">구독하기</a>
-                </div>
-            </div>
-        </div>
-    </c:if>
+	<c:if test="${!isPremiumMember}">
+		<div class="premium-section">
+			<div class="premium-content">
+				<div class="premium-text">
+					<p>DuckMusic 미리 듣기</p>
+					<p>좋아하는 국내 음악과 세계 최고의 플레이리스트를 들어보세요.</p>
+				</div>
+				<div class="premium-button-container">
+					<a href="${root}/premium" class="premium-button">구독하기</a>
+				</div>
+			</div>
+		</div>
+	</c:if>
 
 	<!-- bottom_info.jsp 포함 -->
 	<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
