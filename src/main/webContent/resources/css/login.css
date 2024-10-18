@@ -10,6 +10,8 @@ body {
     margin: 0;
     padding: 0;
     overflow: scroll;
+    min-height: 100vh;
+    position: relative; /* absolute로 설정된 푸터의 기준 */
 }
 
 /* 컨테이너 설정 */
@@ -164,4 +166,8 @@ label {
 
 .search-icon {
     top: 14px !important;
+}
+
+footer {
+   position: absolute !important;
 }

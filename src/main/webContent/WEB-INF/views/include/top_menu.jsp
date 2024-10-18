@@ -90,6 +90,7 @@
                 </c:when>
                 <c:otherwise>
                     <!-- 로그아웃 상태 -->
+                    <a href="${root}/member/join" class="join-btn">가입하기</a>
                     <a href="${root}/member/login" class="login-btn">로그인</a>
                 </c:otherwise>
             </c:choose>
