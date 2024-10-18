@@ -45,6 +45,10 @@ public class ChatMessage<T> {
         this.answer = answer;
     }
 
+    public ChatMessage(String sender, String message) {
+        this.sender = sender;
+        this.message = message;
+    }
     
     // Getter와 Setter 메서드
     public String getType() {

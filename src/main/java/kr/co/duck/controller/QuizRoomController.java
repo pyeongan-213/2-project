@@ -10,13 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.beans.QuizRoomBean;
 import kr.co.duck.beans.QuizRoomListBean;
+import kr.co.duck.domain.ChatMessage;
 import kr.co.duck.domain.QuizMusic;
 import kr.co.duck.service.QuizRoomService;
 import kr.co.duck.service.QuizService;
@@ -28,11 +35,13 @@ public class QuizRoomController {
 
     private final QuizRoomService quizRoomService;
     private final QuizService quizService;
+    private final SimpMessageSendingOperations messagingTemplate;  // messagingTemplate 추가
 
     @Autowired
-    public QuizRoomController(QuizRoomService quizRoomService, QuizService quizService) {
+    public QuizRoomController(QuizRoomService quizRoomService, QuizService quizService, SimpMessageSendingOperations messagingTemplate) {
         this.quizRoomService = quizRoomService;
         this.quizService = quizService;
+        this.messagingTemplate = messagingTemplate;  // messagingTemplate 주입
     }
 
     // **퀴즈방 전체 조회 API**
@@ -118,7 +127,8 @@ public class QuizRoomController {
     }
 
 
- // **퀴즈방 참여 API**
+
+    // **퀴즈방 참여 API**
     @PostMapping("/join")
     public ResponseEntity<Map<String, Object>> joinRoom(@RequestBody Map<String, Object> requestData, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
@@ -149,6 +159,11 @@ public class QuizRoomController {
             response.put("roomId", roomId);
             System.out.println("방 참여 성공: " + roomId);
 
+            // 사용자가 방에 입장했음을 WebSocket으로 알림
+            String joinMessage = loginMemberBean.getNickname() + "님이 참가하셨습니다.";
+            messagingTemplate.convertAndSend("/sub/chat/" + roomId, new ChatMessage<String>("시스템", joinMessage));
+            System.out.println("방 입장 메시지 전송: " + joinMessage);
+
             return ResponseEntity.ok(response);
 
         } catch (CustomException e) {
@@ -173,6 +188,7 @@ public class QuizRoomController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 
 
     // **플레이어 닉네임 받아오는 API**

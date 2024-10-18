@@ -223,7 +223,7 @@ async function createRoom(event) {
             closeModal(); // 모달 닫기
             window.location.href = `${root}/quiz/rooms/${data.roomId}`;
         } else {
-            alert('방 생성에 실패했습니다.');
+            alert('로그인 후 이용해주세요.');
         }
     } catch (error) {
         console.error('방 생성 중 오류:', error);

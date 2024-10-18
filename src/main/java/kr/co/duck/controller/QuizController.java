@@ -63,12 +63,12 @@ public class QuizController {
  // **랜덤 퀴즈 시작: 방 ID와 연관된 퀴즈 문제 가져오기**
     @GetMapping("/rooms/{roomId}/random")
     public ResponseEntity<?> quizStart(@PathVariable int roomId) {
-       // System.out.println("[INFO] 랜덤 퀴즈 요청: roomId = " + roomId); // 로그 추가
+       //System.out.println("[INFO] 랜덤 퀴즈 요청: roomId = " + roomId); // 로그 추가
 
         try {
-            // **퀴즈 유형 가져오기 (예: songTitle 또는 artistName)**
+            //**퀴즈 유형 가져오기 (예: songTitle 또는 artistName)**
             String quizType = quizService.getQuizTypeForRoom(roomId); 
-            //System.out.println("[INFO] 퀴즈 유형: " + quizType); // 로그 추가
+           // System.out.println("[INFO] 퀴즈 유형: " + quizType); // 로그 추가
 
             // **랜덤 퀴즈 문제 가져오기**
             QuizMusic quiz = quizService.getRandomQuizQuestion(roomId, quizType);

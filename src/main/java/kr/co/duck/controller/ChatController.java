@@ -45,7 +45,7 @@ public class ChatController {
 	 * 
 	 * @MessageMapping("/chat/camera/{roomId}") public void
 	 * cameraControl(@DestinationVariable int roomId, ChatMessage<String> message) {
-	 * log.info("Received camera control message for room {}: {}", roomId, message);
+	 * log.info("Received camera control messa messageElement.classList.add('system-message');ge for room {}: {}", roomId, message);
 	 * 
 	 * // 카메라 제어 서비스 호출 chatService.cameraControl(message);
 	 * 
