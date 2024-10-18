@@ -1,13 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='root' value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/css/HJ_sidebar.css">
+<link rel="stylesheet" type="text/css" href="${root}/css/HJ_sidebar.css">
 <title>Sidebar with Playlists</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 <body>
 	<div class="overlay"></div>
@@ -21,11 +25,10 @@
 		</div>
 
 		<ul class="nav-links" style="padding: 0;">
-			<li class="link"><a
-				href="${pageContext.request.contextPath}/board/main">Board</a></li>
-			<li class="link"><a
-				href="${pageContext.request.contextPath}/quiz/quizlobby">Quiz</a></li>
-			<li></li>
+			<li class="link"><a href="${root}/board/main">Board</a></li>
+			<li class="link"><a href="${root}/quiz/quizlobby">Quiz</a></li>
+			<li class="link"><a href="${root}/playlist/selectPlaylist">Select
+					Playlist</a></li>
 		</ul>
 		<div class="SideplaylistMakerWrapper">
 			<h4>새 플레이리스트를 추가하세요</h4>
@@ -37,16 +40,19 @@
 		<div class="Sideplaylistwrapper">
 			<h2>내 플레이리스트</h2>
 			<c:forEach var="playlist" items="${playlists}">
-
-				<td>${playlist.playlistName}</td>
+				<li>${playlist.playlistname}<a
+					href="${root}/playlist/playlist?playlistId=${playlist.playlist_id}">
+						선택하기 </a>
+				</li>
 			</c:forEach>
 
 			<c:if test="${empty playlists}">
-				<p>
-					플레이리스트가 없습니다. 
-				</p>
+				<p>플레이리스트가 없습니다.</p>
 			</c:if>
+
+
 		</div>
+
 
 	</nav>
 
@@ -149,6 +155,23 @@ function removeSubmenu() {
     }, 500);
   }
 }
+
+</script>
+	<script>
+	$(document).ready(function() {
+	    $.ajax({
+	        url: '/Project_2/playlist/selectPlaylist', // 플레이리스트 데이터를 가져오는 URL
+	        type: 'GET',
+	        success: function(data) {
+	            // 가져온 HTML 데이터를 사이드바에 삽입
+	            $(".Sideplaylistwrapper").html(data);
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("플레이리스트 데이터를 가져오는 중 오류 발생: " + error);
+	        }
+	    });
+	});
+
 </script>
 </body>
 </html>

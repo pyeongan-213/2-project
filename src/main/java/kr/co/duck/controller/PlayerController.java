@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -20,23 +23,40 @@ public class PlayerController {
 	@Autowired
 	private PlayerService playerService;
 
+	// 모든 페이지에서 로그인한 사용자의 플레이리스트를 사용할 수 있도록 ModelAttribute 사용
+	@ModelAttribute("playlists")
+	public List<Playlist> getUserPlaylists(HttpSession session) {
+		// 세션에서 로그인한 사용자 정보를 가져옴
+		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
+		if (member == null) {
+			System.out.println("로그인한 사용자가 없습니다.");
+			return Collections.emptyList();
+		} else {
+			System.out.println("로그인한 사용자 ID: " + member.getMember_id());
+		}
+
+		// 로그인한 사용자의 memberId로 플레이리스트를 조회하여 반환
+		int member_Id = member.getMember_id();
+		return playerService.getPlaylistsByMemberId(member_Id);
+	}
+
 	// 회원의 플레이리스트 목록을 가져와서 보여줌
 	@GetMapping("/playlist/selectPlaylist")
 	public String selectPlaylist(Model model, HttpSession session) {
-	    // 세션에서 loginMemberBean을 가져옴
-	    MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
+		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
 
-	    // 만약 세션에 로그인된 회원 정보가 없는 경우 처리
-	    if (member == null) {
-	        return "redirect:/login"; // 로그인 페이지로 리다이렉트
-	    }
+		// 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+		if (member == null) {
+			return "redirect:/login";
+		}
 
-	    // memberId를 사용하여 플레이리스트 가져오기
-	    int memberId = member.getMember_id();
-	    List<Playlist> playlists = playerService.getPlaylistsByMemberId(memberId);
-	    model.addAttribute("playlists", playlists); // 플레이리스트 목록을 모델에 추가
-	    System.out.println(playlists);
-	    return "playlist/selectPlaylist"; // selectPlaylist.jsp로 이동
+		// 사용자의 플레이리스트 가져오기
+		int memberId = member.getMember_id();
+		List<Playlist> playlists = playerService.getPlaylistsByMemberId(memberId);
+		model.addAttribute("playlists", playlists);
+
+		// Ajax 요청에 대한 응답으로 플레이리스트 HTML만 반환
+		return "playlist/sidePlaylist"; // JSP 파일을 sidePlaylist.jsp로 지정
 	}
 
 	// 특정 플레이리스트의 음악 목록을 표시
@@ -51,6 +71,5 @@ public class PlayerController {
 		model.addAttribute("playlistId", playlistId); // 현재 플레이리스트 ID도 전달
 		return "playlist/playlist"; // playlist.jsp로 이동
 	}
-	
-	
+
 }
