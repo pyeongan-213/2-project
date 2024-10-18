@@ -1,48 +1,56 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/HJ_sidebar.css">
-<title>Insert title here</title>
+<title>Sidebar with Playlists</title>
 </head>
 <body>
-<div class="overlay"></div> <!-- 어두운 배경 추가 -->
+	<div class="overlay"></div>
+	<!-- 어두운 배경 추가 -->
 
-<nav>
-  <div class="menu-btn">
-    <div class="line line__1"></div>
-    <div class="line line__2"></div>
-    <div class="line line__3"></div>
-  </div>
+	<nav>
+		<div class="menu-btn">
+			<div class="line line__1"></div>
+			<div class="line line__2"></div>
+			<div class="line line__3"></div>
+		</div>
 
-  <div class="sub-menu-btn">
-    <div class="line line__1"></div>
-    <div class="line line__2"></div>
-  </div>
+		<ul class="nav-links" style="padding: 0;">
+			<li class="link"><a
+				href="${pageContext.request.contextPath}/board/main">Board</a></li>
+			<li class="link"><a
+				href="${pageContext.request.contextPath}/quiz/quizlobby">Quiz</a></li>
+			<li></li>
+		</ul>
+		<div class="SideplaylistMakerWrapper">
+			<h4>새 플레이리스트를 추가하세요</h4>
+			<input class="inputplaylistPlaceholder" type="text"
+				placeholder="새 플레이리스트" />
+			<button type="submit">생성</button>
+		</div>
 
-  <ul class="nav-links" style="padding: 0;">
-    <li class="link">
-      <a href="${pageContext.request.contextPath}/board/main">Board</a>
-    </li>
-    <li class="link">
-      <a href="${pageContext.request.contextPath}/temp/tempMain">Temp</a>
-    </li>
-    <li class="link">
-      <a href="${pageContext.request.contextPath}/playlist/selectPlaylist">Select Playlist</a>
-    </li>
-    <li class="link">
-      <a href="${pageContext.request.contextPath}/quiz/quizlobby">Quiz</a>
-    </li>
-    <li class="link">
-      <a href="${pageContext.request.contextPath}/temp/payment">payment</a>
-    </li>
-  </ul>
-</nav>
+		<div class="Sideplaylistwrapper">
+			<h2>내 플레이리스트</h2>
+			<c:forEach var="playlist" items="${playlists}">
 
-<script>
+				<td>${playlist.playlistName}</td>
+			</c:forEach>
+
+			<c:if test="${empty playlists}">
+				<p>
+					플레이리스트가 없습니다. 
+				</p>
+			</c:if>
+		</div>
+
+	</nav>
+
+	<script>
 console.clear();
 
 const nav = document.querySelector("nav");
