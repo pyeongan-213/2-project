@@ -81,7 +81,7 @@
 		<a href="${root }temp/slide_popup">다음</a>
 	</h3>
 
-	<script src="${root}js/popup.js"></script>
+	
 
 
 	<script type="text/javascript">
@@ -106,5 +106,7 @@
 			});
 		});
 	</script>
+	<script src="${root}js/popup.js"></script>
+	
 </body>
 </html>

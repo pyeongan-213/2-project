@@ -9,6 +9,8 @@
 <title>Insert title here</title>
 </head>
 <body>
+<div class="overlay"></div> <!-- 어두운 배경 추가 -->
+
 <nav>
   <div class="menu-btn">
     <div class="line line__1"></div>
@@ -39,6 +41,7 @@
     </li>
   </ul>
 </nav>
+
 <script>
 console.clear();
 
@@ -47,6 +50,23 @@ const navLinksContainer = document.querySelector(".nav-links");
 const navLinks = [...document.querySelectorAll(".link")];
 const menuBtn = document.querySelector(".menu-btn");
 const subMenuBtn = document.querySelector(".sub-menu-btn");
+const overlay = document.querySelector(".overlay"); // overlay 요소 가져오기
+
+// 사이드바 외부 클릭 감지하여 닫기 위한 함수
+document.addEventListener("click", function(event) {
+  if (!nav.contains(event.target) && !menuBtn.contains(event.target)) {
+    // 사이드바와 메뉴 버튼 외부를 클릭하면 닫기
+    if (nav.classList.contains("nav-open")) {
+      nav.classList.remove("nav-open");
+      menuBtn.classList.remove("close");
+      overlay.classList.remove("active"); // 어두운 배경 제거
+    }
+    if (nav.classList.contains("sub-menu-open")) {
+      nav.classList.remove("sub-menu-open");
+      removeSubmenu();
+    }
+  }
+});
 
 function createHoverEl() {
   let hoverEl = document.createElement("div");
@@ -61,7 +81,17 @@ createHoverEl();
 menuBtn.addEventListener("click", function() {
   nav.classList.toggle("nav-open");
   menuBtn.classList.toggle("close");
+  if (nav.classList.contains("nav-open")) {
+    overlay.classList.add("active"); // 어두운 배경 표시
+    overlay.style.opacity = "1"; // opacity 변경으로 트랜지션 효과
+  } else {
+    overlay.style.opacity = "0"; // opacity 변경으로 트랜지션 효과
+    setTimeout(() => {
+      overlay.classList.remove("active"); // 완전히 사라지면 클래스 제거
+    }, 500); // 트랜지션 시간과 일치시킴
+  }
 });
+
 subMenuBtn.addEventListener("click", function() {
   nav.classList.toggle("sub-menu-open");
   removeSubmenu();
@@ -111,7 +141,6 @@ function removeSubmenu() {
     }, 500);
   }
 }
-
 </script>
 </body>
 </html>
