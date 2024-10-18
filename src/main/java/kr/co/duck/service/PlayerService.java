@@ -20,6 +20,8 @@ public class PlayerService {
     
     // 회원의 플레이리스트 목록을 가져오는 메소드
     public List<Playlist> getPlaylistsByMemberId(int memberId) {
-        return playlistDAO.getPlaylistsByMemberId(memberId);
+    	List<Playlist> playlists = playlistDAO.getPlaylistsByMemberId(memberId);
+        System.out.println("가져온 플레이리스트 목록: " + playlists);
+        return playlists;
     }
 }

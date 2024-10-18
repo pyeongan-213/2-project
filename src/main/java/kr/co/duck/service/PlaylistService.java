@@ -53,10 +53,7 @@ public class PlaylistService {
 		return new ArrayList<>(); // 현재는 빈 리스트로 반환
 	}
 
-	public void createPlaylist(PlaylistBean playlist) {
-		// PlaylistDAO를 통해 DB에 플레이리스트 저장
-		playlistDAO.insertPlaylist(playlist);
-	}
+	
 
 	public List<PlaylistBean> getUserPlaylists(int memberId) {
 		// PlaylistDAO에서 member_id로 플레이리스트를 가져오는 메서드 호출 return
@@ -66,6 +63,10 @@ public class PlaylistService {
 	// 특정 플레이리스트의 음악 목록 가져오기
 	public List<MusicBean> getMusicListForPlaylist(int playlistId) {
 		return playlistDAO.getMusicBeanByPlaylistId(playlistId);
+	}
+
+	public void createPlaylist(PlaylistBean playlist) {
+		playlistDAO.insertPlaylist(playlist); // DAO 호출하여 플레이리스트 저장
 	}
 
 }

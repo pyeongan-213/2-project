@@ -30,7 +30,7 @@
 				<tr>
 					<th>앨범</th>
 					<th>제목</th>
-					<th>Add to Playlist</th>
+					<th>-</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -38,7 +38,7 @@
 					<tr>
 						<td class="img_album"><img src="${song.thumbnailUrl}"
 							alt="Thumbnail" /></td>
-						<td>${song.music_Name}</td>
+						<td><h5>${song.music_Name}</h5></td>
 						<td>
 							<!-- 드롭다운 선택과 곡 정보를 포함한 AJAX로 추가 -->
 							<select class="playlist-select" 

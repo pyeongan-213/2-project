@@ -1,13 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='root' value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/css/HJ_sidebar.css">
+<link rel="stylesheet" type="text/css" href="${root}/css/HJ_sidebar.css">
 <title>Sidebar with Playlists</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 <body>
 	<div class="overlay"></div>
@@ -21,32 +25,34 @@
 		</div>
 
 		<ul class="nav-links" style="padding: 0;">
-			<li class="link"><a
-				href="${pageContext.request.contextPath}/board/main">Board</a></li>
-			<li class="link"><a
-				href="${pageContext.request.contextPath}/quiz/quizlobby">Quiz</a></li>
-			<li></li>
+			<li class="link"><a href="${root}/board/main">Board</a></li>
+			<li class="link"><a href="${root}/quiz/quizlobby">Quiz</a></li>
+			<li class="link"><a href="${root}/playlist/selectPlaylist">Select
+					Playlist</a></li>
 		</ul>
 		<div class="SideplaylistMakerWrapper">
 			<h4>새 플레이리스트를 추가하세요</h4>
-			<input class="inputplaylistPlaceholder" type="text"
-				placeholder="새 플레이리스트" />
-			<button type="submit">생성</button>
+			<input id="newPlaylistName" class="inputplaylistPlaceholder"
+				type="text" placeholder="새 플레이리스트" />
+			<button id="createPlaylistBtn" type="button">생성</button>
 		</div>
 
 		<div class="Sideplaylistwrapper">
 			<h2>내 플레이리스트</h2>
 			<c:forEach var="playlist" items="${playlists}">
-
-				<td>${playlist.playlistName}</td>
+				<li>${playlist.playlistname}<a
+					href="${root}/playlist/playlist?playlistId=${playlist.playlist_id}">
+						선택하기 </a>
+				</li>
 			</c:forEach>
 
 			<c:if test="${empty playlists}">
-				<p>
-					플레이리스트가 없습니다. 
-				</p>
+				<p>플레이리스트가 없습니다.</p>
 			</c:if>
+
+
 		</div>
+
 
 	</nav>
 
@@ -149,6 +155,69 @@ function removeSubmenu() {
     }, 500);
   }
 }
+
+
+</script>
+	<script>
+	$(document).ready(function() {
+	    // 플레이리스트 생성 버튼 클릭 이벤트
+	    $('#createPlaylistBtn').click(function() {
+	        var playlistName = $('#newPlaylistName').val(); // 입력된 플레이리스트 이름 가져오기
+
+	        if (playlistName.trim() === "") {
+	            alert("플레이리스트 이름을 입력하세요.");
+	            return; // 입력이 비어있으면 요청하지 않음
+	        }
+
+	        $.ajax({
+	            url: '/Project_2/playlist/create',  // 플레이리스트 생성 URL
+	            type: 'POST',
+	            data: {
+	                playlistName: playlistName
+	            },
+	            success: function(data) {
+	                // 플레이리스트가 성공적으로 생성된 후 목록 갱신
+	                alert("플레이리스트가 생성되었습니다!");
+
+	                // 새로 추가된 플레이리스트 목록을 갱신
+	                $.ajax({
+	                    url: '/Project_2/playlist/selectPlaylist',
+	                    type: 'GET',
+	                    success: function(data) {
+	                        $(".Sideplaylistwrapper").html(data);  // 새로운 플레이리스트 목록을 갱신
+	                    }
+	                });
+
+	                // 입력 필드 초기화
+	                $('#newPlaylistName').val("");
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("플레이리스트 생성 중 오류 발생: " + error);
+	                console.log("상태 코드: " + xhr.status);  // 상태 코드 확인
+	                console.log("응답 내용: " + xhr.responseText);  // 서버 응답 내용 확인
+	            }
+	        });
+	    });
+	});
+
+
+</script>
+
+	<script>
+	$(document).ready(function() {
+	    $.ajax({
+	        url: '/Project_2/playlist/selectPlaylist', // 플레이리스트 데이터를 가져오는 URL
+	        type: 'GET',
+	        success: function(data) {
+	            // 가져온 HTML 데이터를 사이드바에 삽입
+	            $(".Sideplaylistwrapper").html(data);
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("플레이리스트 데이터를 가져오는 중 오류 발생: " + error);
+	        }
+	    });
+	});
+
 </script>
 </body>
 </html>

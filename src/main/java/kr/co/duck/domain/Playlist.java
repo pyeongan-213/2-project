@@ -14,7 +14,7 @@ public class Playlist {
     private int playlist_id;
 
     @Column(name = "member_id")
-    private int memberid;
+    private int member_id;
 
     @Column(name = "playlistname")
     private String playlistname;
@@ -31,12 +31,12 @@ public class Playlist {
         this.playlist_id = playlist_id;
     }
 
-    public int getMemberid() {
-        return memberid;
+    public int getMember_id() {
+        return member_id;
     }
 
-    public void setMemberid(int memberid) {
-        this.memberid = memberid;
+    public void setMember_id(int member_id) {
+        this.member_id = member_id;
     }
 
     public String getPlaylistname() {

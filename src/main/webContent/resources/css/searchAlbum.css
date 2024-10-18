@@ -24,7 +24,8 @@ img {
 /* Base : 상단바 사이드바 하단바의 크기만큼 위치 이동 (필요하면 사용) */
 div#contentContainer {
 	margin-top: 60px;
-	margin-left: 245px;
+	
+    margin-left: 80px;
 	display: grid;
 }
 
@@ -190,6 +191,7 @@ a.btn {
 	position: fixed;
 	top: 0;
 	left: 0;
+	border-radius: 5px;
 	background: rgba(15, 15, 15, 0.9);
 	visibility: hidden;
 	opacity: 0;
@@ -201,6 +203,9 @@ a.btn {
 	visibility: visible;
 }
 
+.album-table {
+	color : #fff;
+}
 .modal {
 	width: 68%;
 	height: 80%;
