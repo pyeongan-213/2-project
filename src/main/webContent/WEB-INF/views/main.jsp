@@ -21,6 +21,15 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 페이지가 로드되면 premium-section에 show 클래스를 추가하여 애니메이션 실행
+    const premiumSection = document.querySelector('.premium-section');
+    setTimeout(function() {
+        premiumSection.classList.add('show');
+    }, 500);  // 0.5초 딜레이 후 애니메이션 시작
+});
+</script>
 </head>
 <body>
 	<header>
@@ -97,10 +106,25 @@
 			</section>
 		</div>
 	</div>
-	
-		<!-- bottom_info.jsp 포함 -->
-		<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
-	
+
+	<!-- 프리미엄 섹션 -->
+    <c:if test="${!isPremiumMember}">
+        <div class="premium-section">
+            <div class="premium-content">
+                <div class="premium-text">
+                    <p>DuckMusic 미리 듣기</p>
+                    <p>좋아하는 국내 음악과 세계 최고의 플레이리스트를 들어보세요.</p>
+                </div>
+                <div class="premium-button-container">
+                    <a href="${root}/premium" class="premium-button">구독하기</a>
+                </div>
+            </div>
+        </div>
+    </c:if>
+
+	<!-- bottom_info.jsp 포함 -->
+	<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
+
 	<!-- JavaScript 파일 -->
 	<script src="${root}/js/main.js"></script>
 </body>

@@ -178,3 +178,65 @@ body {
 	font-size:32px;
 	font-weight: bold;
 }
+
+/* ----추가한 부분---- */
+/* 프리미엄 섹션 초기 상태 (완전히 숨김 상태에서 시작) */
+.premium-section {
+    background-color: #2C2C2E;  /* 어두운 회색 배경 */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;  /* 상단과 하단 모두 둥글게 */
+    position: fixed;
+    bottom: -300px;  /* 화면 밖으로 완전히 숨기기 위해 더 큰 값을 사용 */
+    left: 0;
+    width: calc(100% - 40px);  /* 좌우 여백을 주기 위해 너비를 조정 */
+    margin: 0 20px;  /* 좌우에 20px 여백 */
+    z-index: 1000;
+    transition: transform 0.5s ease-in-out, bottom 0.5s ease-in-out;
+    transform: translateY(100%);  /* 화면에서 완전히 숨겨짐 */
+}
+
+.premium-section.show {
+    transform: translateY(0);  /* 화면에 표시될 때 */
+    bottom: 10px;  /* 화면 하단에 여백 유지 */
+}
+
+/* 프리미엄 섹션 콘텐츠 레이아웃 */
+.premium-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.premium-text {
+    text-align: left;
+    font-size: 14px;
+    color: #d1d1d1;
+}
+
+.premium-text p {
+    margin: 5px 0;
+}
+
+/* 구독 버튼이 우측에 위치하도록 설정 */
+.premium-button-container {
+    margin-left: auto;
+}
+
+.premium-button {
+    background-color: #1db954;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 1.0s ease;
+}
+
+.premium-button:hover {
+    background-color: #1ed760;
+    color: white;
+}

@@ -17,6 +17,26 @@
 <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    
+    <script>
+    // 검색 함수
+    function searchContent() {
+        var query = document.getElementById('searchInput').value;
+        if (query.trim() !== '') {
+            // 검색어가 있을 때만 페이지 이동
+            window.location.href = '${root}/search/TopMenuSearch?query=' + encodeURIComponent(query);
+        }
+    }
+
+    // 페이지가 완전히 로드된 후에 검색창에 엔터키 이벤트 리스너 추가
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                searchContent();  // 엔터키가 눌렸을 때 searchContent 함수 호출
+            }
+        });
+    });
+</script>
 </head>
 <body>
 	<div class="navbar fixed-top">
@@ -59,7 +79,7 @@
                 <c:when test="${sessionScope.loginMemberBean != null}">
                     <!-- 로그인이 된 상태: 드롭다운 메뉴 추가 -->
                     <div class="dropdown">
-                        <a href="javascript:void(0)" class="nav-link nickname" style="text-decoration: none;">${loginMemberBean.nickname }</a>
+                        <a href="javascript:void(0)" class="nav-link nickname" style="text-decoration: none;">${loginMemberBean.nickname } 님</a>
                         <div class="dropdown-content">
                             <a href="${root}/member/info">내 정보</a>
                             <a href="${root}/join">구독</a>

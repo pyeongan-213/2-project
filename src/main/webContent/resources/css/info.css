@@ -141,3 +141,7 @@ label {
         padding: 10px;
     }
 }
+
+.search-icon {
+    top: 14px !important;
+}

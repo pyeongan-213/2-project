@@ -12,7 +12,7 @@
 </head>
 <body style="margin: 0;">
 <div class="sidebar">
-	<jsp:include page="/WEB-INF/views/include/HJ_sidebar.jsp" />
+	<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
 </div>
 	<div class="header finisher-header" style="width: 100%; height: 480px; display:flex; align-items: center; justify-content: center;">
 		<h1 style="color: white; font-size: 100px;">DuckMusic</h1>

@@ -13,7 +13,7 @@ public class KakaopayInfo {
     private Long kakaopayInfoId;
 
     @Column(name = "MEMBER_ID")
-    private Long memberId;
+    private int memberId;
 
     @Column(name = "TID", nullable = false)
     private String tid;
@@ -26,7 +26,7 @@ public class KakaopayInfo {
     }
 
     // 전체 필드에 대한 생성자
-    public KakaopayInfo(String tid, String sid, Long memberId) {
+    public KakaopayInfo(String tid, String sid, int memberId) {
         this.tid = tid;
         this.sid = sid;
         this.memberId = memberId;
@@ -37,7 +37,7 @@ public class KakaopayInfo {
         return kakaopayInfoId;
     }
 
-    public Long getMemberId() {
+    public int getMemberId() {
         return memberId;
     }
 
@@ -50,7 +50,7 @@ public class KakaopayInfo {
     }
 
     // 'of' 메소드 구현 (정적 팩토리 메소드)
-    public static KakaopayInfo of(String tid, String sid, Long memberId) {
+    public static KakaopayInfo of(String tid, String sid, int memberId) {
         return new KakaopayInfo(tid, sid, memberId);
     }
 }

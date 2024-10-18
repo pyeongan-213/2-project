@@ -190,8 +190,7 @@
 			</div>
 
 			<div>
-				<button type="button" id="changeBtn" class="btn"
-					style="color: #303080">인증요청</button>
+				<button type="button" id="changeBtn" class="btn">인증요청</button>
 			</div>
 
 			<div class="input-box">

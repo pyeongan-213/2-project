@@ -96,7 +96,7 @@ public class KakaoPayService {
          if (loginMemberBean == null) {
             throw new IllegalStateException("로그인 정보가 없습니다.");
          }
-         long memberID = (long) loginMemberBean.getMember_id(); // memberID 추출
+         int memberID = loginMemberBean.getMember_id(); // memberID 추출
 
          // memberID와 함께 KakaopayInfo 저장
          repository.save(KakaopayInfo.of(tid, Objects.requireNonNull(approveResponse).getSid(), memberID));
