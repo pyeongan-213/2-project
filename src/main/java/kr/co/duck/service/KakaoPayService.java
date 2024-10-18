@@ -1,6 +1,7 @@
 package kr.co.duck.service;
 
 import kr.co.duck.domain.KakaopayInfo;
+import kr.co.duck.domain.Payment;
 import kr.co.duck.repository.KaokaopayInfoRepository;
 import kr.co.duck.social.KaKaoApproveResponse;
 import kr.co.duck.social.KaKaoReadyResponse;
@@ -27,15 +28,13 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class KakaoPayService {
 
-	@Autowired
+    @Autowired
     private RestTemplate restTemplate;
-	@Autowired
+    @Autowired
     private KaokaopayInfoRepository repository;
 
-	private static final Logger log = LoggerFactory.getLogger(KakaoPayService.class);
+    private static final Logger log = LoggerFactory.getLogger(KakaoPayService.class);
 
-	
-	
     private final String READY_URL = "https://open-api.kakaopay.com/online/v1/payment/ready";
     private final String APPROVE_URL = "https://open-api.kakaopay.com/online/v1/payment/approve";
 
@@ -47,19 +46,20 @@ public class KakaoPayService {
      *
      * @param name        상품명
      * @param totalPrice  상품 총액
+     * @param memberId    사용자 ID
      * @return KaKaoReadyResponse
      */
-    public KaKaoReadyResponse requestPaymentReady(String name, String totalPrice) {
+    public KaKaoReadyResponse requestPaymentReady(String name, String totalPrice, Long memberId) {
         try {
             Map<String, String> parameters = new HashMap<>();
             parameters.put("cid", "TCSEQUENCE");                                              // 가맹점 코드(테스트용)
             parameters.put("partner_order_id", "1234567890");                                 // 주문번호
-            parameters.put("partner_user_id", "testUser");                                    // 회원 아이디
+            parameters.put("partner_user_id", String.valueOf(memberId));                      // 회원 아이디
             parameters.put("item_name", name);                                                // 상품명
             parameters.put("quantity", "1");                                                  // 상품 수량
-            parameters.put("total_amount", String.valueOf(totalPrice));                       // 상품 총액
+            parameters.put("total_amount", totalPrice);                                       // 상품 총액
             parameters.put("tax_free_amount", "0");                                           // 상품 비과세 금액
-            parameters.put("approval_url", "http://localhost:8064/temp/kakao/pay/approve");   // 결제 성공 시 URL
+            parameters.put("approval_url", "http://localhost:8064/Project_2/temp/approve");   // 결제 성공 시 URL
             parameters.put("cancel_url", "http://localhost:8064/temp/kakao/pay/cancel");      // 결제 취소 시 URL
             parameters.put("fail_url", "http://localhost:8064/temp/kakao/pay/fail");          // 결제 실패 시 URL
 
@@ -115,5 +115,4 @@ public class KakaoPayService {
         headers.set("Content-type", "application/json");
         return headers;
     }
-
 }

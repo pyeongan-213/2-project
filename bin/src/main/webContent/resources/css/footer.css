@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+/* Footer 스타일 */
+footer {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #1f1d2b;
+    text-align: center;
+    color: white;
+    position: relative;
+    bottom: 0;
+    clear: both;
+    margin-top: auto;
+    border-top: 1px solid #333;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+}
+
+

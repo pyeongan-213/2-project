@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/* 사이드바 구분선에 그림자 추가 */
+.sidebar {
+    width: 220px;
+    background-color: #121212;
+    height: 100vh;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: auto;
+    border-right: 1px solid #333;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* 빛나는 효과 */
+}
+
+/* 사이드바 내용 설정 */
+.sidebar .side-wrapper {
+    padding: 20px;
+    width: 100%;
+}
+
+.sidebar-header {
+    color: #fff;
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sidebar-link {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin: 10px 0;
+    font-size: 20px;
+    text-align: center;
+}
+
+.sidebar-link:hover {
+    color: #007bff;
+}
+
+
+
+/* playlist Modal 스타일 */
+.sidebar .modal { 
+    z-index: 1050; 
+    position: fixed; 
+}
+
+.sidebar .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+}
+
+.sidebar .modal-content {
+    padding: 20px;
+}

@@ -54,7 +54,7 @@ function toggleContent() {
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
 		<!-- Sidebar 포함 -->
 		<div>
-		<jsp:include page="/WEB-INF/views/include/HJ_sidebar.jsp" />
+		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
 		</div>
 	</header>
 	

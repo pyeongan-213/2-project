@@ -40,8 +40,6 @@
 		<!-- 추가된 버튼: 2번 바뀐 모달을 위한 버튼 -->
 		<button class="mocean-modal-button" data-mocean-type="slide-in-bottom"
 			data-target="#mocean-modal-2">연간결제</button>
-
-
 	</div>
 
 

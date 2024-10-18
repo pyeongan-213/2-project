@@ -1,67 +1,82 @@
 package kr.co.duck.domain;
 
+import java.util.Date;
+
 public class Payment {
-    private int payment_id;
-    private int member_id;
-    private String subscription_date;
-    private String expiry_date;
-    private String is_renewed;
-    private String payment_amount;
-    private String payment_method;
-    private String payment_info;
-	public int getPayment_id() {
-		return payment_id;
-	}
-	public void setPayment_id(int payment_id) {
-		this.payment_id = payment_id;
-	}
-	public int getMember_id() {
-		return member_id;
-	}
-	public void setMember_id(int member_id) {
-		this.member_id = member_id;
-	}
-	public String getSubscription_date() {
-		return subscription_date;
-	}
-	public void setSubscription_date(String subscription_date) {
-		this.subscription_date = subscription_date;
-	}
-	public String getExpiry_date() {
-		return expiry_date;
-	}
-	public void setExpiry_date(String expiry_date) {
-		this.expiry_date = expiry_date;
-	}
-	public String getIs_renewed() {
-		return is_renewed;
-	}
-	public void setIs_renewed(String is_renewed) {
-		this.is_renewed = is_renewed;
-	}
-	public String getPayment_amount() {
-		return payment_amount;
-	}
-	public void setPayment_amount(String payment_amount) {
-		this.payment_amount = payment_amount;
-	}
-	public String getPayment_method() {
-		return payment_method;
-	}
-	public void setPayment_method(String payment_method) {
-		this.payment_method = payment_method;
-	}
-	public String getPayment_info() {
-		return payment_info;
-	}
-	public void setPayment_info(String payment_info) {
-		this.payment_info = payment_info;
-	}
+
+    // 필드 선언 (데이터베이스 컬럼명과 동일하게 수정)
+    private int PAY_ID;               // 결제 식별자
+    private int MEMBER_ID;            // 멤버 식별자
+    private Date SUBSCRIBEDATE;       // 구독일
+    private Date EXPIREDATE;          // 만료일
+    private String CONTINUESUB;       // 구독 갱신 여부 (Y/N)
+    private String PRICE;             // 결제액
+    private String PAYMENT;           // 결제 수단 (카드, 카카오페이 등)
+    private String PAYMENT_INFO;      // 결제 수단 정보 (카드 번호 등)
 
     // Getters and Setters
-    
-    
-    
-    
-    
+    public int getPAY_ID() {
+        return PAY_ID;
+    }
+
+    public void setPAY_ID(int PAY_ID) {
+        this.PAY_ID = PAY_ID;
+    }
+
+    public int getMEMBER_ID() {
+        return MEMBER_ID;
+    }
+
+    public void setMEMBER_ID(int MEMBER_ID) {
+        this.MEMBER_ID = MEMBER_ID;
+    }
+
+    public Date getSUBSCRIBEDATE() {
+        return SUBSCRIBEDATE;
+    }
+
+    public void setSUBSCRIBEDATE(Date SUBSCRIBEDATE) {
+        this.SUBSCRIBEDATE = SUBSCRIBEDATE;
+    }
+
+    public Date getEXPIREDATE() {
+        return EXPIREDATE;
+    }
+
+    public void setEXPIREDATE(Date EXPIREDATE) {
+        this.EXPIREDATE = EXPIREDATE;
+    }
+
+    public String getCONTINUESUB() {
+        return CONTINUESUB;
+    }
+
+    public void setCONTINUESUB(String CONTINUESUB) {
+        this.CONTINUESUB = CONTINUESUB;
+    }
+
+    public String getPRICE() {
+        return PRICE;
+    }
+
+    public void setPRICE(String PRICE) {
+        this.PRICE = PRICE;
+    }
+
+    public String getPAYMENT() {
+        return PAYMENT;
+    }
+
+    public void setPAYMENT(String PAYMENT) {
+        this.PAYMENT = PAYMENT;
+    }
+
+    public String getPAYMENT_INFO() {
+        return PAYMENT_INFO;
+    }
+
+    public void setPAYMENT_INFO(String PAYMENT_INFO) {
+        this.PAYMENT_INFO = PAYMENT_INFO;
+    }
+
 }

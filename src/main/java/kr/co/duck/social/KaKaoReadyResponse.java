@@ -16,6 +16,7 @@ public class KaKaoReadyResponse {
 		return tid;
 	}
 	public void setTid(String tid) {
+		System.out.println(tid);
 		this.tid = tid;
 	}
 	public String getNext_redirect_pc_url() {

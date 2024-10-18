@@ -18,30 +18,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/temp")
 public class popup {
 
-	@Autowired
-	private KakaoPayService kakaoPayService;
+    @Autowired
+    private KakaoPayService kakaoPayService;
 
-	@GetMapping("/slide_popup")
-	public String main() {
-		return "temp/slide_popup";
-	}
+    @GetMapping("/slide_popup")
+    public String main() {
+        return "temp/slide_popup";
+    }
 
-	@PostMapping("/kakao/pay/ready")
-	public @ResponseBody KaKaoReadyResponse kakaoPayReady(@RequestBody KakaoPayRedayDto dto){
-		String name = dto.getName();
-		String totalPrice = dto.getTotalPrice();
+    @PostMapping("/kakao/pay/ready")
+    public @ResponseBody KaKaoReadyResponse kakaoPayReady(@RequestBody KakaoPayRedayDto dto) {
+        String name = dto.getName();
+        String totalPrice = dto.getTotalPrice();
+        Long memberId = dto.getMemberId(); // 사용자 ID 가져오기
 
-		KaKaoReadyResponse readyResponse = kakaoPayService.requestPaymentReady(name, totalPrice);
-		SessionUtils.addAttribute("tid", readyResponse.getTid());
+        KaKaoReadyResponse readyResponse = kakaoPayService.requestPaymentReady(name, totalPrice, memberId);
+        SessionUtils.addAttribute("tid", readyResponse.getTid()); // 트랜잭션 ID 저장
 
-		return readyResponse;
-	}
+        return readyResponse;
+    }
 
-	@GetMapping("/kakao/pay/approve")
-	public String kakaoPayApprove(@RequestParam("pg_token") String pgToken){
-		String tid = SessionUtils.getStringAttributeValue("tid");
-		KaKaoApproveResponse approveResponse =  kakaoPayService.requestPaymentApprove(tid, pgToken);
-		return "redirect:/temp/slide_popup";
-	}
+    @GetMapping("/approve")
+    public String kakaoPayApprove(@RequestParam("pg_token") String pgToken) {
+        String tid = SessionUtils.getStringAttributeValue("tid");
+        KaKaoApproveResponse approveResponse = kakaoPayService.requestPaymentApprove(tid, pgToken);
 
+
+        return "temp/approve";
+    }
 }
