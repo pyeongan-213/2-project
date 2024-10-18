@@ -32,9 +32,9 @@
 		</ul>
 		<div class="SideplaylistMakerWrapper">
 			<h4>새 플레이리스트를 추가하세요</h4>
-			<input class="inputplaylistPlaceholder" type="text"
-				placeholder="새 플레이리스트" />
-			<button type="submit">생성</button>
+			<input id="newPlaylistName" class="inputplaylistPlaceholder"
+				type="text" placeholder="새 플레이리스트" />
+			<button id="createPlaylistBtn" type="button">생성</button>
 		</div>
 
 		<div class="Sideplaylistwrapper">
@@ -156,7 +156,53 @@ function removeSubmenu() {
   }
 }
 
+
 </script>
+	<script>
+	$(document).ready(function() {
+	    // 플레이리스트 생성 버튼 클릭 이벤트
+	    $('#createPlaylistBtn').click(function() {
+	        var playlistName = $('#newPlaylistName').val(); // 입력된 플레이리스트 이름 가져오기
+
+	        if (playlistName.trim() === "") {
+	            alert("플레이리스트 이름을 입력하세요.");
+	            return; // 입력이 비어있으면 요청하지 않음
+	        }
+
+	        $.ajax({
+	            url: '/Project_2/playlist/create',  // 플레이리스트 생성 URL
+	            type: 'POST',
+	            data: {
+	                playlistName: playlistName
+	            },
+	            success: function(data) {
+	                // 플레이리스트가 성공적으로 생성된 후 목록 갱신
+	                alert("플레이리스트가 생성되었습니다!");
+
+	                // 새로 추가된 플레이리스트 목록을 갱신
+	                $.ajax({
+	                    url: '/Project_2/playlist/selectPlaylist',
+	                    type: 'GET',
+	                    success: function(data) {
+	                        $(".Sideplaylistwrapper").html(data);  // 새로운 플레이리스트 목록을 갱신
+	                    }
+	                });
+
+	                // 입력 필드 초기화
+	                $('#newPlaylistName').val("");
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("플레이리스트 생성 중 오류 발생: " + error);
+	                console.log("상태 코드: " + xhr.status);  // 상태 코드 확인
+	                console.log("응답 내용: " + xhr.responseText);  // 서버 응답 내용 확인
+	            }
+	        });
+	    });
+	});
+
+
+</script>
+
 	<script>
 	$(document).ready(function() {
 	    $.ajax({

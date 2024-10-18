@@ -1,27 +1,35 @@
 package kr.co.duck.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
+
 import kr.co.duck.beans.MemberBean;
+import kr.co.duck.beans.PlaylistBean;
 import kr.co.duck.domain.Music;
 import kr.co.duck.domain.Playlist;
 import kr.co.duck.service.PlayerService;
+import kr.co.duck.service.PlaylistService;
 
 @Controller
 public class PlayerController {
 
 	@Autowired
 	private PlayerService playerService;
+
+	@Autowired
+	private PlaylistService playlistService;
 
 	// 모든 페이지에서 로그인한 사용자의 플레이리스트를 사용할 수 있도록 ModelAttribute 사용
 	@ModelAttribute("playlists")
@@ -72,4 +80,20 @@ public class PlayerController {
 		return "playlist/playlist"; // playlist.jsp로 이동
 	}
 
+	// 새 플레이리스트 생성
+	@PostMapping("/playlist/create")
+	@ResponseBody // 이 어노테이션 추가
+	public String createPlaylist(@RequestParam("playlistName") String playlistName,
+			@SessionAttribute("loginMemberBean") MemberBean member) {
+		// 새 플레이리스트 생성
+		PlaylistBean playlist = new PlaylistBean();
+		playlist.setPlaylistName(playlistName);
+		playlist.setMemberId(member.getMember_id()); // 로그인한 사용자의 member_id 사용
+
+		// 서비스 호출하여 플레이리스트 저장
+		playlistService.createPlaylist(playlist);
+
+		// Ajax 요청이므로 "success" 텍스트만 반환
+		return "success";
+	}
 }

@@ -83,24 +83,22 @@ public class PlaylistController {
 
 
 	// 새 플레이리스트 생성
-	@PostMapping("/playlist/create")
-	public String createPlaylist(@RequestParam("playlistName") String playlistName,
-			@SessionAttribute("loginMemberBean") MemberBean member) {
-		// 새 플레이리스트 생성
-		PlaylistBean playlist = new PlaylistBean();
-		playlist.setPlaylistName(playlistName);
-		playlist.setMemberId(member.getMember_id()); // 로그인한 사용자의 member_id 사용
-
-		// 서비스 호출하여 플레이리스트 저장
-		playlistService.createPlaylist(playlist);
-
-		// 플레이리스트 목록 페이지로 리다이렉트
-		return "redirect:/playlist/list";
-	}
-
-	public PlaylistController(PlaylistService playlistService) {
-		this.playlistService = playlistService;
-	}
+	/*
+	 * @PostMapping("/playlist/create") public String
+	 * createPlaylist(@RequestParam("playlistName") String playlistName,
+	 * 
+	 * @SessionAttribute("loginMemberBean") MemberBean member) { // 새 플레이리스트 생성
+	 * PlaylistBean playlist = new PlaylistBean();
+	 * playlist.setPlaylistName(playlistName);
+	 * playlist.setMemberId(member.getMember_id()); // 로그인한 사용자의 member_id 사용
+	 * 
+	 * // 서비스 호출하여 플레이리스트 저장 playlistService.createPlaylist(playlist);
+	 * 
+	 * // 플레이리스트 목록 페이지로 리다이렉트 return "redirect:/playlist/list"; }
+	 * 
+	 * public PlaylistController(PlaylistService playlistService) {
+	 * this.playlistService = playlistService; }
+	 */
 
 	// 플레이리스트 삭제
 	@PostMapping("/playlist/delete")
