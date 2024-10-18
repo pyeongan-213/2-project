@@ -45,7 +45,7 @@ public class ChatService {
      */
     public void sendChatMessage(int roomId, String sender, String content) {
         if (content.equalsIgnoreCase("!힌트")) {
-            sendHintMessage(); // 힌트 메시지 전송
+            sendHintMessage(roomId); // 힌트 메시지 전송
             return;
         }
 
@@ -59,22 +59,24 @@ public class ChatService {
         chatMessage.setSender(sender);
         chatMessage.setMessage(content);
 
-        sendingOperations.convertAndSend("/sub/chatRoom/" + roomId, chatMessage);
+        sendingOperations.convertAndSend("/sub/chat/" + roomId, chatMessage);
         log.info("Chat message sent: {}", chatMessage);
     }
 
     /**
      * 힌트 메시지 전송 메서드
      */
-    private void sendHintMessage() {
+    private void sendHintMessage(int roomId) {
         QuizMessage<String> hintMessage = new QuizMessage<>();
-        hintMessage.setType(QuizMessage.MessageType.HINT);
-        hintMessage.setSender("시스템");
-        hintMessage.setContent("힌트가 제공되었습니다.");
+        hintMessage.setType(QuizMessage.MessageType.HINT); // 메시지 유형 설정 (힌트)
+        hintMessage.setSender("시스템");  // 발신자를 시스템으로 설정
+        hintMessage.setContent("힌트가 제공되었습니다.");  // 메시지 내용 설정
 
-        sendingOperations.convertAndSend("/sub/quizRoom/1", hintMessage); // Room ID 1 예시
-        log.info("Hint message sent.");
+        // 구독 경로로 메시지 전송
+        sendingOperations.convertAndSend("/sub/quiz/" + roomId, hintMessage);
+        log.info("Hint message sent to roomId: {}", roomId);  // roomId로 전송된 힌트 메시지 로그
     }
+
 
     /**
      * 스킵 명령 처리 메서드
@@ -83,7 +85,7 @@ public class ChatService {
      */
     private void skipQuiz(int roomId, String sender) {
         // 스킵 알림 메시지 전송
-        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, 
+        sendingOperations.convertAndSend("/sub/quiz/" + roomId, 
             new QuizMessage<>("시스템", sender + "님이 문제를 스킵했습니다. 다음 문제로 이동합니다."));
 
         // 다음 퀴즈 시작
@@ -130,7 +132,7 @@ public class ChatService {
         quizMessage.setSender(senderName);
         quizMessage.setContent(content);
 
-        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, quizMessage);
+        sendingOperations.convertAndSend("/sub/quiz/" + roomId, quizMessage);
         log.info("Quiz message sent: {}", quizMessage);
     }
     
@@ -148,7 +150,7 @@ public class ChatService {
         answerMessage.setSender(String.valueOf(memberId));
         answerMessage.setContent(messageContent);
 
-        sendingOperations.convertAndSend("/sub/quizRoom/" + roomId, answerMessage);
+        sendingOperations.convertAndSend("/sub/quiz/" + roomId, answerMessage);
         log.info("Answer message sent: {}", answerMessage);
     }
     
@@ -157,6 +159,7 @@ public class ChatService {
         log.info("채팅 저장 시도 - roomId: {}, memberId: {}, content: {}", room_Id, member_Id, content);
 
         try {
+            // 채팅 메시지 엔티티 생성 및 DB 저장
             Chat chat = new Chat();
             chat.setRoom_Id(room_Id);
             chat.setMember_Id(member_Id);
@@ -164,13 +167,21 @@ public class ChatService {
             chat.setChat_Time(LocalDateTime.now().toString());
 
             log.info("저장할 채팅 엔티티: {}", chat);
-
-            chatRepository.save(chat);
+            chatRepository.save(chat);  // 채팅 메시지 DB에 저장
             log.info("채팅 저장 성공");
+
+            // WebSocket을 통해 방의 모든 사용자에게 채팅 메시지 전송
+            ChatMessage<String> chatMessage = new ChatMessage<>();
+            chatMessage.setRoomId(String.valueOf(room_Id));
+            chatMessage.setSender(String.valueOf(member_Id));  // 닉네임 대신 memberId 사용
+            chatMessage.setMessage(content);
+
+            sendingOperations.convertAndSend("/sub/chat/" + room_Id, chatMessage);  // WebSocket으로 메시지 브로드캐스트
+            log.info("WebSocket으로 채팅 메시지 전송: {}", chatMessage);
+
         } catch (Exception e) {
             log.error("채팅 저장 중 오류 발생: {}", e.getMessage(), e);
-            throw e; // 예외를 던져 디버깅 시 더 상세한 스택 트레이스 확인 가능
+            throw e;  // 예외를 던져 디버깅 시 더 상세한 스택 트레이스 확인 가능
         }
     }
-
 }

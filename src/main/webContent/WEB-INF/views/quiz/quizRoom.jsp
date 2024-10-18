@@ -50,11 +50,15 @@
 	window.roomName = '${room.quizRoomName}';
 
     // 로그인된 사용자 ID와 닉네임을 JavaScript 변수로 전달
-    const loggedInUserId = "<%= userId %>"; 
-    const loggedInUserNickname = "<%= userNickname %>"; 
-
+    const loggedInUserId = "<%=userId%>"; 
+    const loggedInUserNickname = "<%=userNickname%>"; 
+	
     console.log('Logged In User ID:', loggedInUserId);
     console.log('Logged In User Nickname:', loggedInUserNickname);
+    
+    // 전역 변수로 설정하여 quizroom.js에서 사용 가능하게 함
+    window.currentUserId = loggedInUserId;
+    window.currentUserNickname = loggedInUserNickname;
 </script>
 </head>
 <body>

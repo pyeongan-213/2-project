@@ -218,7 +218,6 @@ public class QuizRoomController {
 
 
 
-    // **퀴즈방 나가기 API**
     @PostMapping("/leave")
     public ResponseEntity<Map<String, Object>> leaveRoom(@RequestBody Map<String, Object> requestData, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
@@ -232,7 +231,7 @@ public class QuizRoomController {
 
         try {
             int roomId = Integer.parseInt(requestData.get("roomId").toString());
-            quizRoomService.roomExit(roomId, loginMemberBean);
+            quizRoomService.roomExit(roomId, loginMemberBean);  // 방 나가기 처리
             response.put("success", true);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

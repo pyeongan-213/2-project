@@ -9,9 +9,12 @@ let countdownInterval = null;  // 카운트다운 인터벌
 let hintIndex = 0;  // 힌트 인덱스
 let currentAnswer = '';  // 현재 퀴즈 정답
 let isStoppedByUser = false;  // 사용자가 음악을 중지했는지 여부
-const roomName = '방 이름';  // 방 이름 설정 (적절히 초기화 필요)
-let currentUserNickname = "익명";  // 기본 닉네임 설정
-let currentUserId = "1"; // 기본 사용자 ID 설정 (서버에서 적절히 가져오도록 설정 필요)
+const roomName = '방 이름';
+let currentUserNickname = window.currentUserNickname || "유저";  // JSP에서 전달된 닉네임을 사용, 없으면 기본값
+let currentUserId = window.currentUserId || 1;  // JSP에서 전달된 ID를 사용, 없으면 기본값
+let isSubscribedToQuiz = false;  // 퀴즈 구독 상태 추적 변수
+let isSubscribedToChat = false;  // 채팅 구독 상태 추적 변수
+let isSubscribedToPlayers = false;  // 플레이어 목록 구독 상태 추적 변수
 
 // 효과음 객체 생성
 const correctAnswerSound = new Audio(`${root}/audio/correct_answer.mp3`);  
@@ -19,7 +22,7 @@ const correctAnswerSound = new Audio(`${root}/audio/correct_answer.mp3`);
 // **경로에서 roomId 추출 함수**
 function getRoomIdFromPath() {
     const path = window.location.pathname;
-    const pathSegments = path.split('/'); 
+    const pathSegments = path.split('/');
     const roomIndex = pathSegments.indexOf('rooms');
     return roomIndex !== -1 && pathSegments.length > roomIndex + 1 
         ? pathSegments[roomIndex + 1] 
@@ -132,106 +135,67 @@ document.addEventListener('DOMContentLoaded', () => {
     maximizeButton.addEventListener('click', toggleTooltip);
 });
 
-// **이벤트 리스너 설정 (게임 시작 버튼)**
-document.addEventListener('DOMContentLoaded', () => {
-    const startQuizButton = document.getElementById('start-quiz-btn'); // 게임 시작 버튼
+// **채팅 메시지 화면에 표시**
+function displayChatMessage(sender, message) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageElement = document.createElement('p');
 
-    if (startQuizButton) {
-        console.log('게임 시작 버튼이 DOM에서 로드되었습니다.');
-        startQuizButton.addEventListener('click', startQuiz);  // 이벤트 리스너 설정
-    } else {
-        console.error('게임 시작 버튼을 찾을 수 없습니다.');
+    // 메시지가 유효할 경우 출력
+    if (!message) {
+        console.error("채팅 메시지 내용이 없습니다:", message);
+        return;
     }
-});
 
-// **플레이어 목록을 HTML에 동적으로 추가하는 함수**
-function updatePlayerList(data) {
-    const playerList = document.getElementById('players');
-    playerList.innerHTML = ''; // 기존 목록 초기화
+    messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+    chatMessages.appendChild(messageElement);
 
-    // 서버 응답에서 players 배열 추출
-    if (data.success && Array.isArray(data.players)) {
-        data.players.forEach(player => {
-            const li = document.createElement('li');
-            li.textContent = player; // 서버에서 받은 플레이어 이름 (닉네임)
-            playerList.appendChild(li); // 플레이어 목록에 추가
-        });
-    } else {
-        console.error('서버 응답이 올바르지 않습니다:', data);
+    // 너무 많은 메시지가 쌓일 경우 제거
+    const MAX_CHAT_MESSAGES = 14;
+    while (chatMessages.children.length > MAX_CHAT_MESSAGES) {
+        chatMessages.removeChild(chatMessages.firstChild);
     }
 }
 
-// 서버로부터 플레이어 목록을 가져오는 함수
-async function fetchPlayers(roomId) {
-    try {
-        const response = await fetch(`${root}/quiz/rooms/${roomId}/players`);
-        const data = await response.json(); // 서버에서 응답을 받음
-        updatePlayerList(data); // 플레이어 목록 업데이트
-    } catch (error) {
-        console.error('플레이어 목록을 가져오는 중 오류:', error);
+// **채팅 구독 및 처리**
+function connectWebSocket() {
+    if (stompClient && stompClient.connected) {
+        console.log("WebSocket 이미 연결됨");
+        return;  // 이미 연결된 경우 추가 작업을 하지 않음
     }
-}
 
-// 페이지 로드 시 플레이어 목록을 불러옴
-document.addEventListener('DOMContentLoaded', () => {
-    fetchPlayers(roomId); // 현재 방의 플레이어 목록 가져오기
-});
+    socket = new SockJS(`${root}/ws-stomp`);
+    stompClient = Stomp.over(socket);
 
-// 이후에는 let 없이 값을 할당
-document.addEventListener('DOMContentLoaded', () => {
-    fetchPlayerNicknames();  // 페이지 로드 시 사용자 닉네임 설정
-});
+    stompClient.connect({}, (frame) => {
+        console.log('WebSocket 연결 성공:', frame);
 
-async function fetchPlayerNicknames() {
-    try {
-        const response = await fetch(`${root}/quiz/rooms/${roomId}/players`);
-        const data = await response.json();
+        // **채팅 구독**
+        if (!isSubscribedToChat) {
+            chatSubscription = stompClient.subscribe(`/sub/chat/${roomId}`, (message) => {
+                const chat = JSON.parse(message.body);
+                console.log("채팅 수신 - 메시지 구조 확인:", chat);
 
-        if (data.success) {
-            currentUserNickname = data.currentUserNickname || '익명'; // 이미 선언된 변수에 값만 할당
-            console.log('현재 사용자 닉네임:', currentUserNickname);
-        } else {
-            console.error('플레이어 목록 가져오기 실패:', data.message);
+                if (chat.sender === currentUserId) {
+                    console.log("본인이 보낸 메시지이므로 무시합니다.");
+                    return;  // 본인이 보낸 메시지라면 아무 처리도 하지 않음
+                }
+
+                // 다른 사용자가 보낸 메시지 처리
+                displayChatMessage(chat.sender, chat.message);
+            });
+            isSubscribedToChat = true;  // 구독 상태 업데이트
         }
-    } catch (error) {
-        console.error('플레이어 닉네임 가져오는 중 오류:', error);
-    }
+
+    }, (error) => {
+        console.error('WebSocket 연결 실패. 재연결 시도 중...', error);
+        setTimeout(connectWebSocket, 5000);  // 재연결 시도
+    });
 }
 
+// WebSocket 연결 시도
+connectWebSocket();
 
-// **WebSocket 연결 설정**
-const socket = new SockJS(`${root}/ws-stomp`);
-stompClient = Stomp.over(socket);
-
-stompClient.connect({}, (frame) => {
-    console.log('WebSocket 연결 성공:', frame);
-
-    stompClient.subscribe(`/sub/quiz/${roomId}`, (message) => {
-        const msg = JSON.parse(message.body);
-        currentVideo = msg.code;
-        currentAnswers = msg.answer.map(answer => answer.trim().toLowerCase());
-        currentSongName = msg.name;
-        currentAnswer = msg.answer[0];
-        hintIndex = 0;
-        playMusic(msg.code, msg.start);
-    });
-
-    stompClient.subscribe(`/sub/chat/${roomId}`, (message) => {
-		console.log("수신된 WebSocket 메시지:", message.body);  // 수신된 메시지 확인
-        const chat = JSON.parse(message.body);
-        displayChatMessage(chat.sender, chat.content);
-        processChatMessage(chat.sender, chat.content);
-    });
-
-    // **플레이어 목록 갱신 구독**
-    stompClient.subscribe(`/sub/quiz/${roomId}/players`, (message) => {
-        const players = JSON.parse(message.body);
-        clearPlayerList();
-        players.forEach(player => addPlayerToList(player.name));
-    });
-});
-
-// **퀴즈 시작 함수**
+// **게임 시작 함수**
 async function startQuiz() {
     console.log('게임 시작 버튼이 클릭되었습니다.');
     try {
@@ -293,8 +257,10 @@ function updatePlayIcon() {
 }
 
 function processChatMessage(sender, content) {
-    const message = content.trim().toLowerCase();
 
+
+    // 서버에서 받은 메시지 구조를 확인한 후 적절히 수정
+    const message = typeof content === 'string' ? content.trim().toLowerCase() : '';
 
     // 명령어 처리
     if (['!스킵', '!skip'].includes(message)) {
@@ -313,47 +279,10 @@ function processChatMessage(sender, content) {
         return;  // 정답은 DB에 저장하지 않음
     }
 
-    // 일반 채팅 메시지만 저장
+
+   // 일반 채팅 메시지만 저장
     saveChatMessage(roomId, currentUserId, message);
 }
-
-
-
-
-// **채팅 메시지 전송 및 저장**
-async function sendMessage() {
-    const chatInput = document.getElementById('chat-input');
-    const message = chatInput.value.trim();
-
-    if (!message) {
-        alert('메시지를 입력해주세요.');
-        return;
-    }
-
-    // WebSocket으로 메시지 전송
-    stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
-        sender: currentUserNickname,
-        content: message
-    }));
-
-    // !힌트나 !스킵 명령어 또는 정답인 경우 DB에 저장하지 않음
-    if (['!스킵', '!skip', '!힌트', '!hint'].includes(message.toLowerCase()) ||
-        currentAnswers.some(answer => isExactMatch(message, answer))) {
-        console.log("명령어 또는 정답, DB에 저장 안 함:", message);
-        chatInput.value = ''; // 입력창 초기화
-        return; // 저장 제외
-    }
-
-    // 일반 채팅 메시지만 DB에 저장
-    await saveChatMessage(roomId, currentUserId, message);
-
-    // 채팅 메시지를 화면에 표시
-    displayChatMessage('나', message);
-    chatInput.value = '';
-}
-
-
-
 function skipQuiz(sender) {
     console.log(`${sender}님이 문제를 스킵했습니다.`);
 
@@ -516,52 +445,27 @@ function hideHint() {
     hintDisplay.textContent = '';
 }
 
-// **채팅 메시지 표시 함수**
-const MAX_CHAT_MESSAGES = 14;
-
-function displayChatMessage(sender, content) {
+// **채팅 메시지 화면에 표시**
+function displayChatMessage(sender, message) {
     const chatMessages = document.getElementById('chat-messages');
     const messageElement = document.createElement('p');
-    messageElement.innerHTML = `<strong>${sender}:</strong> ${content}`;
+
+    // 메시지가 유효할 경우 출력
+    if (!message) {
+        console.error("채팅 메시지 내용이 없습니다:", message);
+        return;
+    }
+
+    messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
     chatMessages.appendChild(messageElement);
 
+    // 너무 많은 메시지가 쌓일 경우 제거
+    const MAX_CHAT_MESSAGES = 14;
     while (chatMessages.children.length > MAX_CHAT_MESSAGES) {
         chatMessages.removeChild(chatMessages.firstChild);
     }
 }
 
-// **채팅 메시지 전송 및 저장**
-async function sendMessage() {
-    const chatInput = document.getElementById('chat-input');
-    const message = chatInput.value.trim();
-    console.log('채팅 입력값:', message); // 입력된 값 확인
-
-    if (!message) {
-        alert('메시지를 입력해주세요.');
-        return;
-    }
-
-    // WebSocket으로 메시지 전송
-    stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
-        sender: currentUserNickname,
-        content: message
-    }));
-
-    // !힌트나 !스킵 명령어 또는 정답인 경우 DB에 저장하지 않음
-    if (['!스킵', '!skip', '!힌트', '!hint'].includes(message.toLowerCase()) ||
-        currentAnswers.some(answer => isExactMatch(message, answer))) {
-        console.log("명령어 또는 정답, DB에 저장 안 함:", message);
-        chatInput.value = ''; // 입력창 초기화
-        return; // 저장 제외
-    }
-
-    // 일반 채팅 메시지는 DB에 저장
-    await saveChatMessage(roomId, currentUserId, message);
-
-    // 채팅 메시지를 화면에 표시
-    displayChatMessage('나', message);
-    chatInput.value = '';
-}
 
 
 document.getElementById('send-chat-btn').addEventListener('click', sendMessage);
@@ -570,7 +474,7 @@ document.getElementById('chat-input').addEventListener('keydown', (event) => {
 });
 
 // **채팅 저장 함수**
-async function saveChatMessage(roomId, memberId, message) { // message 인자를 받음
+async function saveChatMessage(roomId, memberId, message) {
     try {
         const response = await fetch(`${root}/saveChat`, {
             method: 'POST',
@@ -580,49 +484,117 @@ async function saveChatMessage(roomId, memberId, message) { // message 인자를
             body: JSON.stringify({
                 roomId: parseInt(roomId),  // roomId가 숫자로 전달되도록 수정
                 memberId: parseInt(memberId),  // memberId도 숫자로 전달
-                content: message,  // message를 content로 전달
-                timestamp: new Date().toISOString(),
+                content: message  // message를 content로 전달
             }),
         });
 
         if (!response.ok) {
             const errorMsg = await response.text();
-            console.log("roomId:", roomId, "memberId:", memberId, "content:", message);
             console.error('채팅 저장 실패:', errorMsg);
+            return false;
         } else {
             console.log('채팅 저장 성공');
+            return true;
         }
     } catch (error) {
         console.error('채팅 저장 중 오류:', error.message);
+        return false;
     }
 }
 
-function sendMessage() {
+// 메시지 전송 함수에서 연결 여부 확인
+async function sendMessage() {
+    let isSendingMessage = false;  // 함수 내에서 지역 변수로 선언
     const chatInput = document.getElementById('chat-input');
-    const message = chatInput.value.trim();
-    if (!message) {
-        alert('메시지를 입력해주세요.');
-        return;
+    const message = chatInput.value.trim();  // 메시지를 입력받아 공백 제거 후 저장
+
+    if (!message || isSendingMessage) {
+        console.log("메시지 전송 중복 방지 또는 메시지 없음");
+        return;  // 메시지가 없거나 이미 전송 중이면 중복 전송 방지
     }
 
-    stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
-        sender: roomName,
-        content: message
-    }));
+    isSendingMessage = true;  // 전송 중 상태로 설정
 
-    displayChatMessage('나', message);
-    chatInput.value = '';
-    processChatMessage('나', message);
-}
+  		try {
+        //WebSocket으로 메시지 전송
+        stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
+            sender: currentUserNickname,  // JSP에서 전달된 닉네임 사용
+            message: message,  // 실제로 전송할 메시지 내용
+           
+        }));
+         console.log("로그!");
 
-// **게임 시작 버튼 이벤트 리스너 설정**
+        // 메시지 전송 후 DB에 저장
+        await saveChatMessage(roomId, currentUserId, message);
+
+        // 채팅 메시지를 화면에 표시
+        displayChatMessage(currentUserNickname, message);
+    } catch (error) {
+        console.error("메시지 전송 중 오류:", error);
+    } finally {
+        chatInput.value = '';  // 입력창 초기화
+        isSendingMessage = false;  // 전송 완료 후 상태 해제
+    }
+}	
+
 document.addEventListener('DOMContentLoaded', () => {
-    const startQuizButton = document.getElementById('start-quiz-btn'); // 게임 시작 버튼
+    const startQuizButton = document.getElementById('start-quiz-btn');
+    const sendChatBtn = document.getElementById('send-chat-btn');
+    const chatInput = document.getElementById('chat-input');
 
+    // 게임 시작 버튼에 대한 이벤트 리스너가 중복되지 않도록 먼저 제거 후 추가
     if (startQuizButton) {
-        console.log('게임 시작 버튼이 DOM에서 로드되었습니다.');
-        startQuizButton.addEventListener('click', startQuiz);  // 이벤트 리스너 설정
-    } else {
-        console.error('게임 시작 버튼을 찾을 수 없습니다.');
+        startQuizButton.removeEventListener('click', startQuiz);  // 기존 리스너 제거
+        startQuizButton.addEventListener('click', startQuiz);  // 새로운 리스너 추가
+    }
+
+    // 채팅 전송 버튼에 대한 이벤트 리스너가 중복되지 않도록 먼저 제거 후 추가
+    if (sendChatBtn) {
+        sendChatBtn.removeEventListener('click', sendMessage);  // 기존 리스너 제거
+        sendChatBtn.addEventListener('click', sendMessage);  // 새로운 리스너 추가
+    }
+
+    // 채팅 입력창에서 'Enter' 키를 눌렀을 때의 이벤트 리스너가 중복되지 않도록 처리
+    if (chatInput) {
+        chatInput.removeEventListener('keydown', handleChatInput);  // 기존 리스너 제거
+        chatInput.addEventListener('keydown', handleChatInput);  // 새로운 리스너 추가
     }
 });
+
+// 채팅 입력에서 'Enter' 키를 눌렀을 때 실행될 핸들러 함수 분리
+function handleChatInput(event) {
+    if (event.key === 'Enter') {
+        sendMessage();  // 엔터키 입력시 메시지 전송
+    }
+}
+
+
+// 페이지를 떠나기 전에 방 나가기 처리
+window.addEventListener('beforeunload', function (event) {
+    leaveRoom();  // 사용자가 페이지를 떠날 때 leaveRoom 함수 호출
+    event.returnValue = ''; // 메시지를 반환하면 브라우저가 경고 메시지를 띄울 수 있음
+});
+
+// 방 나가기 API 호출
+async function leaveRoom() {
+    try {
+        const response = await fetch(`${root}/quiz/rooms/leave`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                roomId: roomId,  // 현재 방 ID
+                memberId: currentUserId  // 현재 사용자 ID
+            })
+        });
+
+        if (response.ok) {
+            console.log('방에서 성공적으로 나갔습니다.');
+        } else {
+            console.error('방 나가기 실패:', response.statusText);
+        }
+    } catch (error) {
+        console.error('방 나가기 요청 중 오류 발생:', error);
+    }
+}

@@ -281,12 +281,12 @@ async function joinRoom(roomId, roomPassword = '') {
         userId: currentUserId
     };
 
-    try {
+   	try {
         const response = await fetch(`${root}/quiz/rooms/join`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestData)
-        });
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(requestData)
+    });
 
         if (response.ok) {
             alert('방에 참여하였습니다!');

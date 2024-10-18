@@ -29,7 +29,7 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().httpBasic().disable()
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).and().httpBasic().disable()
 				.authorizeRequests().antMatchers("/auth/**").permitAll().antMatchers(HttpMethod.GET, "/posts/myPost")
 				.authenticated().antMatchers(HttpMethod.GET, "/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/quiz/rooms/create").permitAll() // 방 생성 허용

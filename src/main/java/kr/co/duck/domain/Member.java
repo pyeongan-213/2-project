@@ -1,100 +1,83 @@
 package kr.co.duck.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "MEMBER")
 public class Member {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "MEMBER_ID")
-	private int memberId;
 
-	@Column(name = "EMAIL")
-	private String email;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
+    @SequenceGenerator(name = "member_seq", sequenceName = "MEMBER_SEQ", allocationSize = 1)
+    @Column(name = "MEMBER_ID")
+    private int memberId;
 
-	@Column(name = "PASSWORD")
-	private String password;
+    @Column(name = "EMAIL")
+    private String email;
 
-	@Column(name = "NICKNAME")
-	private String nickname;
+    @Column(name = "PASSWORD")
+    private String password;
 
-	// 게임 통계 정보와의 일대일 관계 설정
-	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private MemberGameStats memberGameStats;
+    @Column(name = "NICKNAME")
+    private String nickname;
 
-	// 기본 생성자 (JPA를 위해 필요)
-	public Member() {
-	}
+    // 기본 생성자 (JPA를 위해 필요)
+    public Member() {
+    }
 
-	// 임시 객체 생성을 위한 생성자
-	public Member(int memberId, String nickname, String email) {
-		this.memberId = memberId;
-		this.nickname = nickname;
-		this.email = email;
-	}
+    // 임시 객체 생성을 위한 생성자
+    public Member(int memberId, String nickname, String email) {
+        this.memberId = memberId;
+        this.nickname = nickname;
+        this.email = email;
+    }
 
-	public int getMemberId() {
-		return memberId;
-	}
+    // ID와 닉네임으로 생성하는 생성자
+    public Member(int memberId, String nickname) {
+        this.memberId = memberId;
+        this.nickname = nickname;
+    }
 
-	public void setMemberId(int memberId) {
-		this.memberId = memberId;
-	}
+    public int getMemberId() {
+        return memberId;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getNickname() {
-		return nickname;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
+    public String getNickname() {
+        return nickname;
+    }
 
-	public MemberGameStats getMemberGameStats() {
-		return memberGameStats;
-	}
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
-	public void setMemberGameStats(MemberGameStats memberGameStats) {
-		// 기존 관계를 정리
-		if (this.memberGameStats != null) {
-			this.memberGameStats.setMember(null);
-		}
-
-		this.memberGameStats = memberGameStats;
-
-		// 양방향 관계 설정
-		if (memberGameStats != null) {
-			memberGameStats.setMember(this);
-		}
-	}
-
-	@Override
-	public String toString() {
-		return "Member [memberId=" + memberId + ", email=" + email + ", password=" + password + ", nickname=" + nickname
-				+ ", memberGameStats=" + memberGameStats + "]";
-	}
+    @Override
+    public String toString() {
+        return "Member [memberId=" + memberId + ", email=" + email + ", password=" + password + ", nickname=" + nickname + "]";
+    }
 }

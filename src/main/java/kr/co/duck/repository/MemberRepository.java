@@ -21,12 +21,19 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     // 닉네임 중복 확인
     boolean existsByNickname(String nickname);
-}
-
+    
+    // sender(닉네임)로 memberId 조회
+    default Optional<Integer> getMemberIdBySender(String sender) {
+        return findByNickname(sender).map(Member::getMemberId);
+    }
+    
 
 	// Optional: 카카오 ID로 회원 조회 (필요 시 주석 해제)
 	// Optional<Member> findByKakaoId(int kakaoId);
 
 	// Optional: 카카오 ID 중복 확인 (필요 시 주석 해제)
 	// boolean existsByKakaoId(int kakaoId);
+
+}
+
 
