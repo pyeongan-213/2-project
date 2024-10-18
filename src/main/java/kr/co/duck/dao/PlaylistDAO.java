@@ -8,9 +8,12 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.data.jpa.repository.Query;
 
 import kr.co.duck.beans.MusicBean;
 import kr.co.duck.beans.PlaylistBean;
+import kr.co.duck.domain.Music;
+import kr.co.duck.domain.Playlist;
 
 @Mapper
 public interface PlaylistDAO {
@@ -20,19 +23,32 @@ public interface PlaylistDAO {
             + "VALUES (playlist_seq.NEXTVAL, #{playlistName}, #{memberId}, SYSDATE)")
     void insertPlaylist(PlaylistBean playlist);
 
-    // member_id로 플레이리스트 조회
+ // member_id로 해당 회원의 플레이리스트 목록을 조회
     @Select("SELECT PLAYLIST_ID, PLAYLISTNAME FROM PLAYLIST WHERE MEMBER_ID = #{memberId}")
-    List<PlaylistBean> getPlaylistsByMemberId(int memberId);
+    List<Playlist> getPlaylistsByMemberId(@Param("memberId") int memberId);
+
+ // member_id로 플레이리스트 조회
+ 	@Select("SELECT PLAYLIST_ID, PLAYLISTNAME FROM PLAYLIST WHERE MEMBER_ID = #{memberId}")
+ 	List<PlaylistBean> getPlaylistsBeanByMemberId(int memberId);
 
     // 모든 플레이리스트 조회
     @Select("SELECT PLAYLIST_ID, PLAYLISTNAME FROM PLAYLIST")
     List<PlaylistBean> getAllPlaylists();
 
-    // 특정 플레이리스트의 음악 목록 조회
+    // 특정 플레이리스트에 속한 음악 목록을 조회
+    @Select("SELECT m.MUSIC_ID, m.MUSIC_NAME, m.ARTIST, m.VIDEOURL, m.THUMBNAILURL " +
+            "FROM MUSIC m " +
+            "JOIN PLAYLIST_MUSIC pm ON m.MUSIC_ID = pm.MUSIC_ID " +
+            "WHERE pm.PLAYLIST_ID = #{playlistId} " +
+            "ORDER BY pm.PLAYORDER")
+    List<Music> getMusicListByPlaylistId(@Param("playlistId") int playlistId);
+
+ // 특정 플레이리스트의 음악 목록 조회
     @Select("SELECT m.MUSIC_ID, m.MUSIC_NAME, m.ARTIST, m.VIDEOURL, m.THUMBNAILURL "
             + "FROM MUSIC m JOIN PLAYLIST_MUSIC pm ON m.MUSIC_ID = pm.MUSIC_ID "
             + "WHERE pm.PLAYLIST_ID = #{playlistId} ORDER BY pm.PLAYORDER")
-    List<MusicBean> getMusicListByPlaylistId(int playlistId);
+    List<MusicBean> getMusicBeanByPlaylistId(int playlistId);
+    
     
     // 플레이리스트에 음악 추가
     @Insert("INSERT INTO PLAYLIST_MUSIC (PLAYLIST_MUSIC_ID, PLAYLIST_ID, MUSIC_ID, MEMBER_ID, PLAYORDER) "
@@ -54,4 +70,9 @@ public interface PlaylistDAO {
     // 플레이리스트 삭제
     @Delete("DELETE FROM PLAYLIST WHERE PLAYLIST_ID = #{playlistId}")
     void deletePlaylist(int playlistId);
+    
+    
+    @Query("SELECT m FROM Music m JOIN Playlist_Music pm ON m.musicId = pm.musicId WHERE pm.playlist_Id = :playlist_Id")
+    List<Music> findMusicInPlaylist(@Param("playlistId") int playlistId);
+
 }

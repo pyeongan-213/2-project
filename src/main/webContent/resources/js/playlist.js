@@ -1,155 +1,210 @@
+let player;
+let isPlaying = false;
+let duration = 0;
 
-/*
-	When the bandcamp link is pressed, stop all propagation so AmplitudeJS doesn't
-	play the song.
-*/
-let bandcampLinks = document.getElementsByClassName('bandcamp-link');
+let currentPlayOrder = 1;  // 현재 재생 중인 순서 (처음엔 1로 초기화)
+const playlistId = 1;
 
-for( var i = 0; i < bandcampLinks.length; i++ ){
-	bandcampLinks[i].addEventListener('click', function(e){
-		e.stopPropagation();
+// YouTube Iframe API 로드 후 player 객체 생성
+function loadYouTubeIframeAPI() {
+	// YouTube API가 로드되었는지 확인
+	if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+		const tag = document.createElement('script');
+		tag.src = "https://www.youtube.com/iframe_api";
+		const firstScriptTag = document.getElementsByTagName('script')[0];
+		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+	} else {
+		// API가 이미 로드되었으면 플레이어를 초기화
+		onYouTubeIframeAPIReady();
+	}
+}
+
+// YouTube Iframe API 준비 함수
+function onYouTubeIframeAPIReady() {
+	if (typeof player !== 'undefined') {
+		player.destroy();  // 기존 플레이어 제거
+	}
+
+	player = new YT.Player('musicPlayer', {
+		events: {
+			'onReady': onPlayerReady,
+			'onStateChange': onPlayerStateChange
+		}
 	});
 }
 
+// 플레이어 준비 후 재생시간 및 이벤트 설정
+function onPlayerReady(event) {
+	duration = player.getDuration();
+	$('#durationTime').text(formatTime(duration));
 
-let songElements = document.getElementsByClassName('song');
-
-for( var i = 0; i < songElements.length; i++ ){
-	/*
-		Ensure that on mouseover, CSS styles don't get messed up for active songs.
-	*/
-	songElements[i].addEventListener('mouseover', function(){
-		this.style.backgroundColor = '#00A0FF';
-
-		this.querySelectorAll('.song-meta-data .song-title')[0].style.color = '#FFFFFF';
-		this.querySelectorAll('.song-meta-data .song-artist')[0].style.color = '#FFFFFF';
-
-		if( !this.classList.contains('amplitude-active-song-container') ){
-			this.querySelectorAll('.play-button-container')[0].style.display = 'block';
+	// 재생바 및 시간 업데이트
+	setInterval(() => {
+		if (isPlaying) {
+			const currentTime = player.getCurrentTime();
+			$('#currentTime').text(formatTime(currentTime));
+			$('#seekBar').val((currentTime / duration) * 100);
 		}
+	}, 1000);
 
-		this.querySelectorAll('img.bandcamp-grey')[0].style.display = 'none';
-		this.querySelectorAll('img.bandcamp-white')[0].style.display = 'block';
-		this.querySelectorAll('.song-duration')[0].style.color = '#FFFFFF';
+	// 이벤트가 매번 새로 등록되도록 off 후 다시 on
+	$('#playPauseBtn').off('click').on('click', function() {
+		if (isPlaying) {
+			player.pauseVideo();
+		} else {
+			player.playVideo();
+		}
+		isPlaying = !isPlaying;
+		updatePlayPauseIcon();
 	});
 
-	/*
-		Ensure that on mouseout, CSS styles don't get messed up for active songs.
-	*/
-	songElements[i].addEventListener('mouseout', function(){
-		this.style.backgroundColor = '#FFFFFF';
-		this.querySelectorAll('.song-meta-data .song-title')[0].style.color = '#272726';
-		this.querySelectorAll('.song-meta-data .song-artist')[0].style.color = '#607D8B';
-		this.querySelectorAll('.play-button-container')[0].style.display = 'none';
-		this.querySelectorAll('img.bandcamp-grey')[0].style.display = 'block';
-		this.querySelectorAll('img.bandcamp-white')[0].style.display = 'none';
-		this.querySelectorAll('.song-duration')[0].style.color = '#607D8B';
+	// 재생바 조작 시 비디오 이동
+	$('#seekBar').off('input').on('input', function() {
+		const seekToTime = (this.value / 100) * duration;
+		player.seekTo(seekToTime);
 	});
 
-	/*
-		Show and hide the play button container on the song when the song is clicked.
-	*/
-	songElements[i].addEventListener('click', function(){
-		this.querySelectorAll('.play-button-container')[0].style.display = 'none';
+	// 이전 곡으로 넘어가는 로직
+	$('#nextBtn').off('click').on('click', function() {
+		currentPlayOrder++;  // 재생 순서를 다음으로 증가
+		loadMusicByOrder(currentPlayOrder);  // 해당 순서의 곡을 로드
+	});
+
+	$('#prevBtn').off('click').on('click', function() {
+		if (currentPlayOrder > 1) {
+			currentPlayOrder--;  // 재생 순서를 이전으로 감소
+			loadMusicByOrder(currentPlayOrder);  // 해당 순서의 곡을 로드
+		} else {
+			alert('첫 번째 곡입니다. 더 이전 곡이 없습니다.');
+		}
+	});
+
+	// AJAX로 특정 순서의 곡을 로드하는 함수
+	function loadMusicByOrder(playOrder) {
+		$.ajax({
+			url: `/Project_2/musicPlayer/play/${playlistId}/${playOrder}`,  // 요청 URL
+			method: 'GET',
+			dataType: 'json',  // JSON 데이터 형식으로 요청
+			success: function(music) {
+				if (music) {
+					console.log(music);  // 데이터 확인용 로그
+
+					// 기존 iframe을 삭제
+					$('#musicPlayer').remove();
+
+					// 새로운 iframe을 동적으로 생성하여 추가
+					$('.player-wrapper').append(`
+                    <iframe id="musicPlayer" src="https://www.youtube.com/embed/${music.videoUrl}?enablejsapi=1&autoplay=1" 
+                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                `);
+
+					// 현재 곡 제목과 아티스트 정보 업데이트
+					$('#currentSongTitle').text(music.music_Name);
+					$('#currentArtist').text(music.artist);
+				}
+			},
+			error: function(err) {
+				alert('곡을 가져오는 데 오류가 발생했습니다.');
+				console.log(err);  // 에러 로그
+			}
+		});
+	}
+
+	$('#shuffleBtn').off('click').on('click', function() {
+		// 셔플 기능 로직 작성
 	});
 }
 
-/*
-	Initializes AmplitudeJS
-*/
-Amplitude.init({
-	"songs": [
-		{
-			"name": "Risin' High (feat Raashan Ahmad)",
-			"artist": "Ancient Astronauts",
-			"album": "We Are to Answer",
-			"url": "https://521dimensions.com/song/Ancient Astronauts - Risin' High (feat Raashan Ahmad).mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/we-are-to-answer.jpg"
-		},
-		{
-			"name": "The Gun",
-			"artist": "Lorn",
-			"album": "Ask The Dust",
-			"url": "https://521dimensions.com/song/08 The Gun.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/ask-the-dust.jpg"
-		},
-		{
-			"name": "Anvil",
-			"artist": "Lorn",
-			"album": "Anvil",
-			"url": "https://521dimensions.com/song/LORN - ANVIL.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/anvil.jpg"
-		},
-		{
-			"name": "I Came Running",
-			"artist": "Ancient Astronauts",
-			"album": "We Are to Answer",
-			"url": "https://521dimensions.com/song/ICameRunning-AncientAstronauts.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/we-are-to-answer.jpg"
-		},
-		{
-			"name": "First Snow",
-			"artist": "Emancipator",
-			"album": "Soon It Will Be Cold Enough",
-			"url": "https://521dimensions.com/song/FirstSnow-Emancipator.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/soon-it-will-be-cold-enough.jpg"
-		},
-		{
-			"name": "Terrain",
-			"artist": "pg.lost",
-			"album": "Key",
-			"url": "https://521dimensions.com/song/Terrain-pglost.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/key.jpg"
-		},
-		{
-			"name": "Vorel",
-			"artist": "Russian Circles",
-			"album": "Guidance",
-			"url": "https://521dimensions.com/song/Vorel-RussianCircles.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/guidance.jpg"
-		},
-		{
-			"name": "Intro / Sweet Glory",
-			"artist": "Jimkata",
-			"album": "Die Digital",
-			"url": "https://521dimensions.com/song/IntroSweetGlory-Jimkata.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/die-digital.jpg"
-		},
-		{
-			"name": "Offcut #6",
-			"artist": "Little People",
-			"album": "We Are But Hunks of Wood Remixes",
-			"url": "https://521dimensions.com/song/Offcut6-LittlePeople.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/we-are-but-hunks-of-wood.jpg"
-		},
-		{
-			"name": "Dusk To Dawn",
-			"artist": "Emancipator",
-			"album": "Dusk To Dawn",
-			"url": "https://521dimensions.com/song/DuskToDawn-Emancipator.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/from-dusk-to-dawn.jpg"
-		},
-		{
-			"name": "Anthem",
-			"artist": "Emancipator",
-			"album": "Soon It Will Be Cold Enough",
-			"url": "https://521dimensions.com/song/Anthem-Emancipator.mp3",
-			"cover_art_url": "https://521dimensions.com/img/open-source/amplitudejs/album-art/soon-it-will-be-cold-enough.jpg"
-		}
-	],
-  "callbacks": {
-        'play': function(){
-            document.getElementById('album-art').style.visibility = 'hidden';
-            document.getElementById('large-visualization').style.visibility = 'visible';
-        },
+function updatePlayPauseIcon() {
+	if (isPlaying) {
+		$('#playPauseBtn i').removeClass('bi-play-fill').addClass('bi-pause-fill');
+	} else {
+		$('#playPauseBtn i').removeClass('bi-pause-fill').addClass('bi-play-fill');
+	}
+}
 
-        'pause': function(){
-            document.getElementById('album-art').style.visibility = 'visible';
-            document.getElementById('large-visualization').style.visibility = 'hidden';
-        }
-    },
-  waveforms: {
-    sample_rate: 50
-  }
+// 포맷 시간 함수 (초를 MM:SS 형식으로 변환)
+function formatTime(time) {
+	const minutes = Math.floor(time / 60);
+	const seconds = Math.floor(time % 60);
+	return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
+// 플레이어 상태 변경 이벤트 처리
+function onPlayerStateChange(event) {
+	if (event.data === YT.PlayerState.PLAYING) {
+		isPlaying = true;
+		duration = player.getDuration();
+		$('#durationTime').text(formatTime(duration));
+	} else {
+		isPlaying = false;
+	}
+}
+
+// 페이지가 로드될 때마다 YouTube Iframe API 및 이벤트 재등록
+$(document).ready(function() {
+	loadYouTubeIframeAPI();
 });
-document.getElementById('large-visualization').style.height = document.getElementById('album-art').offsetWidth + 'px';
+
+// AJAX 완료 시 이벤트 재등록
+$(document).on('ajaxComplete', function() {
+	loadYouTubeIframeAPI();
+});
+
+function loadVideo(videoUrl, musicName, playOrder) {
+	console.log("Video URL: " + videoUrl);
+	console.log("Music Name: " + musicName);
+	console.log("Play Order: " + playOrder);  // 클릭한 곡의 인덱스 확인
+
+	// currentPlayOrder 값을 클릭한 곡의 순서로 업데이트
+	currentPlayOrder = playOrder;
+
+	// iframe의 src 속성만 변경
+	$('#musicPlayer').attr('src', `https://www.youtube.com/embed/${videoUrl}?enablejsapi=1&autoplay=1`);
+
+	// 현재 곡 제목과 아티스트 정보 업데이트
+	$('#currentSongTitle').text(musicName);
+}
+// Sortable 설정
+let sortable = new Sortable(document.getElementById('playlist'), {
+    handle: '.drag-handle',  // 드래그할 수 있는 핸들 설정
+    animation: 150,  // 드래그할 때 애니메이션 효과
+    onEnd: function (evt) {
+        let order = [];
+        $('#playlist tr').each(function(index, element) {
+            order.push($(element).data('id'));  // 각 곡의 ID 순서대로 배열에 추가
+        });
+
+        // AJAX로 새로운 순서를 서버에 전송
+        $.ajax({
+            url: '/Project_2/musicPlayer/updateOrder',  // 순서 업데이트 처리할 URL
+            method: 'POST',
+            data: { order: order },  // 새로운 순서를 전송
+            success: function(response) {
+                alert('플레이리스트 순서가 업데이트되었습니다.');
+            },
+            error: function(err) {
+                alert('순서 업데이트 중 오류가 발생했습니다.');
+                console.log(err);  // 에러 로그
+            }
+        });
+    }
+});
+
+// 곡 삭제 기능
+function deleteSong(musicId) {
+    if (confirm("정말 이 곡을 삭제하시겠습니까?")) {
+        $.ajax({
+            url: `/Project_2/musicPlayer/delete/${musicId}`,  // 삭제 요청 URL
+            method: 'POST',
+            success: function(response) {
+                alert('곡이 삭제되었습니다.');
+                location.reload();  // 페이지 새로고침으로 목록 업데이트
+            },
+            error: function(err) {
+                alert('곡을 삭제하는 중 오류가 발생했습니다.');
+                console.log(err);  // 에러 로그
+            }
+        });
+    }
+}

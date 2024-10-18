@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				<!-- 인기 아티스트 섹션 -->
 				<div class="section">
 					<div
-						style="display: flex; justify-content: space-between; align-items: center;">
+						style="display: flex; justify-content: space-between; align-items: center; postion:sticky;">
 						<h2 class="section-artist">인기 아티스트</h2>
 						<%-- <a href="${root}/artists/all" class="see-all-link">모두 표시</a> --%>
 					</div>
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 					<hr />
 					<div
-						style="display: flex; justify-content: space-between; align-items: center;">
+						style="display: flex; justify-content: space-between; align-items: center; postion:sticky;" >
 						<h2 class="section-title">인기 앨범</h2>
 						<%-- <a href="${root}/artists/all" class="see-all-link">모두 표시</a> --%>
 					</div>

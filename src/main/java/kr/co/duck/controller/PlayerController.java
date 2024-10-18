@@ -1,43 +1,56 @@
 package kr.co.duck.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import kr.co.duck.beans.MemberBean;
-import kr.co.duck.beans.MusicBean;
-import kr.co.duck.beans.PlaylistBean;
-import kr.co.duck.dao.MusicDAO;
-import kr.co.duck.dao.PlaylistDAO;
+import kr.co.duck.domain.Music;
+import kr.co.duck.domain.Playlist;
+import kr.co.duck.service.PlayerService;
 
 @Controller
 public class PlayerController {
 
-    @Autowired
-    private PlaylistDAO playlistDAO;
+	@Autowired
+	private PlayerService playerService;
 
-    @Autowired
-    private MusicDAO musicDAO;
+	// 회원의 플레이리스트 목록을 가져와서 보여줌
+	@GetMapping("/playlist/selectPlaylist")
+	public String selectPlaylist(Model model, HttpSession session) {
+	    // 세션에서 loginMemberBean을 가져옴
+	    MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
 
-    // 모든 플레이리스트를 보여줌
-    @GetMapping("/playlists")
-    public String showAllPlaylists(Model model, @SessionAttribute("loginMemberBean") MemberBean loginMember) {
-        int memberId = loginMember.getMember_id();
-        List<PlaylistBean> playlists = playlistDAO.getPlaylistsByMemberId(memberId);
-        model.addAttribute("playlists", playlists);
-        return "playlist";  // playlist.jsp 파일을 렌더링
-    }
+	    // 만약 세션에 로그인된 회원 정보가 없는 경우 처리
+	    if (member == null) {
+	        return "redirect:/login"; // 로그인 페이지로 리다이렉트
+	    }
 
-    // 특정 플레이리스트에 속한 음악 목록을 보여줌
-    @GetMapping("/playlist/{playlistId}")
-    public String showPlaylist(@PathVariable int playlistId, Model model) {
-        List<MusicBean> musicList = playlistDAO.getMusicListByPlaylistId(playlistId);
-        model.addAttribute("musicList", musicList);
-        return "playlist";  // 같은 JSP 파일에서 음악 목록을 동적으로 표시
-    }
+	    // memberId를 사용하여 플레이리스트 가져오기
+	    int memberId = member.getMember_id();
+	    List<Playlist> playlists = playerService.getPlaylistsByMemberId(memberId);
+	    model.addAttribute("playlists", playlists); // 플레이리스트 목록을 모델에 추가
+	    System.out.println(playlists);
+	    return "playlist/selectPlaylist"; // selectPlaylist.jsp로 이동
+	}
+
+	// 특정 플레이리스트의 음악 목록을 표시
+	@GetMapping("/playlist/playlist")
+	public String showPlaylist(Model model, @RequestParam("playlistId") int playlistId, HttpSession session) {
+		List<Music> musicList = playerService.getMusicListByPlaylistId(playlistId);
+		MemberBean member = (MemberBean) session.getAttribute("loginMemberBean");
+		if (member == null)
+			return "redirect:/login"; // 로그인하지 않은 경우 리다이렉트 }
+
+		model.addAttribute("musicList", musicList); // 음악 목록을 모델에 추가
+		model.addAttribute("playlistId", playlistId); // 현재 플레이리스트 ID도 전달
+		return "playlist/playlist"; // playlist.jsp로 이동
+	}
+	
+	
 }
