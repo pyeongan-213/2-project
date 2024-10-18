@@ -2,6 +2,7 @@ package kr.co.duck.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -27,4 +28,9 @@ public interface MusicPlayerDAO {
             "WHERE pm.PLAYLIST_ID = #{playlistId} " +
             "ORDER BY pm.PLAYORDER")
     List<Music> getAllMusicInPlaylist(@Param("playlistId") int playlistId);
+
+
+    // 곡 삭제 메서드
+    @Delete("DELETE FROM music WHERE music_id = #{musicId}")
+    void deleteMusicById(@Param("musicId") int musicId);
 }

@@ -65,6 +65,11 @@ function onPlayerReady(event) {
 	});
 
 	// 이전 곡으로 넘어가는 로직
+	$('#nextBtn').off('click').on('click', function() {
+		currentPlayOrder++;  // 재생 순서를 다음으로 증가
+		loadMusicByOrder(currentPlayOrder);  // 해당 순서의 곡을 로드
+	});
+
 	$('#prevBtn').off('click').on('click', function() {
 		if (currentPlayOrder > 1) {
 			currentPlayOrder--;  // 재생 순서를 이전으로 감소
@@ -72,12 +77,6 @@ function onPlayerReady(event) {
 		} else {
 			alert('첫 번째 곡입니다. 더 이전 곡이 없습니다.');
 		}
-	});
-
-	// 다음 곡으로 넘어가는 로직
-	$('#nextBtn').off('click').on('click', function() {
-		currentPlayOrder++;  // 재생 순서를 다음으로 증가
-		loadMusicByOrder(currentPlayOrder);  // 해당 순서의 곡을 로드
 	});
 
 	// AJAX로 특정 순서의 곡을 로드하는 함수
@@ -152,14 +151,60 @@ $(document).on('ajaxComplete', function() {
 	loadYouTubeIframeAPI();
 });
 
-function loadVideo(videoUrl, musicName, artist) {
-    console.log("Video URL: " + videoUrl);  // 호출 확인용 로그
+function loadVideo(videoUrl, musicName, playOrder) {
+	console.log("Video URL: " + videoUrl);
+	console.log("Music Name: " + musicName);
+	console.log("Play Order: " + playOrder);  // 클릭한 곡의 인덱스 확인
 
-    // iframe의 src 속성만 변경
-    $('#musicPlayer').attr('src', `https://www.youtube.com/embed/${videoUrl}?enablejsapi=1&autoplay=1`);
+	// currentPlayOrder 값을 클릭한 곡의 순서로 업데이트
+	currentPlayOrder = playOrder;
 
-    // 현재 곡 제목과 아티스트 정보 업데이트
-    $('#currentSongTitle').text(musicName);
-    $('#currentArtist').text(artist);
+	// iframe의 src 속성만 변경
+	$('#musicPlayer').attr('src', `https://www.youtube.com/embed/${videoUrl}?enablejsapi=1&autoplay=1`);
+
+	// 현재 곡 제목과 아티스트 정보 업데이트
+	$('#currentSongTitle').text(musicName);
 }
+// Sortable 설정
+let sortable = new Sortable(document.getElementById('playlist'), {
+    handle: '.drag-handle',  // 드래그할 수 있는 핸들 설정
+    animation: 150,  // 드래그할 때 애니메이션 효과
+    onEnd: function (evt) {
+        let order = [];
+        $('#playlist tr').each(function(index, element) {
+            order.push($(element).data('id'));  // 각 곡의 ID 순서대로 배열에 추가
+        });
 
+        // AJAX로 새로운 순서를 서버에 전송
+        $.ajax({
+            url: '/Project_2/musicPlayer/updateOrder',  // 순서 업데이트 처리할 URL
+            method: 'POST',
+            data: { order: order },  // 새로운 순서를 전송
+            success: function(response) {
+                alert('플레이리스트 순서가 업데이트되었습니다.');
+            },
+            error: function(err) {
+                alert('순서 업데이트 중 오류가 발생했습니다.');
+                console.log(err);  // 에러 로그
+            }
+        });
+    }
+});
+
+// 곡 삭제 기능
+function deleteSong(musicId) {
+    if (confirm("정말 이 곡을 삭제하시겠습니까?")) {
+        $.ajax({
+            url: `/Project_2/musicPlayer/delete/${musicId}`,  // 삭제 요청 URL
+            method: 'POST',
+            success: function(response) {
+                alert('곡이 삭제되었습니다.');
+                location.reload();  // 페이지 새로고침으로 목록 업데이트
+            },
+            error: function(err) {
+                alert('곡을 삭제하는 중 오류가 발생했습니다.');
+                console.log(err);  // 에러 로그
+            }
+        });
+    }
+}

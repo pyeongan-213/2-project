@@ -26,6 +26,9 @@
 	rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
+<!-- Sortable.js CDN 추가 -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <!-- YouTube Iframe API 추가 -->
 </head>
 
@@ -66,7 +69,7 @@
 							<i class="bi bi-skip-backward-fill"></i>
 						</button>
 						<button id="playPauseBtn">
-							<i class="bi bi-play-fill"></i>
+							<i class="bi bi-pause-fill"></i>
 						</button>
 						<button id="nextBtn">
 							<i class="bi bi-skip-forward-fill"></i>
@@ -81,29 +84,39 @@
 
 		<!-- 오른쪽: 플레이리스트 -->
 		<div class="playlist-container">
-			<h3>플레이리스트</h3>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>곡 이름</th>
-						<th>아티스트</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="music" items="${musicList}">
-						<tr>
-							<td>
-								<!-- 곡 클릭 시 JavaScript로 iframe src를 동적으로 변경 --> <a
-								href="javascript:void(0);"
-								onclick="loadVideo('${music.videoUrl}', '${music.music_Name}', '${music.artist}')">
-									${music.music_Name} </a>
-							</td>
-							<td>${music.artist}</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-		</div>
+    <h3>플레이리스트</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>순서</th>
+                <th>제목</th>
+                <th>-</th>
+            </tr>
+        </thead>
+        <tbody id="playlist">
+            <c:forEach var="music" items="${musicList}" varStatus="status">
+                <tr data-id="${music.music_Id}">
+                    <td>
+                        <!-- 드래그 핸들 추가 -->
+                        <i class="bi bi-grip-vertical drag-handle" style="cursor: move;"></i>
+                    </td>
+                    <td>
+                        <!-- 곡 클릭 시 JavaScript로 iframe src를 동적으로 변경 -->
+                        <a href="javascript:void(0);" 
+                           onclick="loadVideo('${music.videoUrl}', '${music.music_Name}', ${status.index})">
+                           ${music.music_Name}
+                        </a>
+                    </td>
+                    <td>
+                        <!-- 곡 삭제 버튼 추가 -->
+                        <button onclick="deleteSong(${music.music_Id})" class="btn btn-danger">삭제</button>
+                    </td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+</div>
+
 	</div>
 
 
