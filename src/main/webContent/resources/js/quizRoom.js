@@ -12,9 +12,8 @@ let isStoppedByUser = false;  // 사용자가 음악을 중지했는지 여부
 const roomName = '방 이름';
 let currentUserNickname = window.currentUserNickname || "유저";  // JSP에서 전달된 닉네임을 사용, 없으면 기본값
 let currentUserId = window.currentUserId || 1;  // JSP에서 전달된 ID를 사용, 없으면 기본값
-let isSubscribedToQuiz = false;  // 퀴즈 구독 상태 추적 변수
-let isSubscribedToChat = false;  // 채팅 구독 상태 추적 변수
-let isSubscribedToPlayers = false;  // 플레이어 목록 구독 상태 추적 변수
+let chatSubscription;  // 구독을 추적할 변수
+
 
 // 효과음 객체 생성
 const correctAnswerSound = new Audio(`${root}/audio/correct_answer.mp3`);  
@@ -135,27 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     maximizeButton.addEventListener('click', toggleTooltip);
 });
 
-// **채팅 메시지 화면에 표시**
-function displayChatMessage(sender, message) {
-    const chatMessages = document.getElementById('chat-messages');
-    const messageElement = document.createElement('p');
-
-    // 메시지가 유효할 경우 출력
-    if (!message) {
-        console.error("채팅 메시지 내용이 없습니다:", message);
-        return;
-    }
-
-    messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-    chatMessages.appendChild(messageElement);
-
-    // 너무 많은 메시지가 쌓일 경우 제거
-    const MAX_CHAT_MESSAGES = 14;
-    while (chatMessages.children.length > MAX_CHAT_MESSAGES) {
-        chatMessages.removeChild(chatMessages.firstChild);
-    }
-}
-
 // **채팅 구독 및 처리**
 function connectWebSocket() {
     if (stompClient && stompClient.connected) {
@@ -169,21 +147,17 @@ function connectWebSocket() {
     stompClient.connect({}, (frame) => {
         console.log('WebSocket 연결 성공:', frame);
 
-        // **채팅 구독**
-        if (!isSubscribedToChat) {
+        // **채팅 구독 - 중복 구독 방지**
+        if (!chatSubscription) {  // 구독이 설정되지 않았을 때만 구독 설정
             chatSubscription = stompClient.subscribe(`/sub/chat/${roomId}`, (message) => {
                 const chat = JSON.parse(message.body);
                 console.log("채팅 수신 - 메시지 구조 확인:", chat);
 
-                if (chat.sender === currentUserId) {
-                    console.log("본인이 보낸 메시지이므로 무시합니다.");
-                    return;  // 본인이 보낸 메시지라면 아무 처리도 하지 않음
-                }
-
                 // 다른 사용자가 보낸 메시지 처리
                 displayChatMessage(chat.sender, chat.message);
             });
-            isSubscribedToChat = true;  // 구독 상태 업데이트
+				
+            console.log("새로운 채팅 구독 설정됨");
         }
 
     }, (error) => {
@@ -192,7 +166,7 @@ function connectWebSocket() {
     });
 }
 
-// WebSocket 연결 시도
+// WebSocket 연결
 connectWebSocket();
 
 // **게임 시작 함수**
@@ -282,25 +256,6 @@ function processChatMessage(sender, content) {
 
    // 일반 채팅 메시지만 저장
     saveChatMessage(roomId, currentUserId, message);
-}
-function skipQuiz(sender) {
-    console.log(`${sender}님이 문제를 스킵했습니다.`);
-
-    // 타이머가 작동 중이라면 종료합니다.
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null; // 타이머 초기화
-    }
-
-    // 스킵 알림 메시지 전송
-    stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
-        sender: '시스템',
-        content: `${sender}님이 문제를 스킵했습니다. 다음 문제로 이동합니다!`
-    }));
-
-    hideAnswerInfo();
-    hideHint();
-    startQuiz(); // 즉시 다음 퀴즈 시작
 }
 
 // **힌트 표시 함수**
@@ -466,13 +421,6 @@ function displayChatMessage(sender, message) {
     }
 }
 
-
-
-document.getElementById('send-chat-btn').addEventListener('click', sendMessage);
-document.getElementById('chat-input').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') sendMessage();
-});
-
 // **채팅 저장 함수**
 async function saveChatMessage(roomId, memberId, message) {
     try {
@@ -501,15 +449,14 @@ async function saveChatMessage(roomId, memberId, message) {
         return false;
     }
 }
-
+let isSendingMessage = false;  // 전역 변수로 선언하여 메시지 전송 상태 관리
 // 메시지 전송 함수에서 연결 여부 확인
 async function sendMessage() {
-    let isSendingMessage = false;  // 함수 내에서 지역 변수로 선언
     const chatInput = document.getElementById('chat-input');
     const message = chatInput.value.trim();  // 메시지를 입력받아 공백 제거 후 저장
 
     if (!message || isSendingMessage) {
-        console.log("메시지 전송 중복 방지 또는 메시지 없음");
+	
         return;  // 메시지가 없거나 이미 전송 중이면 중복 전송 방지
     }
 
@@ -527,8 +474,6 @@ async function sendMessage() {
         // 메시지 전송 후 DB에 저장
         await saveChatMessage(roomId, currentUserId, message);
 
-        // 채팅 메시지를 화면에 표시
-        displayChatMessage(currentUserNickname, message);
     } catch (error) {
         console.error("메시지 전송 중 오류:", error);
     } finally {
@@ -542,24 +487,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendChatBtn = document.getElementById('send-chat-btn');
     const chatInput = document.getElementById('chat-input');
 
-    // 게임 시작 버튼에 대한 이벤트 리스너가 중복되지 않도록 먼저 제거 후 추가
+    // 게임 시작 버튼에 대한 이벤트 리스너 추가
     if (startQuizButton) {
-        startQuizButton.removeEventListener('click', startQuiz);  // 기존 리스너 제거
         startQuizButton.addEventListener('click', startQuiz);  // 새로운 리스너 추가
     }
 
-    // 채팅 전송 버튼에 대한 이벤트 리스너가 중복되지 않도록 먼저 제거 후 추가
+    // 채팅 전송 버튼에 대한 이벤트 리스너 추가
     if (sendChatBtn) {
-        sendChatBtn.removeEventListener('click', sendMessage);  // 기존 리스너 제거
         sendChatBtn.addEventListener('click', sendMessage);  // 새로운 리스너 추가
     }
 
-    // 채팅 입력창에서 'Enter' 키를 눌렀을 때의 이벤트 리스너가 중복되지 않도록 처리
+    // 채팅 입력창에서 'Enter' 키를 눌렀을 때의 이벤트 리스너 추가
     if (chatInput) {
-        chatInput.removeEventListener('keydown', handleChatInput);  // 기존 리스너 제거
         chatInput.addEventListener('keydown', handleChatInput);  // 새로운 리스너 추가
     }
 });
+
 
 // 채팅 입력에서 'Enter' 키를 눌렀을 때 실행될 핸들러 함수 분리
 function handleChatInput(event) {

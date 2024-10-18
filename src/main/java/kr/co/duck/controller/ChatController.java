@@ -40,18 +40,18 @@ public class ChatController {
         messagingTemplate.convertAndSend("/sub/chat/" + roomId, message);
     }
 
-    // 카메라 제어 메시지 처리 (제네릭 타입 명시: ChatMessage<String>)
-    @MessageMapping("/chat/camera/{roomId}")
-    public void cameraControl(@DestinationVariable int roomId, ChatMessage<String> message) {
-        log.info("Received camera control message for room {}: {}", roomId, message);
-
-        // 카메라 제어 서비스 호출
-        chatService.cameraControl(message);
-
-        // 제어 상태를 구독 경로로 브로드캐스트
-        messagingTemplate.convertAndSend("/sub/chat/camera/" + roomId, message);
-    }
-    
+	/*
+	 * // 카메라 제어 메시지 처리 (제네릭 타입 명시: ChatMessage<String>)
+	 * 
+	 * @MessageMapping("/chat/camera/{roomId}") public void
+	 * cameraControl(@DestinationVariable int roomId, ChatMessage<String> message) {
+	 * log.info("Received camera control message for room {}: {}", roomId, message);
+	 * 
+	 * // 카메라 제어 서비스 호출 chatService.cameraControl(message);
+	 * 
+	 * // 제어 상태를 구독 경로로 브로드캐스트 messagingTemplate.convertAndSend("/sub/chat/camera/"
+	 * + roomId, message); }
+	 */
     
     @PostMapping("/saveChat")
     public ResponseEntity<?> saveChatMessage(@RequestBody Map<String, Object> chatData) {

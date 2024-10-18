@@ -170,14 +170,6 @@ public class ChatService {
             chatRepository.save(chat);  // 채팅 메시지 DB에 저장
             log.info("채팅 저장 성공");
 
-            // WebSocket을 통해 방의 모든 사용자에게 채팅 메시지 전송
-            ChatMessage<String> chatMessage = new ChatMessage<>();
-            chatMessage.setRoomId(String.valueOf(room_Id));
-            chatMessage.setSender(String.valueOf(member_Id));  // 닉네임 대신 memberId 사용
-            chatMessage.setMessage(content);
-
-            sendingOperations.convertAndSend("/sub/chat/" + room_Id, chatMessage);  // WebSocket으로 메시지 브로드캐스트
-            log.info("WebSocket으로 채팅 메시지 전송: {}", chatMessage);
 
         } catch (Exception e) {
             log.error("채팅 저장 중 오류 발생: {}", e.getMessage(), e);
