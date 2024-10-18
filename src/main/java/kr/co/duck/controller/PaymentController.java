@@ -13,42 +13,40 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
-	
-	
-	@Resource(name = "loginMemberBean")
-	private MemberBean loginMemberBean;
-	
 
     @Autowired
     private PaymentService paymentService;
 
-    // ���� ���� ����
+    @Resource(name = "loginMemberBean")
+   private MemberBean loginMemberBean;
+    
+    //               
     @PostMapping("/add")
     public String addPayment(@RequestBody Payment payment) {
         paymentService.insertPayment(payment);
         return "Payment added successfully!";
     }
 
-    // Ư�� ���� ���� ��ȸ
+    // Ư               ȸ
     @GetMapping("/{paymentId}")
     public Payment getPayment(@PathVariable int paymentId) {
         return paymentService.getPayment(paymentId);
     }
 
-    // ��� ���� ���� ��ȸ
+    //                 ȸ
     @GetMapping("/all")
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();
     }
 
-    // ���� ���� ������Ʈ
+    //                 Ʈ
     @PutMapping("/update")
     public String updatePayment(@RequestBody Payment payment) {
         paymentService.updatePayment(payment);
         return "Payment updated successfully!";
     }
 
-    // ���� ���� ����
+    //               
     @DeleteMapping("/delete/{paymentId}")
     public String deletePayment(@PathVariable int paymentId) {
         paymentService.deletePayment(paymentId);
