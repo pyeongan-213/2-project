@@ -91,6 +91,10 @@
     border-color: #6c5ecf;
 }
 
+.join-btn {
+	color: #fff; /* 흰색 글씨 */
+    text-decoration: none; /* 밑줄 제거 */
+}
 
 /* 닉네임 드롭다운 컨테이너 */
 .dropdown {

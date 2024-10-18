@@ -166,3 +166,8 @@ form:errors {
 .search-icon {
     top: 14px !important;
 }
+
+.join-btn {
+	font-size: 16px;
+	font-weight: normal;
+}

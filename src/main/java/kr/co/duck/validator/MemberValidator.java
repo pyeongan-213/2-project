@@ -18,7 +18,7 @@ public class MemberValidator implements Validator{
 		MemberBean memberBean = (MemberBean) target;
 		
 		String beanName = errors.getObjectName();
-		System.out.println(beanName);
+		//System.out.println(beanName);
 
 		if (beanName.equals("modifyMemberBean")) {
 			if (memberBean.getAuthCode1() != null) {
