@@ -30,7 +30,7 @@ public class QuizCommand {
 		if (quizRoom.getQuizRoomType() == null || quizRoom.getQuizRoomType().isBlank()) {
 			System.out.println("[ERROR] QuizRoom 엔티티에 quizRoomType이 설정되지 않았습니다.");
 		} else {
-			System.out.println("[INFO] QuizRoom 저장: " + quizRoom);
+			//System.out.println("[INFO] QuizRoom 저장: " + quizRoom);
 		}
 		quizRoomRepository.save(quizRoom);
 	}

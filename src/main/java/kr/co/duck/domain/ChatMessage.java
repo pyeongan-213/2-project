@@ -18,7 +18,7 @@ public class ChatMessage<T> {
     private String type;       // 메시지 타입
     private String roomId;     // 방 번호
     private String sender;     // 메시지 보낸 사람
-    private String message;    // 메시지 내용
+    private T message;    // 메시지 내용
     private String nickname;   // 닉네임
 
     // 시그널링용 필드 (WebRTC 연결 처리에 사용)
@@ -31,26 +31,34 @@ public class ChatMessage<T> {
     public ChatMessage() {
     }
 
-    // 모든 필드를 포함하는 생성자
-    public ChatMessage(String type, String roomId, String sender, String message, String nickname, 
-                       String offer, String ice, String candidate, String answer) {
-        this.type = type;
-        this.roomId = roomId;
-        this.sender = sender;
-        this.message = message;
-        this.nickname = nickname;
-        this.offer = offer;
-        this.ice = ice;
-        this.candidate = candidate;
-        this.answer = answer;
-    }
+  
 
-    public ChatMessage(String sender, String message) {
+
+	public ChatMessage(String type, String roomId, String sender, T message, String nickname, String offer, String ice,
+			String candidate, String answer) {
+		super();
+		this.type = type;
+		this.roomId = roomId;
+		this.sender = sender;
+		this.message = message;
+		this.nickname = nickname;
+		this.offer = offer;
+		this.ice = ice;
+		this.candidate = candidate;
+		this.answer = answer;
+	}
+
+
+
+
+	public ChatMessage(String sender, T message) {
         this.sender = sender;
         this.message = message;
     }
     
     // Getter와 Setter 메서드
+    
+    
     public String getType() {
         return type;
     }
@@ -75,11 +83,11 @@ public class ChatMessage<T> {
         this.sender = sender;
     }
 
-    public String getMessage() {
+    public T getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(T message) {
         this.message = message;
     }
 

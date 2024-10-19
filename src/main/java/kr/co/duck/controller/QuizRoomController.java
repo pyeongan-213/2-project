@@ -118,6 +118,10 @@ public class QuizRoomController {
             QuizRoomBean createdRoom = quizRoomService.createRoom(quizRoomBean, loginMemberBean);
             response.put("success", true);
             response.put("roomId", createdRoom.getQuizRoomId());
+	
+            // 방 생성 후 자신도 포함된 플레이어 목록을 WebSocket으로 전송
+            sendRoomPlayersUpdate(createdRoom.getQuizRoomId());
+
             return ResponseEntity.ok(response);
         } catch (CustomException e) {
             response.put("success", false);
@@ -127,8 +131,6 @@ public class QuizRoomController {
     }
 
 
-
-    // **퀴즈방 참여 API**
     @PostMapping("/join")
     public ResponseEntity<Map<String, Object>> joinRoom(@RequestBody Map<String, Object> requestData, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
@@ -138,75 +140,73 @@ public class QuizRoomController {
         if (loginMemberBean == null || !loginMemberBean.isMemberLogin()) {
             response.put("success", false);
             response.put("message", "로그인 후 사용해 주세요.");
-            System.out.println("로그인 상태 확인 실패: 세션에서 로그인 정보 없음");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        } else {
-            System.out.println("로그인된 사용자: " + loginMemberBean.getNickname());
         }
 
         try {
-            // 요청 데이터 로그 추가
-            System.out.println("요청 데이터: " + requestData.toString());
-
-            // roomId 및 roomPassword 처리
+            // 요청 데이터에서 roomId 및 roomPassword 가져오기
             int roomId = Integer.parseInt(requestData.get("roomId").toString());
             String roomPassword = (String) requestData.getOrDefault("roomPassword", "");
-            System.out.println("방 ID: " + roomId + ", 입력된 비밀번호: " + roomPassword);
 
             // 방에 참가 시도
             quizRoomService.enterQuizRoom(roomId, loginMemberBean, roomPassword);
             response.put("success", true);
             response.put("roomId", roomId);
-            System.out.println("방 참여 성공: " + roomId);
 
             // 사용자가 방에 입장했음을 WebSocket으로 알림
             String joinMessage = loginMemberBean.getNickname() + "님이 참가하셨습니다.";
             messagingTemplate.convertAndSend("/sub/chat/" + roomId, new ChatMessage<String>("시스템", joinMessage));
-            System.out.println("방 입장 메시지 전송: " + joinMessage);
+
+            // 방의 모든 플레이어 목록을 가져옴 (자신 포함)
+            List<String> playerNicknames = quizRoomService.getAttendeesNicknamesByRoomId(roomId);
+            
+            // 방의 모든 플레이어에게 갱신된 목록을 WebSocket으로 전송
+            sendRoomPlayersUpdate(roomId);  // 기존 플레이어에게 목록 갱신
+
+            // **새로운 플레이어에게 방의 모든 플레이어 목록을 반환**
+            response.put("players", playerNicknames);  // 새로운 플레이어에게 목록 전달
 
             return ResponseEntity.ok(response);
 
-        } catch (CustomException e) {
-            // 예외 발생 시 로그 출력
-            System.out.println("방 참여 실패 - 예외 발생: " + e.getMessage());
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(e.getStatusCode().getHttpStatus()).body(response);
-
-        } catch (NumberFormatException e) {
-            // roomId 파싱 중 오류 발생 시 로그 출력
-            System.out.println("방 ID 파싱 오류: " + e.getMessage());
-            response.put("success", false);
-            response.put("message", "잘못된 방 ID입니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-
         } catch (Exception e) {
-            // 그 외 예상치 못한 오류 로그 출력
-            System.out.println("방 참여 중 예기치 않은 오류 발생: " + e.getMessage());
+            // 예외 발생 시 처리
             response.put("success", false);
             response.put("message", "방 참여 중 오류가 발생했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-
-
-    // **플레이어 닉네임 받아오는 API**
+ // 새로운 참가자가 방에 들어온 후 플레이어 목록을 다시 보내주는 메서드 추가
     @GetMapping("/{roomId}/players")
     public ResponseEntity<Map<String, Object>> getRoomPlayers(@PathVariable int roomId) {
+        Map<String, Object> response = new HashMap<>();
         try {
             List<String> playerNicknames = quizRoomService.getAttendeesNicknamesByRoomId(roomId);
-            Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("players", playerNicknames);
+            response.put("players", playerNicknames);  // 현재 방의 플레이어 목록 반환
             return ResponseEntity.ok(response);
-        } catch (CustomException e) {
-            Map<String, Object> response = new HashMap<>();
+        } catch (Exception e) {
             response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            response.put("message", "플레이어 목록을 가져오는 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+
+    public void sendRoomPlayersUpdate(int roomId) {
+        // 현재 방에 있는 모든 플레이어의 닉네임 목록을 가져옴
+        List<String> playerNicknames = quizRoomService.getAttendeesNicknamesByRoomId(roomId);
+        
+        // WebSocket을 통해 닉네임 목록을 전송
+        ChatMessage<List<String>> playerListMessage = new ChatMessage<>();
+        playerListMessage.setRoomId(String.valueOf(roomId));
+        playerListMessage.setType("PLAYER_LIST");  // 메시지 타입 설정
+        playerListMessage.setMessage(playerNicknames);  // 플레이어 목록을 메시지에 포함
+
+        // WebSocket으로 메시지 전송
+        messagingTemplate.convertAndSend("/sub/quizRoom/" + roomId + "/players", playerListMessage);
+    }
+
 
     @GetMapping("/{roomId}/start")
     public ResponseEntity<Map<String, Object>> quizStart(@PathVariable int roomId) {
@@ -248,6 +248,10 @@ public class QuizRoomController {
         try {
             int roomId = Integer.parseInt(requestData.get("roomId").toString());
             quizRoomService.roomExit(roomId, loginMemberBean);  // 방 나가기 처리
+
+            // 방의 모든 플레이어에게 갱신된 플레이어 목록 전송
+            sendRoomPlayersUpdate(roomId);  // 플레이어 목록 갱신
+
             response.put("success", true);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

@@ -582,13 +582,18 @@ a:hover span:nth-child(2):after {
 }
 
 
+/* 시스템 메시지에 마진 추가 */
 .system-chat-messages {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* 메시지를 아래쪽에 정렬 */
-    clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
+    justify-content: flex-end;
+    clear: both;
     padding: 8px 12px;
+    clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
+    display: block;  /* 블록 요소로 설정 */
     max-width: 100%;
-    margin-left: auto;  /* 오른쪽 정렬을 위해 auto로 설정 */
-    margin-bottom: -10px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
+    margin-left: auto;
+    margin-top: 66px; /* 위쪽 여백을 넉넉하게 추가 */
+    margin-bottom: 3px; /* 아래쪽 여백을 추가 */
+    
 }
