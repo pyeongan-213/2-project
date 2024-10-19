@@ -10,13 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.beans.QuizRoomBean;
 import kr.co.duck.beans.QuizRoomListBean;
+import kr.co.duck.domain.ChatMessage;
 import kr.co.duck.domain.QuizMusic;
 import kr.co.duck.service.QuizRoomService;
 import kr.co.duck.service.QuizService;
@@ -28,11 +35,13 @@ public class QuizRoomController {
 
     private final QuizRoomService quizRoomService;
     private final QuizService quizService;
+    private final SimpMessageSendingOperations messagingTemplate;  // messagingTemplate 추가
 
     @Autowired
-    public QuizRoomController(QuizRoomService quizRoomService, QuizService quizService) {
+    public QuizRoomController(QuizRoomService quizRoomService, QuizService quizService, SimpMessageSendingOperations messagingTemplate) {
         this.quizRoomService = quizRoomService;
         this.quizService = quizService;
+        this.messagingTemplate = messagingTemplate;  // messagingTemplate 주입
     }
 
     // **퀴즈방 전체 조회 API**
@@ -79,7 +88,6 @@ public class QuizRoomController {
     // **퀴즈방 생성 API**
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createRoom(@RequestBody QuizRoomBean quizRoomBean, HttpSession session) {
-    	 System.out.println("[INFO] 방 생성 요청: " + quizRoomBean);  // 생성된 방 정보 로그
     	Map<String, Object> response = new HashMap<>();
         MemberBean loginMemberBean = (MemberBean) session.getAttribute("loginMemberBean");
 
@@ -119,32 +127,69 @@ public class QuizRoomController {
     }
 
 
+
     // **퀴즈방 참여 API**
     @PostMapping("/join")
     public ResponseEntity<Map<String, Object>> joinRoom(@RequestBody Map<String, Object> requestData, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
-        MemberBean loginMemberBean = (MemberBean) session.getAttribute("loginMemberBean");
 
+        // 세션에서 로그인 상태 확인
+        MemberBean loginMemberBean = (MemberBean) session.getAttribute("loginMemberBean");
         if (loginMemberBean == null || !loginMemberBean.isMemberLogin()) {
             response.put("success", false);
             response.put("message", "로그인 후 사용해 주세요.");
+            System.out.println("로그인 상태 확인 실패: 세션에서 로그인 정보 없음");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        } else {
+            System.out.println("로그인된 사용자: " + loginMemberBean.getNickname());
         }
 
         try {
+            // 요청 데이터 로그 추가
+            System.out.println("요청 데이터: " + requestData.toString());
+
+            // roomId 및 roomPassword 처리
             int roomId = Integer.parseInt(requestData.get("roomId").toString());
             String roomPassword = (String) requestData.getOrDefault("roomPassword", "");
+            System.out.println("방 ID: " + roomId + ", 입력된 비밀번호: " + roomPassword);
 
+            // 방에 참가 시도
             quizRoomService.enterQuizRoom(roomId, loginMemberBean, roomPassword);
             response.put("success", true);
             response.put("roomId", roomId);
+            System.out.println("방 참여 성공: " + roomId);
+
+            // 사용자가 방에 입장했음을 WebSocket으로 알림
+            String joinMessage = loginMemberBean.getNickname() + "님이 참가하셨습니다.";
+            messagingTemplate.convertAndSend("/sub/chat/" + roomId, new ChatMessage<String>("시스템", joinMessage));
+            System.out.println("방 입장 메시지 전송: " + joinMessage);
+
             return ResponseEntity.ok(response);
+
         } catch (CustomException e) {
+            // 예외 발생 시 로그 출력
+            System.out.println("방 참여 실패 - 예외 발생: " + e.getMessage());
             response.put("success", false);
             response.put("message", e.getMessage());
             return ResponseEntity.status(e.getStatusCode().getHttpStatus()).body(response);
+
+        } catch (NumberFormatException e) {
+            // roomId 파싱 중 오류 발생 시 로그 출력
+            System.out.println("방 ID 파싱 오류: " + e.getMessage());
+            response.put("success", false);
+            response.put("message", "잘못된 방 ID입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        } catch (Exception e) {
+            // 그 외 예상치 못한 오류 로그 출력
+            System.out.println("방 참여 중 예기치 않은 오류 발생: " + e.getMessage());
+            response.put("success", false);
+            response.put("message", "방 참여 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+
 
     // **플레이어 닉네임 받아오는 API**
     @GetMapping("/{roomId}/players")
@@ -189,7 +234,6 @@ public class QuizRoomController {
 
 
 
-    // **퀴즈방 나가기 API**
     @PostMapping("/leave")
     public ResponseEntity<Map<String, Object>> leaveRoom(@RequestBody Map<String, Object> requestData, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
@@ -203,7 +247,7 @@ public class QuizRoomController {
 
         try {
             int roomId = Integer.parseInt(requestData.get("roomId").toString());
-            quizRoomService.roomExit(roomId, loginMemberBean);
+            quizRoomService.roomExit(roomId, loginMemberBean);  // 방 나가기 처리
             response.put("success", true);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

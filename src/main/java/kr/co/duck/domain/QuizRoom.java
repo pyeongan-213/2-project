@@ -1,10 +1,15 @@
 package kr.co.duck.domain;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -45,10 +50,22 @@ public class QuizRoom {
     @Column(name = "version")
     private Integer version;
     
-    // 기본 생성자
-    public QuizRoom() {}
+    @OneToMany(mappedBy = "quizRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<QuizRoomAttendee> attendees;  // 퀴즈방에 참여한 유저 목록 (QuizRoomAttendee를 통해 관리)
+
+    // Getter와 Setter
+    public List<QuizRoomAttendee> getAttendees() {
+        return attendees;
+    }
+
+    public void setAttendees(List<QuizRoomAttendee> attendees) {
+        this.attendees = attendees;
+    }
 
     
+    // 기본 생성자
+    public QuizRoom() {}
+ 
 	public QuizRoom(int quizRoomId, String quizRoomName, String quizRoomPassword, String owner, int status,
 			int memberCount, int maxCapacity, int maxMusic, String quizRoomType) {
 		super();

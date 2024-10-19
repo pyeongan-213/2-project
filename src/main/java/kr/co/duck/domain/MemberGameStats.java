@@ -1,6 +1,12 @@
 package kr.co.duck.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "MEMBER_GAME_STATS")
@@ -12,9 +18,8 @@ public class MemberGameStats {
     @Column(name = "STATS_ID")
     private int statsId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID", nullable = false)
-    private Member member;
+    @Column(name = "MEMBER_ID", nullable = false)
+    private int memberId;  // Member 객체 대신 int로 유지
 
     @Column(name = "WIN_NUM", nullable = false)
     private int winNum = 0;
@@ -41,11 +46,12 @@ public class MemberGameStats {
     public MemberGameStats() {
     }
 
-    // Member와 함께 초기화하는 생성자
-    public MemberGameStats(Member member) {
-        this.member = member;
+    // memberId로 초기화하는 생성자
+    public MemberGameStats(int memberId) {
+        this.memberId = memberId;
     }
 
+    // Getter와 Setter
     public int getStatsId() {
         return statsId;
     }
@@ -54,17 +60,12 @@ public class MemberGameStats {
         this.statsId = statsId;
     }
 
-    public Member getMember() {
-        return member;
+    public int getMemberId() {
+        return memberId;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-
-        // 양방향 연관 관계 설정
-        if (member != null && member.getMemberGameStats() != this) {
-            member.setMemberGameStats(this);
-        }
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
     }
 
     public int getWinNum() {
@@ -145,8 +146,16 @@ public class MemberGameStats {
 
     @Override
     public String toString() {
-        return "MemberGameStats{" + "statsId=" + statsId + ", member=" + (member != null ? member.getMemberId() : "null")
-                + ", winNum=" + winNum + ", loseNum=" + loseNum + ", totalGameNum=" + totalGameNum + ", enterGameNum="
-                + enterGameNum + ", soloExitNum=" + soloExitNum + ", makeRoomNum=" + makeRoomNum + ", playTime=" + playTime + '}';
+        return "MemberGameStats{" +
+                "statsId=" + statsId +
+                ", memberId=" + memberId +
+                ", winNum=" + winNum +
+                ", loseNum=" + loseNum +
+                ", totalGameNum=" + totalGameNum +
+                ", enterGameNum=" + enterGameNum +
+                ", soloExitNum=" + soloExitNum +
+                ", makeRoomNum=" + makeRoomNum +
+                ", playTime=" + playTime +
+                '}';
     }
 }
