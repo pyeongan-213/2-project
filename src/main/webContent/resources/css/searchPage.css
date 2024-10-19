@@ -1,0 +1,196 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+* {
+    outline: none;
+    box-sizing: border-box;
+    user-select: none; /* 모든 요소에서 드래그 방지 */
+}
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+:root {
+    --body-font: "Inter", sans-serif;
+    --theme-bg: #1f1d2b;
+    --body-color: #808191;
+    --button-bg: #353340;
+    --border-color: rgba(128, 129, 145, 0.24);
+    --video-bg: #252936;
+    --delay: 0s;
+}
+
+/* Base : 상단바 사이드바 하단바의 크기만큼 위치 이동 (필요하면 사용) */ 
+div#contentContainer{
+	margin-top : 60px;
+	margin-left : 245px;
+}
+
+
+
+/* Body 및 메인 스타일 */
+body {
+    font-family: var(--body-font);
+    color: var(--body-color);
+    background-color: #1E1E1E; /* 약간 밝은 어두운 배경 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Flex container로 사이드바와 메인 콘텐츠 설정 */
+.flex-container {
+    display: flex;
+    width: 100%;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+
+/* Main content 스타일 */
+.main-content {
+    margin-left: 80px;
+    flex-grow: 1;
+    background-color: var(--theme-bg);
+    padding: 40px;
+    overflow: auto;
+}
+
+/* 인기 아티스트 및 앨범 항목 */
+.artist, .album {
+    position: relative; /* 부모 요소를 relative로 설정 */
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 원형 이미지 설정 */
+.artist .artist-img {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+/* 앨범 이미지 설정 */
+.album .card-img-top {
+    width: 220px;
+    height: 220px;
+    border-radius: 10px; /* 약간의 둥근 모서리 유지 */
+}
+
+/* 인기 아티스트 및 앨범 그리드 레이아웃 */
+.artists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
+    gap: 20px; /* 항목 간 간격 */
+    justify-items: center; /* 그리드 항목 중앙 정렬 */
+    align-items: center;   /* 항목을 수직으로 중앙에 배치 */
+
+}
+
+.albums-grid {
+	margin-top : 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
+    gap: 20px; /* 항목 간 간격 */
+    justify-items: center; /* 그리드 항목 중앙 정렬 */
+    align-items: center;   /* 항목을 수직으로 중앙에 배치 */
+
+}
+/* 마우스 오버 시 확대 및 그림자 효과 */
+.artist:hover, .album:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* 재생 버튼 스타일 */
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background-color: #1db954;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin-top: 28px;
+    margin-left: 77px;
+}
+
+/* 마우스 올릴 때 재생 버튼이 나타남 */
+.artist:hover .play-button, .album:hover .play-button {
+    opacity: 0.95;
+}
+
+/* 모두 표시 링크 스타일 */
+.see-all-link {
+    color: #1db954; /* 기본 링크 색상 (녹색) */
+    font-size: 16px; /* 텍스트 크기 */
+    text-decoration: none; /* 밑줄 제거 */
+    font-weight: 500; /* 조금 두꺼운 텍스트 */
+    transition: color 0.3s ease, transform 0.3s ease; /* 애니메이션 효과 */
+}
+
+/* 마우스 오버 시 링크 효과 */
+.see-all-link:hover {
+    color: #fff; /* 마우스 오버 시 흰색으로 변경 */
+    transform: scale(1.1); /* 살짝 확대 */
+    text-decoration: underline; /* 밑줄 표시 */
+}
+
+/* 텍스트 중앙 정렬 */
+.artist-info, .card-body {
+    text-align: center;
+    color: #fff;
+    height: 90px;
+}
+
+/* 텍스트 스타일 */
+
+.main-header { 
+		margin-top : 0px;
+	color : #EEEEEE;
+	font-size:32px;
+	font-weight: bold;
+	
+	}
+
+h2 {
+	margin-left : 20px;
+	margin-top : 10px;
+	color : #EEEEEE;
+	font-size:26px;
+	font-weight: bold;
+}
+.section-artist {
+	margin-top : 35px;
+	color : #EEEEEE;
+	font-size:32px;
+	font-weight: bold;
+}
+
+.album-info  h5{
+	margin-top: 10px;
+	font-size : 12px;
+	color: #EEEEEE;
+	font-weight : bold; 
+	align-items: center;
+	text-align: center;
+}

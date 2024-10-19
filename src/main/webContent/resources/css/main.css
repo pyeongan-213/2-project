@@ -27,6 +27,14 @@ img {
     --delay: 0s;
 }
 
+/* Base : 상단바 사이드바 하단바의 크기만큼 위치 이동 (필요하면 사용) */ 
+div#contentContainer{
+	margin-top : 60px;
+	margin-left : 115px;
+}
+
+
+
 /* Body 및 메인 스타일 */
 body {
     font-family: var(--body-font);
@@ -46,68 +54,15 @@ body {
     flex-grow: 1;
     overflow: hidden;
 }
-/* 사이드바 구분선에 그림자 추가 */
-.sidebar {
-    width: 220px;
-    background-color: #121212;
-    height: 100vh;
-    position: fixed;
-    top: 60px;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: auto;
-    border-right: 1px solid #333;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* 빛나는 효과 */
-}
 
-/* 사이드바 내용 설정 */
-.sidebar .side-wrapper {
-    padding: 20px;
-    width: 100%;
-}
-
-.sidebar-header {
-    color: #fff;
-    font-size: 30px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.sidebar-link {
-    display: block;
-    color: #fff;
-    text-decoration: none;
-    margin: 10px 0;
-    font-size: 20px;
-    text-align: center;
-}
-
-.sidebar-link:hover {
-    color: #007bff;
-}
 
 /* Main content 스타일 */
 .main-content {
-    margin-left: 220px;
+    margin-left: 80px;
     flex-grow: 1;
     background-color: var(--theme-bg);
     padding: 40px;
     overflow: auto;
-}
-
-/* Main container */
-.container {
-    background-color: var(--theme-bg);
-    height: auto;
-    display: flex;
-    overflow: hidden;
-    border-radius: 20px;
-    font-size: 15px;
-    font-weight: 500;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
 /* 인기 아티스트 및 앨범 항목 */
@@ -119,42 +74,33 @@ body {
 
 /* 원형 이미지 설정 */
 .artist .artist-img {
-    width: 150px;
-    height: 150px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
     transition: transform 0.3s ease;
 }
-/* 인기 아티스트 그리드 레이아웃 */
-.artists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 한 줄에 여러 항목이 나오도록 설정 */
-    gap: 20px; /* 항목 간 간격 */
-}
 
-/* 인기 아티스트 그리드 레이아웃 */
-.artists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 한 줄에 여러 항목이 나오도록 설정 */
-    gap: 20px; /* 항목 간 간격 */
-}
 /* 앨범 이미지 설정 */
 .album .card-img-top {
-    width: 150px;
-    height: 150px;
+    width: 220px;
+    height: 220px;
     border-radius: 10px; /* 약간의 둥근 모서리 유지 */
 }
 
-/* 인기 앨범 그리드 레이아웃 */
-.albums-grid {
+/* 인기 아티스트 및 앨범 그리드 레이아웃 */
+.artists-grid, .albums-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 한 줄에 여러 항목이 나오도록 설정 */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 빈 자리 없이 동적으로 항목 배치 */
     gap: 20px; /* 항목 간 간격 */
+    justify-items: center; /* 그리드 항목 중앙 정렬 */
+    align-items: center;   /* 항목을 수직으로 중앙에 배치 */
+
 }
 
 /* 마우스 오버 시 확대 및 그림자 효과 */
 .artist:hover, .album:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* 재생 버튼 스타일 */
@@ -174,11 +120,13 @@ body {
     color: white;
     opacity: 0;
     transition: opacity 0.3s ease;
+    margin-top: 28px;
+    margin-left: 77px;
 }
 
 /* 마우스 올릴 때 재생 버튼이 나타남 */
 .artist:hover .play-button, .album:hover .play-button {
-    opacity: 1;
+    opacity: 0.95;
 }
 
 /* 모두 표시 링크 스타일 */
@@ -201,24 +149,95 @@ body {
 .artist-info, .card-body {
     text-align: center;
     color: #fff;
+    height: 90px;
 }
 
-/* Footer 스타일 */
-footer {
-    width: 100%;
-    padding: 20px 0;
-    background-color: #1f1d2b;
-    text-align: center;
+/* 텍스트 스타일 */
+.artist-info h5, .card-body h5 {
+	margin-top: 10px;
+	font-size : 20px;
+	font-weight : bold;
+}
+
+.artist-info p, .card-body p {
+	font-size : 11px;
+	margin-top: -30px;
+}
+
+
+
+.section-title {
+	margin-top : 10px;
+	color : #EEEEEE;
+	font-size:32px;
+	font-weight: bold;
+}
+.section-artist {
+	margin-top : 35px;
+	color : #EEEEEE;
+	font-size:32px;
+	font-weight: bold;
+}
+
+/* ----추가한 부분---- */
+/* 프리미엄 섹션 초기 상태 (완전히 숨김 상태에서 시작) */
+.premium-section {
+    background-color: #2C2C2E;  /* 어두운 회색 배경 */
     color: white;
-    position: relative;
-    bottom: 0;
-    clear: both;
-    margin-top: auto;
-    border-top: 1px solid #333;
+    padding: 10px 20px;
+    border-radius: 10px;  /* 상단과 하단 모두 둥글게 */
+    position: fixed;
+    bottom: -300px;  /* 화면 밖으로 완전히 숨기기 위해 더 큰 값을 사용 */
+    left: 0;
+    width: calc(100% - 40px);  /* 좌우 여백을 주기 위해 너비를 조정 */
+    margin: 0 20px;  /* 좌우에 20px 여백 */
+    z-index: 1000;
+    transition: transform 0.5s ease-in-out, bottom 0.5s ease-in-out;
+    transform: translateY(100%);  /* 화면에서 완전히 숨겨짐 */
 }
 
-footer p {
-    margin: 0;
+.premium-section.show {
+    transform: translateY(0);  /* 화면에 표시될 때 */
+    bottom: 10px;  /* 화면 하단에 여백 유지 */
+}
+
+/* 프리미엄 섹션 콘텐츠 레이아웃 */
+.premium-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    z-index : 3000;
+}
+
+.premium-text {
+    text-align: left;
     font-size: 14px;
-    color: #fff;
+    color: #d1d1d1;
+}
+
+.premium-text p {
+    margin: 5px 0;
+}
+
+/* 구독 버튼이 우측에 위치하도록 설정 */
+.premium-button-container {
+    margin-left: auto;
+}
+
+.premium-button {
+    background-color: #1db954;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 1.0s ease;
+}
+
+.premium-button:hover {
+    background-color: #1ed760;
+    color: white;
 }

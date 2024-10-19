@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #222222;
+    color: white;
+}
+
+div#contentContainer{
+	margin-top : 60px;
+	
+    margin-left: 80px;
+}
+
+
+.artist-info {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #1e1e1e;
+    min-height: 400px; /* 최소 높이 설정 */
+}
+
+.artist-photo {
+    position: absolute;
+    top: 35px;
+    left: 20px;
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.artist-details {
+    margin-left: 440px; /* 사진 크기 + 여백 */
+    max-width: 760px;
+    text-align: left; /* 왼쪽 정렬 */
+
+}
+
+.artist-name {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left; /* 이름 왼쪽 정렬 */
+}
+
+.artist-description {
+    font-size: 12px;
+    text-align: left; /* 설명 왼쪽 정렬 */
+}
+
+.album-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 30px;
+    justify-content: flex-start;
+}
+
+.album-item {
+    width: calc(16.66% - 20px);
+    text-align: center;
+}
+
+.album-art {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.album-name {
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+
+
+@media (max-width: 1200px) {
+    .album-item {
+        width: calc(20% - 20px); /* 한 줄에 5개 */
+    }
+}
+
+@media (max-width: 992px) {
+    .album-item {
+        width: calc(25% - 20px); /* 한 줄에 4개 */
+    }
+}
+
+@media (max-width: 768px) {
+    .album-item {
+        width: calc(33.33% - 20px); /* 한 줄에 3개 */
+    }
+}
+
+@media (max-width: 576px) {
+    .album-item {
+        width: calc(50% - 20px); /* 한 줄에 2개 */
+    }
+}
+
+@media (max-width: 400px) {
+    .album-item {
+        width: calc(100% - 20px); /* 한 줄에 1개 */
+    }
+}

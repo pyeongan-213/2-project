@@ -1,11 +1,17 @@
 package kr.co.duck.beans;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class ContentBean {
 
 	private int boardpost_id; //글 식별자
 	private int member_id; // member_id FK
+	@NotNull
 	private int board_id; // board_id FK
+	@NotBlank
 	private String content_title; //글 제목
+	@NotBlank
 	private String content_text; //글 내용(이미지 포함)
 	private int like_count; //좋아요 수
 	private String writedate; //글 게시일

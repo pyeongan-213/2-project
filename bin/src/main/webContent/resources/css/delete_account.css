@@ -1,0 +1,118 @@
+* {
+    box-sizing: border-box;
+}
+
+/* 전체 페이지 스타일 */
+body {
+    background-color: #191414; /* 배경색: 검정 */
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #fff; /* 기본 텍스트 색상 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 메인 탈퇴 폼 컨테이너 */
+.delete_container {
+    display: flex; /* Flex 속성을 추가하여 중앙 정렬 */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh; /* 세로 중앙 정렬을 위한 높이 설정 */
+    padding: 20px;
+}
+
+.wrapper {
+    max-width: 600px; /* 600px로 설정 */
+    width: 100%; /* 100% 너비 적용 */
+    background-color: #282828; /* 카드 배경: 어두운 회색 */
+    border-radius: 10px; /* 둥근 모서리 */
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    margin-top: 20px; /* 상단 메뉴와 간격 */
+    height: auto; /* 높이를 콘텐츠에 맞춤 */
+}
+
+h2 {
+    color: #1db954; /* 강조 색상 */
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+}
+
+/* 눈 아이콘의 위치 및 스타일 */
+.eyes {
+    position: absolute;
+    top: 35%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #ccc; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
+    font-size: 15px; /* 아이콘 크기 */
+    z-index: 10;
+}
+
+.input-group .form-control {
+    padding-right: 50px; /* 아이콘과의 간격을 위해 여백을 추가 */
+}
+
+/* 입력 필드 스타일 */
+label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #b3b3b3;
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="password"],
+input[type="text"] {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+input[type="password"]:focus,
+input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1DB954;
+}
+
+/* 버튼 스타일 */
+input[type="submit"] {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #1ed760;
+}
+
+/* 작은 화면 대응 */
+@media (max-width: 600px) {
+    .delete_container {
+        padding: 20px;
+        max-width: 90%;
+    }
+
+    .sidebar {
+        width: 150px;
+    }
+}

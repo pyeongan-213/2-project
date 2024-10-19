@@ -25,4 +25,11 @@ public class TempController {
 	public String testmodalUI() {
 		return "temp/modalUI";
 	}
+	
+
+	@GetMapping("/payment")
+	public String payment() {
+		return "temp/slide_popup";
+	}
+	
 }

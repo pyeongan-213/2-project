@@ -37,7 +37,7 @@ public class YouTubeService {
             // YouTube 검색 요청 구성
             YouTube.Search.List search = youtube.search().list("snippet");
             search.setKey(API_KEY);  // API 키 설정
-            search.setQ(query);  // 검색어 설정
+            search.setQ(query +"MV");  // 검색어 설정
             search.setType("video");  // 비디오만 검색
             search.setMaxResults(5L);  // 결과 개수 설정
 
@@ -53,12 +53,16 @@ public class YouTubeService {
             // 검색 결과를 MusicBean 리스트로 변환
             for (SearchResult result : results) {
                 MusicBean musicBean = new MusicBean();
-                musicBean.setMusicName(result.getSnippet().getTitle());
+                musicBean.setmusic_Name(result.getSnippet().getTitle());
                 musicBean.setArtist(result.getSnippet().getChannelTitle());
-                musicBean.setThumbnailUrl(result.getSnippet().getThumbnails().getDefault().getUrl());
+                String thumbnailUrl = result.getSnippet().getThumbnails().getDefault().getUrl();
+                thumbnailUrl = thumbnailUrl.replace("default.jpg", "maxresdefault.jpg");
+                
+                System.out.println(thumbnailUrl);
+                musicBean.setThumbnailUrl(thumbnailUrl);
                 musicBean.setVideoUrl("https://www.youtube.com/watch?v=" + result.getId().getVideoId());
 
-                System.out.println("검색 결과: " + musicBean.getMusicName() + " - " + musicBean.getArtist());
+                //System.out.println("검색 결과: " + musicBean.getmusic_Name() + " - " + musicBean.getArtist());
 
                 musicBeans.add(musicBean);
             }

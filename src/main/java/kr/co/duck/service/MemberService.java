@@ -44,6 +44,10 @@ public class MemberService {
 
 			loginMemberBean.setMember_id(tempLoginMemberBean2.getMember_id());			
 			loginMemberBean.setNickname(tempLoginMemberBean2.getNickname());
+			
+			//게시판에서 사용(해진 추가)
+			loginMemberBean.setReal_name(tempLoginMemberBean2.getReal_name());
+			loginMemberBean.setEmail(tempLoginMemberBean2.getEmail());
 
 			loginMemberBean.setMemberLogin(true);
 		}
@@ -116,6 +120,10 @@ public class MemberService {
 
     public Member findMemberById(int memberId) {
         return memberRepository.findById(memberId).orElse(null);
+    }
+    
+    public void modifyMemberPassword(String Password, String email) {
+    	memberDao.modifyMemberPassword(Password, email);
     }
 	
 }

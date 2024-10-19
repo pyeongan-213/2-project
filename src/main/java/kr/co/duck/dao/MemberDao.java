@@ -52,8 +52,8 @@ public class MemberDao {
 		return memberMapper.getMemberPassword(member_id);
 	}
 	
-	public void modifyMemberPassword(String password, int member_id) {
-		memberMapper.modifyMemberPassword(password, member_id);
+	public void modifyMemberPassword(String password, String email) {
+		memberMapper.modifyMemberPassword(password, email);
 	}
 	
 }

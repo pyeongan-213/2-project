@@ -1,6 +1,6 @@
 package kr.co.duck.service;
 
-import java.util.Random;
+import java.util.Random; 
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -49,4 +49,28 @@ public class MailSendService {
 		}
 	}
 
+	//게시판에서 문의하는 기능(해진 추가)
+	public void receiveEmail(String name, String email, String subject, String body) {
+		String from = email;
+		String toMail = "haejin001228@naver.com";
+		String title = subject;
+		String content = "보낸 사람 : " + name + "(" + email + ")<br>" + "<hr>" + body.replace("\n", "<br>");
+		mailReceive(from, toMail, title, content);
+	}
+	
+	//게시판에서 문의하는 기능(해진 추가)
+	public void mailReceive(String from, String toMail, String title, String content) {
+		MimeMessage message = mailSender.createMimeMessage();
+		try {
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
+			helper.setFrom(from);
+			helper.setTo(toMail);
+			helper.setSubject(title);
+
+			helper.setText(content, true);
+			mailSender.send(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

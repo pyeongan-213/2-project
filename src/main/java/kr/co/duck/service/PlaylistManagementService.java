@@ -33,11 +33,6 @@ public class PlaylistManagementService {
 		return playlistDAO.getAllPlaylists();
 	}
 
-	// 플레이리스트의 음악 목록 조회
-	public List<MusicBean> getMusicListForPlaylist(int playlistId) {
-		return playlistDAO.getMusicListByPlaylistId(playlistId);
-	}
-
 	// YouTube API를 통해 videoId로 음악 정보 가져오기
 	public MusicBean getSongByVideoId(String videoId) throws Exception {
 		return youtubeAPI.getSongByVideoId(videoId);
