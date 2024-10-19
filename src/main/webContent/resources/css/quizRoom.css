@@ -34,7 +34,7 @@ html, body {
 .player-list-container {
     position: absolute;
     top: 13%;  /* 세로 가운데 정렬 */
-    left: 21%; /* 가로 가운데 정렬 */
+    left: 12%; /* 가로 가운데 정렬 */
     transform: translate(-50%, -50%); /* 정중앙으로 이동 */
     height: 100px;
     width: 300px;
