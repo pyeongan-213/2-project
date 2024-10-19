@@ -14,7 +14,7 @@ public interface MemberMapper {
 	String checkMemberNameExist(String membername);
 
 	@Insert("insert into member values "
-			+ "(member_seq.nextval, #{membername}, #{password}, #{age}, #{email}, TO_CHAR(sysdate,'YYYY-MM-dd'), #{real_name}, 'User', #{nickname}, 'Duck 회원')")
+			+ "(member_seq.nextval, #{membername}, #{password}, #{age}, #{email}, TO_CHAR(sysdate,'YYYY-MM-dd'), #{real_name}, #{nickname}, 'Duck 회원')")
 	void addMemberInfo(MemberBean joinMemberBean);
 
 	//real_name, email(해진 추가)
@@ -26,7 +26,7 @@ public interface MemberMapper {
 	
 	// 구글 소셜 로그인정보 저장 //arg0:membername //arg1:password //arg2:email arg3:nickname 
 
-	@Insert("insert into member values(member_seq.nextval, #{arg0},#{arg1},'null',#{arg2},TO_CHAR(sysdate,'YYYY-MM-dd'),#{arg3},'User',#{arg3},'Google 회원')")
+	@Insert("insert into member values(member_seq.nextval, #{arg0},#{arg1},'null',#{arg2},TO_CHAR(sysdate,'YYYY-MM-dd'),#{arg3},#{arg3},'Google 회원')")
 	void addGoogleMemberInfo(String membername, String password, String email, String nickname);
 
 	@Select("select member_id, nickname from member where membername = #{arg0}")
