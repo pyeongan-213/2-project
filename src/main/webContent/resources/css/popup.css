@@ -3,7 +3,10 @@ html {
 }
 
 html, body {
-	height: 100%;
+	margin: 30px; /*페이지 전체에 20px의 여백 추가*/
+	/* border: 50px; */
+	/* padding: 40px; */
+	height: 120%;
 }
 
 body {
@@ -12,10 +15,13 @@ body {
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	background-image:
-		url("https://images.unsplash.com/photo-1445251836269-d158eaa028a6?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1951&q=80");
-	/* background-blend-mode: color-dodge; */
-	background-color: rgba(18, 21, 39, 0.86);
+	/* background-image 부분을 주석 처리 */
+	/* background-image: */
+	/* 	url("https://images.unsplash.com/photo-1445251836269-d158eaa028a6?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1951&q=80"); */
+	/* 주석처리 이유: 백그라운드 이미지를 사용하지 않고, 대신 백그라운드 컬러를 블랙으로 설정하기 위함 */
+	/* 배경색을 검정색(블랙)으로 변경 */
+	background-color: black; /* 배경을 검정색으로 설정함 */
+	/* 배경색이 어두워서 텍스트 가독성을 위해 백그라운드 이미지 대신 검정색 배경을 사용합니다 */
 }
 
 .title {
@@ -47,7 +53,145 @@ body {
 .btn-group button {
 	outline: 1px solid rgb(42.5, 122.0454545455, 255);
 	transform-origin: 50% 50%;
+	
+	
+	/* 버튼 크기 조정 */
+	padding: 50px; /* 버튼 안의 여백을 늘려 버튼을 더 크게 보이도록 설정 */
+	font-size: 1.2em; /* 폰트 크기를 키워서 버튼을 더 크게 보이도록 설정 */
+	width: 450px; /* 버튼의 너비를 키워서 더 크게 보이도록 설정 */
+	height: 350px; /* 버튼의 높이도 조정 */
+	
+	
+	/* 버튼 간격 설정 */
+	margin-right: 30px; /* 버튼 간격을 10px 추가 */
+	
+	
+	/* 폰트 스타일 추가: Arial과 볼드 처리 */
+	font-family: 'Arial', sans-serif; /* Arial 폰트로 설정 */
+	font-weight: bold; /* 글자 볼드 처리 */
+	
+	
+	/* 텍스트를 좌측 상단으로 이동시키기 위한 속성 추가 */
+	text-align: left; /* 텍스트를 왼쪽 정렬 */
+	/* padding-left: 10px; */ /* 왼쪽 여백 추가 */
+	/* padding-top: 10px; */ /* 상단 여백 추가 */
 }
+
+
+.btn-group {
+    display: flex;
+    gap: 20px; /* 버튼 사이의 간격 설정 */
+    justify-content: center;
+    flex-wrap: nonwrap; /* flex-wrap을 없애서 버튼이 가로로만 나열되도록 설정 */
+}
+
+.mocean-modal-button {
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    padding: 30px;
+    width: 500px; /* 버튼 너비 */
+    height: 650px;
+    color: white;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    text-align: left;
+}
+
+.mocean-modal-button:hover {
+    transform: scale(1.00); /* 버튼 확대 효과 */
+}
+
+.button-header {
+    background-color: #ff4f6c;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px; /*패딩 추가*/
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.premium-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff4f6c;
+}
+
+h3 {
+    font-size: 24px;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+p {
+    font-size: 14px;
+    color: #b3b3b3;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    color: white;
+}
+
+.benefits-list li {
+    margin-bottom: 8px; /*혜택 목록의 간격을 살짝 더 줌*/
+}
+
+.trial-button {
+    background-color: #ff4f6c;
+    color: white;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.yearly-btn .button-header {
+    background-color: #ff4f6c; /* 같은 색상을 유지 */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.btn-group button span {
+	position: absolute; /* 텍스트를 절대적으로 배치 */
+	top: 10px; /* 상단에서 10px 위치 */
+	left: 10px; /* 왼쪽에서 10px 위치 */
+}
+
+
+
+
 
 .btn-group button:hover {
 	transform: scale(1.1);
@@ -98,8 +242,11 @@ button:focus {
 	height: 100%;
 	visibility: hidden;
 	transition-duration: 500ms;
-	background: #0D47A1;
+	/* 배경색을 불투명한 검은색으로 변경 */
+	background: rgba(0, 0, 0, 0.9); 
+	/* rgba 형식으로 검은색(0, 0, 0)을 설정하고, 불투명도 90%로 유지 */
 	opacity: 80%;
+	/* 설명: rgba(13, 71, 161, 0.8)에서 13, 71, 161은 파란색을 나타내며, 0.8은 80% 불투명도를 의미합니다. 이로 인해 배경이 약간 투명하게 보입니다. */
 }
 
 .mocean-show.mocean-modal-wrap {
