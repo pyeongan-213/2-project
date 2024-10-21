@@ -62,7 +62,24 @@
 
 				<!-- 가수 설명 -->
 				<p class="artist-description">
-					<c:out value="${result.description}" />
+					<c:choose>
+						
+						<c:when test="${fn:length(result.description) > 800}">
+
+							<span id="short-description"> <c:out
+									value="${fn:substring(result.description, 0, 800)}" />...
+							</span>
+							<span id="full-description" style="display: none;"> <c:out
+									value="${result.description}" />
+							</span>
+							<button id="toggle-description" onclick="toggleDescription()">더보기</button>
+						</c:when>
+
+
+						<c:otherwise>
+							<c:out value="${result.description}" />
+						</c:otherwise>
+					</c:choose>
 				</p>
 			</div>
 		</div>
@@ -92,5 +109,26 @@
 		<!-- bottom_info.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
 	</footer>
+	<script>
+		function toggleDescription() {
+			const shortDesc = document.getElementById('short-description');
+			const fullDesc = document.getElementById('full-description');
+			const toggleButton = document.getElementById('toggle-description');
+
+			if (fullDesc.style.display === 'none') {
+				// 전체 텍스트를 보여주고 버튼 텍스트를 '접기'로 변경
+				shortDesc.style.display = 'none';
+				fullDesc.style.display = 'inline';
+				toggleButton.innerText = '접기';
+			} else {
+				// 전체 텍스트를 숨기고 짧은 설명과 '더보기' 버튼 표시
+				shortDesc.style.display = 'inline';
+				fullDesc.style.display = 'none';
+				toggleButton.innerText = '더보기';
+			}
+		}
+	</script>
+
+
 </body>
 </html>

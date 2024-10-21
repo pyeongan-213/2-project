@@ -72,10 +72,29 @@ public class ManiaDBController {
 
 	}
 
+	@GetMapping("search/randomAlbumPage")
+	public String randomAlbumPage(Model model) {
+		String album_id = maniaDBService.RandomPage();
+		System.out.println(album_id);
+		try {
+
+			AlbumDetail result = crawlingAlbumMain.getAlbumDetail(album_id);
+
+			model.addAttribute("result", result);
+
+			return "search/searchAlbumInfo";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "main";
+		}
+	}
+
 	// 메인페이지에서 상세페이지로 넘어가는 요청을 처리하는 매핑; 앨범 클래스
 	@GetMapping("search/crawlingAlbumMain")
 	public String parseAlbumToMain(@RequestParam("album_id") String album_id, Model model) {
 		try {
+			System.out.println(album_id);
 			AlbumDetail result = crawlingAlbumMain.getAlbumDetail(album_id);
 
 			model.addAttribute("result", result);

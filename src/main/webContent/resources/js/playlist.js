@@ -167,44 +167,57 @@ function loadVideo(videoUrl, musicName, playOrder) {
 }
 // Sortable 설정
 let sortable = new Sortable(document.getElementById('playlist'), {
-    handle: '.drag-handle',  // 드래그할 수 있는 핸들 설정
-    animation: 150,  // 드래그할 때 애니메이션 효과
-    onEnd: function (evt) {
-        let order = [];
-        $('#playlist tr').each(function(index, element) {
-            order.push($(element).data('id'));  // 각 곡의 ID 순서대로 배열에 추가
-        });
+	handle: '.drag-handle',  // 드래그할 수 있는 핸들 설정
+	animation: 150,  // 드래그할 때 애니메이션 효과
+	onEnd: function(evt) {
+		let order = [];
+		$('#playlist tr').each(function(index, element) {
+			order.push($(element).data('id'));  // 각 곡의 ID 순서대로 배열에 추가
+		});
 
-        // AJAX로 새로운 순서를 서버에 전송
-        $.ajax({
-            url: '/Project_2/musicPlayer/updateOrder',  // 순서 업데이트 처리할 URL
-            method: 'POST',
-            data: { order: order },  // 새로운 순서를 전송
-            success: function(response) {
-                alert('플레이리스트 순서가 업데이트되었습니다.');
-            },
-            error: function(err) {
-                alert('순서 업데이트 중 오류가 발생했습니다.');
-                console.log(err);  // 에러 로그
-            }
-        });
-    }
+		// AJAX로 새로운 순서를 서버에 전송
+		$.ajax({
+			url: '/Project_2/musicPlayer/updateOrder',  // 순서 업데이트 처리할 URL
+			method: 'POST',
+			data: { order: order },  // 새로운 순서를 전송
+			success: function(response) {
+				alert('플레이리스트 순서가 업데이트되었습니다.');
+			},
+			error: function(err) {
+				alert('순서 업데이트 중 오류가 발생했습니다.');
+				console.log(err);  // 에러 로그
+			}
+		});
+	}
 });
 
 // 곡 삭제 기능
 function deleteSong(musicId) {
-    if (confirm("정말 이 곡을 삭제하시겠습니까?")) {
-        $.ajax({
-            url: `/Project_2/musicPlayer/delete/${musicId}`,  // 삭제 요청 URL
-            method: 'POST',
-            success: function(response) {
-                alert('곡이 삭제되었습니다.');
-                location.reload();  // 페이지 새로고침으로 목록 업데이트
-            },
-            error: function(err) {
-                alert('곡을 삭제하는 중 오류가 발생했습니다.');
-                console.log(err);  // 에러 로그
-            }
-        });
-    }
+	if (confirm("정말 이 곡을 삭제하시겠습니까?")) {
+		$.ajax({
+			url: `/Project_2/musicPlayer/delete/${musicId}`,  // 삭제 요청 URL
+			method: 'POST',
+			success: function(response) {
+				alert('곡이 삭제되었습니다.');
+				location.reload();  // 페이지 새로고침으로 목록 업데이트
+			},
+			error: function(err) {
+				alert('곡을 삭제하는 중 오류가 발생했습니다.');
+				console.log(err);  // 에러 로그
+			}
+		});
+	}
+
+}
+
+function onPlayerReady(event) {
+	// 초기 볼륨 설정 (50%)
+	player.setVolume(50);
+}
+
+// 볼륨 조절 함수
+function changeVolume(volume) {
+	if (player && typeof player.setVolume === 'function') {
+		player.setVolume(volume);  // YouTube 플레이어의 볼륨 설정
+	}
 }

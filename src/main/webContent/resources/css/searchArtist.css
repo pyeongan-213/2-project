@@ -19,8 +19,15 @@ div#artist-container {
 	}
 /* 텍스트 스타일 지정 */
 
-.artist-description {
+.short-description, .full-description  {
 	margin-top : 60px;
 	color : #EEEEEE;
-	font-size : 12px;
+	font-size : 11px;
 }
+
+
+.toggle-description {
+	display: flex;
+	justify-content: flex-end;
+}
+

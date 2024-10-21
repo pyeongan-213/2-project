@@ -63,6 +63,13 @@
 						<span id="currentTime">0:00</span> <span id="durationTime">0:00</span>
 					</div>
 
+					<!-- 볼륨 조절 바 추가 -->
+					<div class="volume-control">
+						<label for="volumeSlider">Volume</label> <input type="range"
+							id="volumeSlider" value="100" min="0" max="100" step="1"
+							oninput="changeVolume(this.value)">
+					</div>
+
 					<!-- 컨트롤 버튼들 -->
 					<div class="controls">
 						<button id="prevBtn">
@@ -84,38 +91,38 @@
 
 		<!-- 오른쪽: 플레이리스트 -->
 		<div class="playlist-container">
-    <h3>플레이리스트</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>순서</th>
-                <th>제목</th>
-                <th>-</th>
-            </tr>
-        </thead>
-        <tbody id="playlist">
-            <c:forEach var="music" items="${musicList}" varStatus="status">
-                <tr data-id="${music.music_Id}">
-                    <td>
-                        <!-- 드래그 핸들 추가 -->
-                        <i class="bi bi-grip-vertical drag-handle" style="cursor: move;"></i>
-                    </td>
-                    <td>
-                        <!-- 곡 클릭 시 JavaScript로 iframe src를 동적으로 변경 -->
-                        <a href="javascript:void(0);" 
-                           onclick="loadVideo('${music.videoUrl}', '${music.music_Name}', ${status.index})">
-                           ${music.music_Name}
-                        </a>
-                    </td>
-                    <td>
-                        <!-- 곡 삭제 버튼 추가 -->
-                        <button onclick="deleteSong(${music.music_Id})" class="btn btn-danger">삭제</button>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-</div>
+			<h3>플레이리스트</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>순서</th>
+						<th>제목</th>
+						<th>-</th>
+					</tr>
+				</thead>
+				<tbody id="playlist">
+					<c:forEach var="music" items="${musicList}" varStatus="status">
+						<tr data-id="${music.music_Id}">
+							<td>
+								<!-- 드래그 핸들 추가 --> <i class="bi bi-grip-vertical drag-handle"
+								style="cursor: move;"></i>
+							</td>
+							<td>
+								<!-- 곡 클릭 시 JavaScript로 iframe src를 동적으로 변경 --> <a
+								href="javascript:void(0);"
+								onclick="loadVideo('${music.videoUrl}', '${music.music_Name}', ${status.index})">
+									${music.music_Name} </a>
+							</td>
+							<td>
+								<!-- 곡 삭제 버튼 추가 -->
+								<button onclick="deleteSong(${music.music_Id})"
+									class="btn btn-danger">삭제</button>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
 
 	</div>
 

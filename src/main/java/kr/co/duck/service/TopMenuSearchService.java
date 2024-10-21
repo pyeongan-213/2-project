@@ -139,18 +139,26 @@ public class TopMenuSearchService {
 		String artistImage = doc.select("div#ARTIST_PHOTO a.highslide img").attr("src");
 		artistImage = artistImage.replace("_t/260", "");
 		artistDetail.setImage(artistImage);
-		
-		
-		artistDetail.setPeriod(doc.select("td.artist-label:contains(ACTIVE) + td div").text());
-		artistDetail.setDescription(doc.select("meta[property=og:description]").first().attr("content"));
 
+		artistDetail.setPeriod(doc.select("td.artist-label:contains(ACTIVE) + td div").text());
+		
+		String description =  doc.select("meta[property=og:description]").first().attr("content");
+		if (description.length() > 3300) {
+			description = description.substring(0, 3300); // 최대 1100자까지 자르기
+		}
+		artistDetail.setDescription(description);
+
+
+		
+		
+		
 		Elements imgElements = doc.select("div.text div a img");
 		List<String> albumImageList = new ArrayList<>();
 		int count = 0;
 		for (Element img : imgElements) {
 			String albumImage = img.attr("src");
-        	albumImage = albumImage.replace("_t/150", "");
-            albumImageList.add(albumImage);
+			albumImage = albumImage.replace("_t/150", "");
+			albumImageList.add(albumImage);
 			if (++count >= 10)
 				break; // 최대 10개까지만 가져오기
 		}
@@ -165,13 +173,13 @@ public class TopMenuSearchService {
 				break; // 최대 10개까지만 가져오기
 		}
 		artistDetail.setAlbumNameList(albumNameList);
-		
+
 		Elements albumGuidElements = doc.select("div[style='width:150px'] a");
 		List<String> albumGuidList = new ArrayList<>();
 		count = 0;
 		for (Element albumGuid : albumGuidElements) {
 			String albumGuidPrefix = "http://www.maniadb.com" + albumGuid.attr("href");
-			
+
 			albumGuidList.add(albumGuidPrefix);
 			if (++count >= 10)
 				break; // 최대 10개까지만 가져오기
@@ -186,16 +194,18 @@ public class TopMenuSearchService {
 		albumDetail.setAlbumName(doc.select("div.album-title").first().text());
 		albumDetail.setArtistName(doc.select("div.album-artist a").text());
 		albumDetail.setArtistGuid(doc.select("div.album-artist a").attr("href"));
+		
 		String description = doc.select("meta[property=og:description]").attr("content");
-		if (description.length() > 1300) {
-			description = description.substring(0, 1300); // 최대 1300자까지 자르기
+		if (description.length() > 3300) {
+			description = description.substring(0, 3300); // 최대 1100자까지 자르기
 		}
 		albumDetail.setDescription(description);
+		
+		
 		String albumImage = doc.select("div#body img").first().attr("src");
 		albumImage = albumImage.replace("_t/260", "");
 		System.out.println(albumImage);
 		albumDetail.setImage(albumImage);
-		
 
 		Elements trackElements = doc.select("table.album-tracks div.song a");
 		List<String> trackList = new ArrayList<>();
@@ -397,8 +407,7 @@ public class TopMenuSearchService {
 		private String debutDate;
 
 		// Getters and setters
-		
-		
+
 		public String getArtistName() {
 			return artistName;
 		}

@@ -13,6 +13,15 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 </head>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		// 페이지가 로드되면 premium-section에 show 클래스를 추가하여 애니메이션 실행
+		const premiumSection = document.querySelector('.premium-section');
+		setTimeout(function() {
+			premiumSection.classList.add('show');
+		}, 500); // 0.5초 딜레이 후 애니메이션 시작
+	});
+</script>
 <body>
 	<div class="overlay"></div>
 	<!-- 어두운 배경 추가 -->
@@ -27,8 +36,8 @@
 		<ul class="nav-links" style="padding: 0;">
 			<li class="link"><a href="${root}/board/main">Board</a></li>
 			<li class="link"><a href="${root}/quiz/quizlobby">Quiz</a></li>
-			<li class="link"><a href="${root}/playlist/selectPlaylist">Select
-					Playlist</a></li>
+			<li class="link"><a href="${root}/search/randomAlbumPage">RANDOM</a></li>
+
 		</ul>
 		<div class="SideplaylistMakerWrapper">
 			<h4>새 플레이리스트를 추가하세요</h4>
