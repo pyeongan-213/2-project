@@ -40,21 +40,20 @@
 
 		<div class="Sideplaylistwrapper">
 			<h2>내 플레이리스트</h2>
-			<c:forEach var="playlist" items="${playlists}">
-				<li>${playlist.playlistname}<a
-					href="${root}/playlist/playlist?playlistId=${playlist.playlist_id}">
-						선택하기 </a>
-				</li>
-			</c:forEach>
+			<div class="playlist-container">
+				<c:forEach var="playlist" items="${playlists}">
+					<div class="playlist-item">
+						<a
+							href="${root}/playlist/playlist?playlistId=${playlist.playlist_id}">
+							${playlist.playlistname} </a>
+					</div>
+				</c:forEach>
 
-			<c:if test="${empty playlists}">
-				<p>플레이리스트가 없습니다.</p>
-			</c:if>
-
-
+				<c:if test="${empty playlists}">
+					<div class="playlist-item">플레이리스트가 없습니다.</div>
+				</c:if>
+			</div>
 		</div>
-
-
 	</nav>
 
 	<script>
@@ -163,64 +162,48 @@ function removeSubmenu() {
 </script>
 	<script>
 	$(document).ready(function() {
-	    // 플레이리스트 생성 버튼 클릭 이벤트
 	    $('#createPlaylistBtn').click(function() {
-	        var playlistName = $('#newPlaylistName').val(); // 입력된 플레이리스트 이름 가져오기
-
+	        var playlistName = $('#newPlaylistName').val();
 	        if (playlistName.trim() === "") {
 	            alert("플레이리스트 이름을 입력하세요.");
-	            return; // 입력이 비어있으면 요청하지 않음
+	            return;
 	        }
 
 	        $.ajax({
-	            url: '/Project_2/playlist/create',  // 플레이리스트 생성 URL
+	            url: '/Project_2/playlist/create',
 	            type: 'POST',
-	            data: {
-	                playlistName: playlistName
-	            },
+	            data: { playlistName: playlistName },
 	            success: function(data) {
-	                // 플레이리스트가 성공적으로 생성된 후 목록 갱신
 	                alert("플레이리스트가 생성되었습니다!");
-
-	                // 새로 추가된 플레이리스트 목록을 갱신
 	                $.ajax({
 	                    url: '/Project_2/playlist/selectPlaylist',
 	                    type: 'GET',
-	                    success: function(data) {
-	                        $(".Sideplaylistwrapper").html(data);  // 새로운 플레이리스트 목록을 갱신
+	                    success: function(htmlData) {
+	                        $(".Sideplaylistwrapper").html(htmlData);
 	                    }
 	                });
-
-	                // 입력 필드 초기화
 	                $('#newPlaylistName').val("");
 	            },
 	            error: function(xhr, status, error) {
 	                console.error("플레이리스트 생성 중 오류 발생: " + error);
-	                console.log("상태 코드: " + xhr.status);  // 상태 코드 확인
-	                console.log("응답 내용: " + xhr.responseText);  // 서버 응답 내용 확인
 	            }
 	        });
 	    });
-	});
 
-
-</script>
-
-	<script>
-	$(document).ready(function() {
 	    $.ajax({
-	        url: '/Project_2/playlist/selectPlaylist', // 플레이리스트 데이터를 가져오는 URL
+	        url: '/Project_2/playlist/selectPlaylist',
 	        type: 'GET',
-	        success: function(data) {
-	            // 가져온 HTML 데이터를 사이드바에 삽입
-	            $(".Sideplaylistwrapper").html(data);
+	        cache: false,
+	        success: function(htmlData) {
+	            $(".Sideplaylistwrapper").empty();
+	            document.querySelector(".Sideplaylistwrapper").innerHTML = htmlData;
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("플레이리스트 데이터를 가져오는 중 오류 발생: " + error);
 	        }
 	    });
 	});
-
+	
 </script>
 </body>
 </html>
