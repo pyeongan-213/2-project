@@ -587,13 +587,14 @@ a:hover span:nth-child(2):after {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    font-size: 14px; /* 글씨 크기를 조금 줄여서 공간을 더 절약할 수 있음 */
     clear: both;
     padding: 8px 12px;
     clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
     display: block;  /* 블록 요소로 설정 */
     max-width: 100%;
     margin-left: auto;
-    margin-top: 66px; /* 위쪽 여백을 넉넉하게 추가 */
-    margin-bottom: 3px; /* 아래쪽 여백을 추가 */
+    margin-top: 40px; /* 위쪽 여백을 넉넉하게 추가 */
+    margin-bottom: 10px; /* 아래쪽 여백을 추가 */
     
 }

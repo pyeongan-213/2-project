@@ -126,6 +126,8 @@
 					<button id="tooltip-minimize-btn">ㅡ</button>
 				</div>
 				<div id="tooltip-body" class="tooltip-body">
+					<p>&nbsp;!준비완료(필수)</p>
+					<p>&nbsp;!게임타입변경</p>
 					<p>&nbsp;!힌트 or !hint</p>
 					<p>&nbsp;!스킵 or !skip</p>
 				</div>	

@@ -1,5 +1,6 @@
 package kr.co.duck.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.LockModeType;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import kr.co.duck.domain.Member;
 import kr.co.duck.domain.QuizRoom;
 
 // 기능: 퀴즈방 레포지토리
@@ -38,5 +40,9 @@ public interface QuizRoomRepository extends JpaRepository<QuizRoom, Integer> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE QuizRoom q SET q.quizRoomType = :quizRoomType WHERE q.quizRoomId = :roomId")
     void updateQuizRoomType(@Param("roomId") int roomId, @Param("quizRoomType") String quizRoomType);
+
+    @Query("SELECT a.member FROM QuizRoomAttendee a WHERE a.quizRoom.quizRoomId = :roomId")
+    List<Member> findMembersByRoomId(@Param("roomId") int roomId);
+
 
 }

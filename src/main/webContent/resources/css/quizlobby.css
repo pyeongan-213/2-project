@@ -154,16 +154,16 @@
 
 /* 모달 콘텐츠 */
 .modal-content {
-    background-color: none;
-    margin: auto;
+    background-color: white;
     padding: 20px;
-    border: 1px solid #888;
-    width: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    position: relative;
-    animation: modalFadeIn 0.5s ease;
-    cursor: move; /* 드래그할 수 있음을 나타내는 커서 */
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: none; /* 애니메이션 제거 */
 }
+
 
 /* 닫기 버튼 스타일 */
 .close, .close-password-modal {

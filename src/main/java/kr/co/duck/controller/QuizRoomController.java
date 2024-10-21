@@ -1,15 +1,21 @@
 package kr.co.duck.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +30,9 @@ import kr.co.duck.beans.MemberBean;
 import kr.co.duck.beans.QuizRoomBean;
 import kr.co.duck.beans.QuizRoomListBean;
 import kr.co.duck.domain.ChatMessage;
+import kr.co.duck.domain.Member;
 import kr.co.duck.domain.QuizMusic;
+import kr.co.duck.repository.MemberRepository;
 import kr.co.duck.service.QuizRoomService;
 import kr.co.duck.service.QuizService;
 import kr.co.duck.util.CustomException;
@@ -36,7 +44,11 @@ public class QuizRoomController {
     private final QuizRoomService quizRoomService;
     private final QuizService quizService;
     private final SimpMessageSendingOperations messagingTemplate;  // messagingTemplate 추가
-
+    private static final Logger log = LoggerFactory.getLogger(QuizRoomService.class);
+    
+    @Autowired
+    private MemberRepository memberRepository;
+    
     @Autowired
     public QuizRoomController(QuizRoomService quizRoomService, QuizService quizService, SimpMessageSendingOperations messagingTemplate) {
         this.quizRoomService = quizRoomService;
@@ -209,23 +221,52 @@ public class QuizRoomController {
 
 
     @GetMapping("/{roomId}/start")
-    public ResponseEntity<Map<String, Object>> quizStart(@PathVariable int roomId) {
+    public ResponseEntity<Map<String, Object>> quizStart(@PathVariable int roomId, @RequestParam int memberId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            // 방 ID로 퀴즈 유형 가져오기
-            String quizType = quizService.getQuizTypeForRoom(roomId);
+            log.info("퀴즈 시작 요청 - 방 ID: {}, 회원 ID: {}", roomId, memberId);
 
-            // 방 ID를 사용해 랜덤 퀴즈 가져오기 (quizId를 1로 가정)
-            QuizMusic quiz = quizService.getRandomQuizQuestion(1, quizType); 
+            // 방장만 게임 시작 가능
+            if (!quizRoomService.isRoomHost(roomId, memberId)) {
+                log.warn("방장 확인 실패 - 방 ID: {}, 회원 ID: {}는 방장이 아닙니다.", roomId, memberId);
+                response.put("success", false);
+                response.put("message", "방장만 게임을 시작할 수 있습니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+
+            // 방의 참가자 수 확인
+            int playerCount = quizRoomService.getPlayerCountInRoom(roomId);
+            log.info("방 ID: {}, 참가자 수: {}", roomId, playerCount);
+
+            // 혼자 있는 경우 바로 게임 시작 가능
+            if (playerCount > 1) {
+                boolean allPlayersReady = quizRoomService.areAllPlayersReady(roomId, memberId);
+                if (!allPlayersReady) {
+                    log.warn("모든 참가자가 준비되지 않음 - 방 ID: {}", roomId);
+                    response.put("success", false);
+                    response.put("message", "모든 참가자가 준비되지 않았습니다.");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                }
+                log.info("모든 참가자가 준비됨 - 방 ID: {}", roomId);
+            }
+
+            // 퀴즈 시작 처리
+            String quizType = quizService.getQuizTypeForRoom(roomId);
+            QuizMusic quiz = quizService.getRandomQuizQuestion(1, quizType);
+
+            log.info("퀴즈 가져옴 - 방 ID: {}, 퀴즈 제목: {}, 퀴즈 정답: {}", roomId, quiz.getName(), quiz.getAnswer());
 
             response.put("success", true);
             response.put("quiz", quiz);
             return ResponseEntity.ok(response);
+
         } catch (CustomException e) {
+            log.error("CustomException 발생 - 방 ID: {}, 메시지: {}", roomId, e.getMessage());
             response.put("success", false);
             response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
+            log.error("퀴즈 시작 중 오류 발생 - 방 ID: {}, 오류: {}", roomId, e.getMessage(), e);
             response.put("success", false);
             response.put("message", "퀴즈를 가져오는 중 오류가 발생했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -234,6 +275,78 @@ public class QuizRoomController {
 
 
 
+    @MessageMapping("/quiz/{roomId}/changeType")
+    public void changeQuizType(@DestinationVariable int roomId, @Payload Map<String, String> message) {
+        String newQuizType = message.get("newQuizType");
+        System.out.println("퀴즈 타입 변경 요청 수신: " + newQuizType);
+
+        // 퀴즈 타입 변경 (QuizRoom의 퀴즈 타입을 변경)
+        quizRoomService.changeQuizType(roomId, newQuizType);
+
+        // 변경 사항을 WebSocket을 통해 해당 방의 모든 참가자에게 알림
+        messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/changeType", 
+                                         Collections.singletonMap("newQuizType", newQuizType));
+    }
+    
+    @MessageMapping("/quiz/{roomId}/ready")
+    public void handleReadyStatus(@DestinationVariable int roomId, @Payload Map<String, Object> message) {
+        String sender = (String) message.get("sender");
+        boolean isReady = (boolean) message.get("isReady");
+
+        // 로그 추가 (메시지 수신 확인)
+        System.out.printf("방 ID: {}, 발신자: {}, 준비 상태: {}", roomId, sender, isReady);
+
+
+        // Member 객체를 조회한 후 준비 상태를 업데이트 (서비스를 통해 처리)
+        Member member = memberRepository.findByNickname(sender).orElseThrow(() -> 
+            new CustomException("해당 닉네임의 사용자를 찾을 수 없습니다."));
+        quizRoomService.setPlayerReadyStatus(roomId, member.getMemberId(), isReady);  // QuizRoomService의 메서드 호출
+
+        // WebSocket으로 상태를 모든 사용자에게 전송
+        Map<String, Object> response = new HashMap<>();
+        response.put("sender", sender);
+        response.put("isReady", isReady);
+
+        messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/ready", response);
+
+        // 채팅 메시지로도 발송
+        Map<String, Object> chatMessage = new HashMap<>();
+        chatMessage.put("sender", "시스템");
+        chatMessage.put("message", sender + (isReady ? "님이 준비 완료했습니다." : "님이 준비를 취소했습니다."));
+
+        // 채팅방으로 메시지 발송
+        messagingTemplate.convertAndSend("/sub/chat/" + roomId, chatMessage);
+    }
+
+    
+    
+    @GetMapping("/{roomId}/checkReady")
+    public ResponseEntity<Map<String, Object>> checkReadyStatus(@PathVariable int roomId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // 현재 방의 방장 ID를 가져옵니다.
+            int hostId = quizRoomService.getRoomHostId(roomId);
+
+            // 모든 참가자의 준비 상태를 확인 (방장은 제외)
+            boolean allPlayersReady = quizRoomService.areAllPlayersReady(roomId, hostId);
+
+            response.put("success", true);
+            response.put("allReady", allPlayersReady);
+            return ResponseEntity.ok(response);
+
+        } catch (CustomException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "참가자 준비 상태를 확인하는 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+
+    
     @PostMapping("/leave")
     public ResponseEntity<Map<String, Object>> leaveRoom(@RequestBody Map<String, Object> requestData, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
@@ -251,13 +364,16 @@ public class QuizRoomController {
 
             // 방의 모든 플레이어에게 갱신된 플레이어 목록 전송
             sendRoomPlayersUpdate(roomId);  // 플레이어 목록 갱신
-
             response.put("success", true);
+            // 사용자가 방에 입장했음을 WebSocket으로 알림
+            String leaveMessage = loginMemberBean.getNickname() + "님이 퇴장하셨습니다.";
+            messagingTemplate.convertAndSend("/sub/chat/" + roomId, new ChatMessage<String>("시스템", leaveMessage));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "서버 오류가 발생했습니다: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+       
     }
 }
