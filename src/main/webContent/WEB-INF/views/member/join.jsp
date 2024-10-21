@@ -20,7 +20,8 @@
 <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">  
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<script src="${root }js/finisher-header.es5.min.js" type="text/javascript"></script>  
 </head>
 <script>
 	function checkMemberNameExist(){
@@ -178,7 +179,9 @@
 
 <c:import url="/WEB-INF/views/include/top_menu.jsp"/>
 
-<div class="container_join" style="margin-top:100px">
+<div class="header finisher-header" style="width: 100%; height: 1100px;">
+
+<div class="container_join">
 	<div class="row">
 		<div class="col-sm-3"></div>
 		<div class="col-sm-6">
@@ -260,7 +263,7 @@
 		</div>
 	</div>
 </div>
-
+</div>
 <!-- 회원가입 성공 시 SweetAlert 표시 -->
 <c:if test="${joinSuccess == true}">
 <script>
@@ -282,6 +285,44 @@
 </c:if>
 
 <c:import url="/WEB-INF/views/include/bottom_info.jsp"/>
+
+<script type="text/javascript">
+new FinisherHeader({
+  "count": 100,
+  "size": {
+    "min": 1,
+    "max": 8,
+    "pulse": 0
+  },
+  "speed": {
+    "x": {
+      "min": 0,
+      "max": 0.4
+    },
+    "y": {
+      "min": 0,
+      "max": 0.6
+    }
+  },
+  "colors": {
+    "background": "#191414",
+    "particles": [
+      "#fbfcca",
+      "#d7f3fe",
+      "#ffd0a7"
+    ]
+  },
+  "blending": "overlay",
+  "opacity": {
+    "center": 1,
+    "edge": 0
+  },
+  "skew": 0,
+  "shapes": [
+    "c"
+  ]
+});
+</script>
 
 </body>
 </html>

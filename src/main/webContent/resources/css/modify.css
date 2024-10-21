@@ -24,7 +24,7 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-top: 30px; /* 상단바 높이만큼의 여백 추가 */
+    margin-top: 50px; /* 상단바 높이만큼의 여백 추가 */
     padding: 20px;
     flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
 }
@@ -123,7 +123,7 @@ h2 {
 }
 
 .search-icon {
-    top: 14px !important;
+    top: 11px !important;
 }
 
 nav a {

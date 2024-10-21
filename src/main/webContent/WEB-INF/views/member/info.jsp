@@ -12,6 +12,7 @@
 <link rel="icon" type="image/png" sizes="80x80"
 	href="${root}/img/favicon.png">
 <link rel="stylesheet" href="${root}css/info.css" />
+<script src="${root }js/finisher-header.es5.min.js" type="text/javascript"></script>
 <style>
     .required {
         color: red; /* 빨간색으로 필수 항목 표시 */
@@ -21,6 +22,9 @@
 </head>
 <body>
     <c:import url="/WEB-INF/views/include/top_menu.jsp" />
+    
+    <div class="header finisher-header" style="width: 100%; height: 1100px;">
+    
   <div class="flex-container">
    
     <div class="sidebar">
@@ -88,7 +92,46 @@
     </div>
 </div>
 </div>
+</div>
     <!-- 푸터 추가 -->
     <c:import url="/WEB-INF/views/include/bottom_info.jsp" />
+
+<script type="text/javascript">
+new FinisherHeader({
+  "count": 100,
+  "size": {
+    "min": 1,
+    "max": 8,
+    "pulse": 0
+  },
+  "speed": {
+    "x": {
+      "min": 0,
+      "max": 0.4
+    },
+    "y": {
+      "min": 0,
+      "max": 0.6
+    }
+  },
+  "colors": {
+    "background": "#191414",
+    "particles": [
+      "#fbfcca",
+      "#d7f3fe",
+      "#ffd0a7"
+    ]
+  },
+  "blending": "overlay",
+  "opacity": {
+    "center": 1,
+    "edge": 0
+  },
+  "skew": 0,
+  "shapes": [
+    "c"
+  ]
+});
+</script>
 </body>
 </html>
