@@ -83,7 +83,15 @@ function playPreviousSong() {
         currentPlayOrder--;
         loadMusicByOrder(currentPlayOrder);
     } else {
-        alert('첫 번째 곡입니다. 더 이전 곡이 없습니다.');
+        Swal.fire({
+                    icon: 'error',
+                    title: '이전 곡이 없어요',
+                    text: '',
+                    background: '#3A3A3A',
+                    color: '#fff',
+                    confirmButtonColor: '#1db954',
+                    confirmButtonText: '확인'
+                });
     }
 }
 
@@ -113,7 +121,15 @@ function loadMusicByOrder(playOrder) {
             }
         },
         error: function (err) {
-            alert('곡을 가져오는 데 오류가 발생했습니다.');
+            Swal.fire({
+                    icon: 'error',
+                    title: '노래를 가져오는데 문제가 발생했습니다',
+                    text: '',
+                    background: '#3A3A3A',
+                    color: '#fff',
+                    confirmButtonColor: '#1db954',
+                    confirmButtonText: '확인'
+                });
             console.log(err);
         }
     });
@@ -172,11 +188,27 @@ function deleteSong(musicId) {
             url: `/Project_2/musicPlayer/delete/${musicId}`,
             method: 'POST',
             success: function () {
-                alert('곡이 삭제되었습니다.');
+                Swal.fire({
+	                    icon: 'success',
+	                    title: '곡을 삭제했어요',
+	                    text: '',
+	                    background: '#3A3A3A',
+	                    color: '#fff',
+	                    confirmButtonColor: '#1db954',
+	                    confirmButtonText: '확인'
+	                });
                 location.reload();
             },
             error: function (err) {
-                alert('곡을 삭제하는 중 오류가 발생했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '곡을 삭제하는 중 오류가 발생했어요',
+                    text: '',
+                    background: '#3A3A3A',
+                    color: '#fff',
+                    confirmButtonColor: '#1db954',
+                    confirmButtonText: '확인'
+                });;
                 console.log(err);
             }
         });
@@ -199,10 +231,18 @@ let sortable = new Sortable(document.getElementById('playlist'), {
             method: 'POST',
             data: { order: order },
             success: function () {
-                alert('플레이리스트 순서가 업데이트되었습니다.');
+                
             },
             error: function (err) {
-                alert('순서 업데이트 중 오류가 발생했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '순서 업데이트 중 오류가 발생했어요',
+                    text: '',
+                    background: '#3A3A3A',
+                    color: '#fff',
+                    confirmButtonColor: '#1db954',
+                    confirmButtonText: '확인'
+                });
                 console.log(err);
             }
         });
