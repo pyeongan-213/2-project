@@ -11,6 +11,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
 </head>
 
@@ -165,7 +168,15 @@ function removeSubmenu() {
 	    $('#createPlaylistBtn').click(function() {
 	        var playlistName = $('#newPlaylistName').val();
 	        if (playlistName.trim() === "") {
-	            alert("플레이리스트 이름을 입력하세요.");
+	        	Swal.fire({
+                    icon: 'error',
+                    title: '플레이리스트의 이름을 입력해주세요',
+                    text: '',
+                    background: '#3A3A3A',
+                    color: '#fff',
+                    confirmButtonColor: '#1db954',
+                    confirmButtonText: '확인'
+                });
 	            return;
 	        }
 
@@ -174,7 +185,15 @@ function removeSubmenu() {
 	            type: 'POST',
 	            data: { playlistName: playlistName },
 	            success: function(data) {
-	                alert("플레이리스트가 생성되었습니다!");
+	            	Swal.fire({
+	                    icon: 'success',
+	                    title: '플레이리스트를 추가했어요',
+	                    text: '',
+	                    background: '#3A3A3A',
+	                    color: '#fff',
+	                    confirmButtonColor: '#1db954',
+	                    confirmButtonText: '확인'
+	                });
 	                $.ajax({
 	                    url: '/Project_2/playlist/selectPlaylist',
 	                    type: 'GET',
