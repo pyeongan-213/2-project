@@ -15,7 +15,9 @@ nav {
   transition: all 800ms cubic-bezier(0.8, 0, 0.33, 1);
   z-index: 4000;
 }
-
+.post-playlist-container .side-my-playlist {
+	font-size: 12px;
+}
 nav a {
   text-transform: uppercase;
   font-size: 1.4rem;
@@ -114,3 +116,36 @@ nav.nav-open .nav-links li {
   transform: translateX(0);
   opacity: 1;
 }
+.Sideplaylistwrapper {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	}
+/* playlist-container와 playlist-item을 사용한 스타일 */
+.playlist-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+}
+
+.playlist-item {
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.playlist-item a {
+    text-decoration: none;
+    color: #000;
+    display: block;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.playlist-item:hover {
+    background-color: #22ff22;
+}
+
