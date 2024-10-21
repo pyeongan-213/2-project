@@ -12,13 +12,17 @@ import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.co.duck.controller.ChatController;
 import kr.co.duck.domain.Member;
 import kr.co.duck.domain.MemberGameStats;
 import kr.co.duck.domain.QuizMessage;
@@ -45,7 +49,8 @@ public class QuizService {
     private final QuizRoomRepository quizRoomRepository;
     private final Random random = new Random();
     private final Map<Integer, Integer> hintProgress = new HashMap<>();
-
+    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
+    private SimpMessagingTemplate messagingTemplate; // WebSocket 메시지 전송을 위한 템플릿
     @Autowired
     private ServletContext servletContext;
 
@@ -215,27 +220,50 @@ public class QuizService {
         attendees.forEach(attendee -> nicknameList.add(attendee.getMemberNickname()));
         return nicknameList;
     }
-
+    
     public String generateHint(int quizId) {
         List<QuizMusic> quizList = quizMusicRepository.findByQuizId(quizId);
+        
         if (quizList.isEmpty()) {
-            return "힌트를 제공할 수 없습니다.";
+            log.warn("퀴즈 ID {}에 대한 퀴즈 데이터를 찾을 수 없습니다.", quizId);
+            return "힌트를 제공할 수 없습니다."; // 퀴즈 음악이 없는 경우
         }
 
+        // 첫 번째 퀴즈 음악의 첫 번째 정답을 사용
         String answer = quizList.get(0).getAnswer().get(0);
-        int hintLength = hintProgress.getOrDefault(quizId, 0) + 1;
+        log.info("퀴즈 ID {}에 대한 정답: {}", quizId, answer); 
 
+        // 힌트 길이를 업데이트
+        int hintLength = hintProgress.getOrDefault(quizId, 0) + 1;
+        if (hintLength > answer.length()) {
+            hintLength = answer.length(); // 힌트가 정답 길이를 초과하지 않도록 설정
+        }
+
+        // 힌트 생성
         StringBuilder hintBuilder = new StringBuilder();
         for (int i = 0; i < answer.length(); i++) {
             if (i < hintLength) {
-                hintBuilder.append(answer.charAt(i));
+                hintBuilder.append(answer.charAt(i)); // 힌트를 제공할 부분
             } else {
-                hintBuilder.append('○');
+                hintBuilder.append('○'); // 아직 제공되지 않은 부분은 마스킹 처리
             }
         }
 
+        // 현재 힌트 길이를 저장하여 다음 힌트 제공 시 사용
         hintProgress.put(quizId, hintLength);
-        return hintBuilder.toString();
+        
+        String generatedHint = hintBuilder.toString();
+        log.info("퀴즈 ID {}에 대해 생성된 힌트: {}", quizId, generatedHint);
+
+        // **WebSocket을 통해 실시간 힌트 전송**
+        Map<String, Object> hintMessage = new HashMap<>();
+        hintMessage.put("hint", generatedHint);
+        hintMessage.put("quizId", quizId);
+        
+        // 모든 참가자에게 힌트를 전송
+        messagingTemplate.convertAndSend("/sub/quiz/" + quizId + "/hintMessage", hintMessage);
+        
+        return generatedHint;
     }
 
     @Transactional
@@ -251,6 +279,17 @@ public class QuizService {
         return quizMusicRepository.findAll();
     }
 
+ // getSongName 메서드 수정
+    public String getSongName(int quizId) {
+        // quizId로 QuizMusic 엔티티를 조회합니다.
+        QuizMusic quizMusic = quizMusicRepository.findByQuizId(quizId)
+            .stream()
+            .findFirst() // 첫 번째 결과만 사용 (여러 개가 반환될 수 있으므로)
+            .orElseThrow(() -> new CustomException("퀴즈를 찾을 수 없습니다: " + quizId));
+        
+        return quizMusic.getName(); // 실제로 노래 제목을 저장한 필드
+    }
+    
     @Transactional
     public void deleteQuiz(int quizId) {
         List<QuizMusic> quizMusicList = quizMusicRepository.findByQuizId(quizId);

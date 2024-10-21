@@ -4,9 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +33,7 @@ public class QuizController {
 
     private final QuizService quizService; // 퀴즈 서비스 객체
     private final SimpMessagingTemplate messagingTemplate; // 메시지 전송 템플릿(WebSocket)
-    
+    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
     @Autowired
     private ChatService chatService;
     
@@ -95,33 +100,73 @@ public class QuizController {
         }
     }
 
-    // **사용자 정답 제출 처리**
-    @PostMapping("/answer/{memberId}")
-    public ResponseEntity<String> submitAnswer(
-            @PathVariable int memberId,
-            @RequestParam int quizId,
-            @RequestParam String answer) {
+    // **정답 제출 및 정답자 정보 전송**
+    
+    @MessageMapping("/quiz/{roomId}/correctAnswer")
+    @SendTo("/sub/quiz/{roomId}/correctAnswer")
+    public Map<String, Object> submitAnswer(
+            @DestinationVariable int roomId,
+            @RequestBody Map<String, Object> payload) {
 
-        // 사용자가 제출한 정답과 DB 정답 비교
+        int memberId = (int) payload.get("memberId");
+        int quizId = (int) payload.get("quizId");
+        String answer = (String) payload.get("answer");
+
         boolean isCorrect = quizService.submitAnswer(memberId, quizId, answer.trim());
 
+        Map<String, Object> answerMessage = new HashMap<>();
         if (isCorrect) {
-            // 정답 메시지 생성
-            Map<String, Object> answerMessage = new HashMap<>();
-            answerMessage.put("isCorrect", true); // 정답 여부
-            answerMessage.put("playerId", memberId); // 정답자 ID
+            answerMessage.put("isCorrect", true);
+            answerMessage.put("playerId", memberId);
             answerMessage.put("message", "정답입니다!");
+            answerMessage.put("songName", quizService.getSongName(quizId)); // **songName 추가**
 
-            // WebSocket을 통해 정답 메시지 전송
-            messagingTemplate.convertAndSend("/sub/quiz/answer/" + quizId, answerMessage);
-
-            // 정답 응답 반환
-            return ResponseEntity.ok("정답입니다!");
+            // 정답자 정보를 WebSocket을 통해 전송
+            messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/correctAnswer", answerMessage);
         } else {
-            return ResponseEntity.ok(""); // 오답일 경우 빈 응답 반환
+            answerMessage.put("isCorrect", false);
+            answerMessage.put("message", "오답입니다!");
         }
+
+        return answerMessage;
     }
 
+    
+ // **힌트 전송**
+    @MessageMapping("/quiz/{roomId}/hintMessage")
+    @SendTo("/sub/quiz/{roomId}/hintMessage")
+    public ResponseEntity<String> sendHint(@DestinationVariable int roomId) {
+        try {
+            // 퀴즈 ID를 기준으로 힌트 생성
+            String hint = quizService.generateHint(roomId); // roomId는 quizId로 사용
+
+            // **힌트를 모든 참가자에게 WebSocket을 통해 전송**
+            Map<String, Object> hintMessage = new HashMap<>();
+            hintMessage.put("hint", hint);
+            System.out.println("힌트 메시지 전송: " + hint);
+            messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/hintMessage", hintMessage);
+            
+            return ResponseEntity.ok("힌트가 전송되었습니다.");
+       
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("힌트를 생성할 수 없습니다.");
+        }
+    }
+    
+    //타이머
+    @MessageMapping("/quiz/{roomId}/timer")
+    @SendTo("/sub/quiz/{roomId}/timer")
+    public ResponseEntity<String> startTimer(@DestinationVariable int roomId, @RequestParam int duration) {
+        // 타이머 시작 정보를 WebSocket으로 전송
+        Map<String, Object> timerMessage = new HashMap<>();
+        timerMessage.put("timeLeft", duration);
+        messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/timer", timerMessage);
+
+        return ResponseEntity.ok("타이머가 시작되었습니다.");
+    }
+
+    
+    
     // **퀴즈 삭제**
     @DeleteMapping("/delete/{quizId}")
     public ResponseEntity<String> deleteQuiz(@PathVariable int quizId) {

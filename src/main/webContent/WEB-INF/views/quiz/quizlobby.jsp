@@ -79,6 +79,9 @@
                 <label for="roomName">방 이름:</label> 
                 <input type="text" id="roomName" name="roomName" value="새로운 퀴즈방" required><br>
 
+	            <label for="roomPassword">방 비밀번호(선택사항):</label> 
+	            <input type="password" id="roomPassword" name="roomPassword" placeholder="비밀번호 (공백 가능)" value=""><br> <!-- 비밀번호 필드 추가 -->
+
                 <label for="maxCapacity">최대 인원수:</label> 
                 <input type="number" id="maxCapacity" name="maxCapacity" min="1" max="10" value="10" required><br>
 

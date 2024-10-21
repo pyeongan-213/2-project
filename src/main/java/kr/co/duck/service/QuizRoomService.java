@@ -1,6 +1,7 @@
 package kr.co.duck.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import kr.co.duck.domain.QuizMusic;
 import kr.co.duck.domain.QuizQuery;
 import kr.co.duck.domain.QuizRoom;
 import kr.co.duck.domain.QuizRoomAttendee;
+import kr.co.duck.repository.ChatRepository;
 import kr.co.duck.repository.MemberGameStatsRepository;  // 추가
 import kr.co.duck.repository.MemberRepository;
 import kr.co.duck.repository.QuizMusicRepository;
@@ -46,9 +48,12 @@ public class QuizRoomService {
 	private final QuizMusicRepository quizMusicRepository;
 	private final MemberGameStatsRepository memberGameStatsRepository; // 추가
 	private static final Logger log = LoggerFactory.getLogger(QuizRoomService.class);
-
+	
 	@Autowired
 	private MemberRepository memberRepository;
+	
+	@Autowired
+	private ChatRepository chatRepository;
 
 	// **생성자 주입을 통한 의존성 주입**
 	public QuizRoomService(MemberCommand memberCommand, QuizQuery quizQuery, QuizCommand quizCommand,
@@ -298,4 +303,100 @@ public class QuizRoomService {
 		}
 		return nicknames;
 	}
-}
+	
+	@Transactional
+	public void changeQuizType(int roomId, String newQuizType) {
+	    Optional<QuizRoom> quizRoomOptional = quizRoomRepository.findById(roomId);
+	    if (quizRoomOptional.isPresent()) {
+	        QuizRoom quizRoom = quizRoomOptional.get();
+	        quizRoom.setQuizRoomType(newQuizType);
+	        quizRoomRepository.save(quizRoom);
+	        System.out.println("변경 후 저장된 퀴즈 타입: " + quizRoom.getQuizRoomType());
+	    } else {
+	        throw new CustomException("해당 ID의 퀴즈 방을 찾을 수 없습니다: " + roomId);
+	    }
+	}
+	
+	    // 참가자들의 준비 상태를 관리할 Map (roomId -> List of players and ready state)
+	    private Map<Integer, Map<Integer, Boolean>> readyStatusMap = new HashMap<>();
+
+	    public void setPlayerReadyStatus(int roomId, int memberId, boolean isReady) {
+	        // 방 ID에 해당하는 참가자들의 준비 상태를 관리하는 Map을 가져오거나 새로 생성
+	        readyStatusMap.computeIfAbsent(roomId, k -> new HashMap<>()).put(memberId, isReady);
+	        
+	        // 준비 상태 업데이트 후 로그 추가
+	        log.info("방 ID: {}, 회원 ID: {}, 준비 상태: {}", roomId, memberId, isReady); 
+	        
+	        // readyStatusMap 전체 로그 출력 (디버깅용)
+	        log.debug("현재 방의 준비 상태 맵: {}", readyStatusMap);
+	    }
+
+
+	    // 모든 참가자가 준비되었는지 확인 (방장은 제외)
+	    public boolean areAllPlayersReady(int roomId, int hostId) {
+	        Map<Integer, Boolean> playerStatuses = readyStatusMap.get(roomId);
+
+	        if (playerStatuses == null || playerStatuses.isEmpty()) {
+	            log.warn("방 ID: {}에 준비된 플레이어가 없습니다.", roomId); // 플레이어가 없을 경우 로그
+	            return false; // 플레이어 상태가 없으면 준비되지 않은 것으로 간주
+	        }
+
+	        // 방장을 제외한 모든 참가자의 준비 상태 확인
+	        for (Map.Entry<Integer, Boolean> entry : playerStatuses.entrySet()) {
+	            if (entry.getKey() != hostId && !entry.getValue()) {
+	                log.info("방 ID: {}, 참가자 ID: {}가 준비되지 않았습니다.", roomId, entry.getKey()); // 준비되지 않은 참가자 로그
+	                return false; // 방장을 제외하고 준비되지 않은 참가자가 있으면 false 반환
+	            }
+	        }
+
+	        log.info("방 ID: {}, 모든 참가자가 준비되었습니다.", roomId); // 모든 참가자가 준비된 경우 로그
+	        return true; // 모든 참가자가 준비 상태일 경우 true 반환
+	    }
+
+
+
+	    // 특정 방의 준비 상태를 반환하는 메서드
+	    public Map<Integer, Boolean> getReadyStatus(int roomId) {
+	        return readyStatusMap.get(roomId);
+	    }
+	    
+	 // 방에서 플레이어 수를 가져오는 메서드
+	    public int getPlayerCountInRoom(int roomId) {
+	        QuizRoom room = quizRoomRepository.findById(roomId)
+	                .orElseThrow(() -> new CustomException("해당 방을 찾을 수 없습니다."));
+	        int playerCount = room.getMemberCount();
+	        log.info("방 ID: {}, 현재 플레이어 수: {}", roomId, playerCount); // 플레이어 수 로그
+	        return playerCount;
+	    }
+	    
+
+	 // 방장이 맞는지 확인하는 메서드
+	    public boolean isRoomHost(int roomId, int memberId) {
+	        QuizRoom room = quizRoomRepository.findById(roomId)
+	                .orElseThrow(() -> new CustomException("해당 방을 찾을 수 없습니다."));
+
+	        String ownerNickname = room.getOwner();
+	        String currentUserNickname = memberRepository.findById(memberId)
+	                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."))
+	                .getNickname();
+
+	        boolean isHost = ownerNickname.equals(currentUserNickname);
+	        log.info("방 ID: {}, 방장: {}, 현재 유저: {}, 방장 여부: {}", roomId, ownerNickname, currentUserNickname, isHost); // 방장 여부 확인 로그
+
+	        return isHost;
+	    }
+
+	    public int getRoomHostId(int roomId) {
+	        QuizRoom room = quizRoomRepository.findById(roomId)
+	            .orElseThrow(() -> new CustomException("해당 방을 찾을 수 없습니다."));
+
+	        // 방장의 닉네임을 기반으로 Member 엔티티에서 방장의 ID를 가져옵니다.
+	        Member host = memberRepository.findByNickname(room.getOwner())
+	            .orElseThrow(() -> new CustomException("방장을 찾을 수 없습니다."));
+
+	        return host.getMemberId();
+	    }
+
+	}
+
+

@@ -6,11 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const createRoomBtn = document.getElementById('create-room-btn');
     if (createRoomBtn) {
         createRoomBtn.addEventListener('click', openCreateRoomModal); // 방 생성 버튼 클릭 시 모달 열기
+    } else {
+        console.error("#create-room-btn 요소를 찾을 수 없습니다.");
     }
 
     const createRoomForm = document.getElementById('create-room-form');
     if (createRoomForm) {
         createRoomForm.addEventListener('submit', createRoom); // 방 생성 폼 제출 시 방 생성
+    } else {
+        console.error("#create-room-form 요소를 찾을 수 없습니다.");
     }
 
     selectMaxMusicEventListeners(); // 곡 수 선택 버튼 이벤트 등록
@@ -18,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.querySelector('.close');
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', closeModal); // 모달 닫기 버튼 클릭 시 모달 닫기
+    } else {
+        console.error(".close 요소를 찾을 수 없습니다.");
     }
 
     window.addEventListener('click', (event) => {
@@ -48,6 +54,10 @@ async function fetchRooms() {
 // 방 목록 업데이트
 function updateRoomList(rooms) {
     const roomListElement = document.getElementById('room-list');
+    if (!roomListElement) {
+        console.error("#room-list 요소를 찾을 수 없습니다.");
+        return;
+    }
     roomListElement.innerHTML = ''; // 기존 목록 초기화
 
     rooms.forEach(room => {
@@ -80,48 +90,77 @@ function updateRoomList(rooms) {
     addJoinRoomEventListeners(); // 참여 버튼에 이벤트 리스너 추가
 }
 
-
 // 모달 열기
 function openCreateRoomModal() {
     const roomNameInput = document.getElementById('roomName');
     const maxCapacityInput = document.getElementById('maxCapacity');
     const maxMusicInput = document.getElementById('maxMusic');
+    const modalContent = document.querySelector('.modal-content');
 
-    // 방 이름과 최대 인원 디폴트 값 설정
-    roomNameInput.value = '새로운 퀴즈방';
-    maxCapacityInput.value = '10';
-    
+    // roomNameInput, maxCapacityInput이 존재할 경우에만 이벤트 추가
+    if (roomNameInput) {
+        roomNameInput.addEventListener('click', () => {
+            if (roomNameInput.value === '새로운 퀴즈방') {
+                roomNameInput.value = ''; // 기본값일 때만 빈칸으로
+            }
+        });
+    } else {
+        console.error("#roomName 요소를 찾을 수 없습니다.");
+    }
+
+    if (maxCapacityInput) {
+        maxCapacityInput.addEventListener('click', () => {
+            if (maxCapacityInput.value === '10') {
+                maxCapacityInput.value = ''; // 기본값일 때만 빈칸으로
+            }
+        });
+    } else {
+        console.error("#maxCapacity 요소를 찾을 수 없습니다.");
+    }
+
     // 100곡 버튼 기본 선택 설정
     const defaultMusicButton = document.querySelector('.music-button[data-value="100"]');
     if (defaultMusicButton) {
         defaultMusicButton.click(); // 100곡 버튼 클릭하여 선택
     }
 
-    // 디폴트 값 드래그 상태 설정
-    roomNameInput.focus();
-    roomNameInput.select();
-    maxCapacityInput.select();
+    // 모달을 화면 중앙에 위치시킴
+    if (modalContent) {
+        modalContent.style.top = '50%';
+        modalContent.style.left = '50%';
+        modalContent.style.transform = 'translate(-50%, -50%)'; // 중앙으로 위치 조정
+        modalContent.style.position = 'fixed'; // 중앙 고정
+    } else {
+        console.error(".modal-content 요소를 찾을 수 없습니다.");
+    }
 
-    // 방 이름 입력창 클릭 시 빈칸으로 초기화
-    roomNameInput.addEventListener('click', () => {
-        if (roomNameInput.value === '새로운 퀴즈방') {
-            roomNameInput.value = ''; // 기본값일 때만 빈칸으로
-        }
-    });
+    const modal = document.getElementById('create-room-modal');
+    if (modal) {
+        modal.style.display = 'block';
 
-    // 최대 인원 입력창 클릭 시 빈칸으로 초기화
-    maxCapacityInput.addEventListener('click', () => {
-        if (maxCapacityInput.value === '10') {
-            maxCapacityInput.value = ''; // 기본값일 때만 빈칸으로
-        }
-    });
+        // Esc 키로 모달 닫기 기능 추가
+        document.addEventListener('keydown', handleEscKey);
+    } else {
+        console.error("#create-room-modal 요소를 찾을 수 없습니다.");
+    }
+}
 
-    document.getElementById('create-room-modal').style.display = 'block';
+// Esc 키로 모달 닫기 핸들러
+function handleEscKey(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
 }
 
 // 모달 닫기
 function closeModal() {
-    document.getElementById('create-room-modal').style.display = 'none';
+    const modal = document.getElementById('create-room-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    // Esc 키 이벤트 리스너 제거 (중복 방지)
+    document.removeEventListener('keydown', handleEscKey);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -130,28 +169,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let offsetX = 0;
     let offsetY = 0;
 
-    // 모달 상단을 드래그할 수 있도록 이벤트 추가 (모달의 헤더 또는 제목 부분)
-    modalContent.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        offsetX = e.clientX - modalContent.getBoundingClientRect().left;
-        offsetY = e.clientY - modalContent.getBoundingClientRect().top;
-        modalContent.style.position = 'absolute';  // 드래그 가능하도록 position 설정
-        modalContent.style.cursor = 'move';  // 드래그 중 커서 변경
-    });
+    if (modalContent) {
+        // 모달 상단을 드래그할 수 있도록 이벤트 추가
+        modalContent.addEventListener('mousedown', (e) => {
+            isDragging = true;
 
-    // 마우스 움직임에 따라 모달 이동
-    document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            modalContent.style.left = `${e.clientX - offsetX}px`;
-            modalContent.style.top = `${e.clientY - offsetY}px`;
-        }
-    });
+            // 드래그 시작 시 transform을 해제하고 현재 위치 기준으로 고정
+            const rect = modalContent.getBoundingClientRect();
+            modalContent.style.left = `${rect.left}px`;
+            modalContent.style.top = `${rect.top}px`;
+            modalContent.style.transform = 'none'; // 중앙 정렬 해제
+            modalContent.style.position = 'absolute';  // 드래그 가능하도록 position 설정
 
-    // 마우스를 떼면 드래그 멈춤
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        modalContent.style.cursor = 'default';  // 드래그 끝난 후 커서 기본값으로
-    });
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            modalContent.style.cursor = 'move';  // 드래그 중 커서 변경
+        });
+
+        // 마우스 움직임에 따라 모달 이동
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                modalContent.style.left = `${e.clientX - offsetX}px`;
+                modalContent.style.top = `${e.clientY - offsetY}px`;
+            }
+        });
+
+        // 마우스를 떼면 드래그 멈춤
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            modalContent.style.cursor = 'default';  // 드래그 끝난 후 커서 기본값으로
+        });
+    } else {
+        console.error("modal-content를 찾을 수 없습니다.");
+    }
 });
 
 
@@ -177,11 +227,13 @@ async function createRoom(event) {
     const maxCapacityInput = document.getElementById('maxCapacity');
     const maxMusicInput = document.getElementById('maxMusic');
     const quizRoomType = document.getElementById('quizRoomType').value;
+    const roomPasswordInput = document.getElementById('roomPassword'); // 비밀번호 입력 필드
 
     // 필드 값 읽기 (디폴트 값 포함)
     let roomName = roomNameInput.value;
     let maxCapacity = maxCapacityInput.value;
     let maxMusic = maxMusicInput.value || '100'; // 기본 값으로 '100곡' 선택
+    let roomPassword = roomPasswordInput.value || ''; // 비밀번호가 입력되지 않으면 공백 처리
 
     // 필수 입력 요소가 비어있지 않은지 확인
     if (!roomName) {
@@ -202,7 +254,7 @@ async function createRoom(event) {
         return;
     }
 
-    console.log(`방 이름: ${roomName}, 최대 인원: ${adjustedMaxCapacity}, 최대 곡 수: ${maxMusic}, 퀴즈 타입: ${quizRoomType}`);
+    console.log(`방 이름: ${roomName}, 최대 인원: ${adjustedMaxCapacity}, 최대 곡 수: ${maxMusic}, 퀴즈 타입: ${quizRoomType}, 비밀번호: ${roomPassword}`);
 
     try {
         const response = await fetch(`${root}/quiz/rooms/create`, {
@@ -212,7 +264,8 @@ async function createRoom(event) {
                 quizRoomName: roomName,
                 maxCapacity: adjustedMaxCapacity, // 조정된 인원 수 전송
                 maxMusic: maxMusic,
-                quizRoomType: quizRoomType
+                quizRoomType: quizRoomType,
+                roomPassword: roomPassword // 비밀번호 전송
             })
         });
 
