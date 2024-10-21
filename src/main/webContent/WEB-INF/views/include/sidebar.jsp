@@ -13,15 +13,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 </head>
-<script>
-	document.addEventListener('DOMContentLoaded', function() {
-		// 페이지가 로드되면 premium-section에 show 클래스를 추가하여 애니메이션 실행
-		const premiumSection = document.querySelector('.premium-section');
-		setTimeout(function() {
-			premiumSection.classList.add('show');
-		}, 500); // 0.5초 딜레이 후 애니메이션 시작
-	});
-</script>
+
 <body>
 	<div class="overlay"></div>
 	<!-- 어두운 배경 추가 -->
@@ -115,10 +107,12 @@ menuBtn.addEventListener("click", function() {
   }
 });
 
-subMenuBtn.addEventListener("click", function() {
-  nav.classList.toggle("sub-menu-open");
-  removeSubmenu();
-});
+if (subMenuBtn) {  // subMenuBtn이 존재하는 경우에만 이벤트 추가
+    subMenuBtn.addEventListener("click", function() {
+        nav.classList.toggle("sub-menu-open");
+        removeSubmenu();
+    });
+}
 
 function toggleSubmenu(el) {
   let subMenu = nav.querySelector(".sub-menu");
