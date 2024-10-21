@@ -8,6 +8,9 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 탈퇴</title>
+<!-- 탭 아이콘 추가 -->
+<link rel="icon" type="image/png" sizes="80x80"
+	href="${root}/img/favicon.png">
 <link rel="stylesheet" href="${root }css/delete_account.css" />
 <!-- SweetAlert CDN 추가 -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->

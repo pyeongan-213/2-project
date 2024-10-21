@@ -7,7 +7,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>내 정보</title>
+<!-- 탭 아이콘 추가 -->
+<link rel="icon" type="image/png" sizes="80x80"
+	href="${root}/img/favicon.png">
 <link rel="stylesheet" href="${root}css/info.css" />
 <style>
     .required {
@@ -28,7 +31,7 @@
     <div class="container_info">
         <div class="wrapper">
             <form:form action="${root}member/modify" method="post" modelAttribute="infoMemberBean">
-                <h1>MyAccount</h1>
+                <h1>내 정보</h1>
                 
                 <div class="input-box">
                     <form:label path="membername">아이디</form:label>

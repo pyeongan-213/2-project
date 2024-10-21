@@ -7,7 +7,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-  <title>Insert title here</title>
+  <title>회원가입</title>
+  <!-- 탭 아이콘 추가 -->
+<link rel="icon" type="image/png" sizes="80x80"
+	href="${root}/img/favicon.png">
   
   <!-- jQuery 라이브러리 추가 -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

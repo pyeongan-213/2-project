@@ -7,6 +7,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<title>비밀번호 변경</title>
+<!-- 탭 아이콘 추가 -->
+<link rel="icon" type="image/png" sizes="80x80"
+	href="${root}/img/favicon.png">
 <link rel="stylesheet" href="${root }css/modifyPassword.css" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
