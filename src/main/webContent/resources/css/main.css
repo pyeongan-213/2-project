@@ -19,7 +19,7 @@ img {
 
 :root {
     --body-font: "Inter", sans-serif;
-    --theme-bg: #1f1d2b;
+    --theme-bg: #191414;
     --body-color: #808191;
     --button-bg: #353340;
     --border-color: rgba(128, 129, 145, 0.24);
@@ -63,6 +63,7 @@ body {
     background-color: var(--theme-bg);
     padding: 40px;
     overflow: auto;
+    margin-top: 30px;
 }
 
 /* 인기 아티스트 및 앨범 항목 */

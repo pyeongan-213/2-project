@@ -117,7 +117,7 @@
 					<p>좋아하는 국내 음악과 세계 최고의 플레이리스트를 들어보세요.</p>
 				</div>
 				<div class="premium-button-container">
-					<a href="${root}/premium" class="premium-button">구독하기</a>
+					<a href="${root}/temp/slide_popup" class="premium-button">구독하기</a>
 				</div>
 			</div>
 		</div>
