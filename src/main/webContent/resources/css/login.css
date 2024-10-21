@@ -22,6 +22,7 @@ body {
     background-color: #282828;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-top: 150px;
 }
 
 /* 카드 스타일 */
@@ -165,9 +166,6 @@ label {
 }
 
 .search-icon {
-    top: 14px !important;
+    top: 18px !important;
 }
 
-footer {
-   position: absolute !important;
-}

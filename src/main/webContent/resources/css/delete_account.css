@@ -34,7 +34,7 @@ body {
     border-radius: 10px; /* 둥근 모서리 */
     padding: 40px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-    margin-top: 20px; /* 상단 메뉴와 간격 */
+    margin-top: 70px; /* 상단 메뉴와 간격 */
     height: auto; /* 높이를 콘텐츠에 맞춤 */
 }
 

@@ -63,7 +63,7 @@ body {
     background-color: var(--theme-bg);
     padding: 40px;
     overflow: auto;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 /* 인기 아티스트 및 앨범 항목 */

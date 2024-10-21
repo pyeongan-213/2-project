@@ -18,6 +18,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="${root }js/finisher-header.es5.min.js" type="text/javascript"></script>
 <script>
 function checkCapsLock(event) {
     if (event.getModifierState("CapsLock")) {
@@ -51,6 +52,7 @@ $(function(){
 <body>
 
 	<c:import url="/WEB-INF/views/include/top_menu.jsp" />
+	<div class="header finisher-header" style="width: 100%; height: 600px;">
 	<div class="flex-container">
 
 		<div class="sidebar">
@@ -86,6 +88,7 @@ $(function(){
 			</form:form>
 		</div>
 	</div>
+</div>
 
 		<!-- fail 값이 true일 경우 SweetAlert로 경고창 띄우기 -->
 		<c:if test="${fail == true}">
@@ -122,5 +125,42 @@ $(function(){
 	</div>
 
 	<c:import url="/WEB-INF/views/include/bottom_info.jsp" />
+<script type="text/javascript">
+new FinisherHeader({
+  "count": 100,
+  "size": {
+    "min": 1,
+    "max": 8,
+    "pulse": 0
+  },
+  "speed": {
+    "x": {
+      "min": 0,
+      "max": 0.4
+    },
+    "y": {
+      "min": 0,
+      "max": 0.6
+    }
+  },
+  "colors": {
+    "background": "#191414",
+    "particles": [
+      "#fbfcca",
+      "#d7f3fe",
+      "#ffd0a7"
+    ]
+  },
+  "blending": "overlay",
+  "opacity": {
+    "center": 1,
+    "edge": 0
+  },
+  "skew": 0,
+  "shapes": [
+    "c"
+  ]
+});
+</script>
 </body>
 </html>

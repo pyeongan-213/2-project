@@ -9,6 +9,7 @@ body {
     color: #fff; /* 기본 텍스트 색상 */
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
 /* 컨테이너 설정 */
@@ -19,6 +20,7 @@ body {
     background-color: #282828; /* 카드 배경: 어두운 회색 */
     border-radius: 10px; /* 둥근 모서리 */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    margin-top: 150px;
 }
 
 /* 카드 스타일 */
@@ -164,10 +166,14 @@ form:errors {
 }
 
 .search-icon {
-    top: 14px !important;
+    top: 18px !important;
 }
 
 .join-btn {
 	font-size: 16px;
 	font-weight: normal;
+}
+
+canvas {
+    aspect-ratio: auto 1006 / 1200 !important;
 }

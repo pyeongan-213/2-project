@@ -22,6 +22,7 @@
 <link
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
 	rel="stylesheet">
+<script src="${root }js/finisher-header.es5.min.js" type="text/javascript"></script>
 <script>
 
 	var myVar = true;
@@ -145,6 +146,9 @@
 </head>
 <body>
 	<c:import url="/WEB-INF/views/include/top_menu.jsp" />
+	
+	<div class="header finisher-header" style="width: 100%; height: 700px;">
+	
 	<div class="wrapper">
 		<form:form action="${root }member/modifyPassword_pro" method="post"
 			modelAttribute="modifyPasswordBean">
@@ -205,7 +209,7 @@
 			<form:button type="submit" id="submit_btn" class="btn">확인</form:button>
 		</form:form>
 	</div>
-
+</div>
 	<c:if test="${success == true}">
 		<script>
     		swal.fire({
@@ -225,5 +229,43 @@
 	</c:if>
 
 	<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
+	
+	<script type="text/javascript">
+new FinisherHeader({
+  "count": 100,
+  "size": {
+    "min": 1,
+    "max": 8,
+    "pulse": 0
+  },
+  "speed": {
+    "x": {
+      "min": 0,
+      "max": 0.4
+    },
+    "y": {
+      "min": 0,
+      "max": 0.6
+    }
+  },
+  "colors": {
+    "background": "#191414",
+    "particles": [
+      "#fbfcca",
+      "#d7f3fe",
+      "#ffd0a7"
+    ]
+  },
+  "blending": "overlay",
+  "opacity": {
+    "center": 1,
+    "edge": 0
+  },
+  "skew": 0,
+  "shapes": [
+    "c"
+  ]
+});
+</script>
 </body>
 </html>

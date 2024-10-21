@@ -79,7 +79,7 @@
                 <c:when test="${sessionScope.loginMemberBean != null}">
                     <!-- 로그인이 된 상태: 드롭다운 메뉴 추가 -->
                     <div class="dropdown">
-                        <a href="javascript:void(0)" class="nav-link nickname" style="text-decoration: none;">${loginMemberBean.nickname } 님</a>
+                        <a href="javascript:void(0)" class="nav-link nickname">${loginMemberBean.nickname } 님</a>
                         <div class="dropdown-content">
                             <a href="${root}/member/info">내 정보</a>
                             <a href="${root}/temp/slide_popup">구독</a>
