@@ -105,6 +105,7 @@
 			<c:import url="/WEB-INF/views/include/sidebar.jsp" />
 		</div>
 
+	<div class="container_modify modify-page">
 		<div class="container_modify">
 			<div class="wrapper">
 				<form:form action="${root }member/modify_pro" method="post"
@@ -138,8 +139,7 @@
 						<i class='bx bxs-phone'></i>
 					</div>
 
-					<button type="button" id="changeBtn" class="btn infoID"
-						style="width: 80%; color: #303080; margin-left: 31px;">정보수정</button>
+					<button type="button" id="changeBtn" class="btn infoID">정보수정</button>
 
 					<div class="input-box info non">
 					<h2>잠시만 기다려주세요</h2>
@@ -147,14 +147,14 @@
 							placeholder="Certification Code" />
 						<form:errors path="authCode2" />
 						<i class='bx bx-envelope'></i>
-						<form:button type="submit" class="btn"
-							style=" width: 80%; margin-top: 50px; height: 40px; margin-left: 33px;">확인</form:button>
+						<form:button type="submit" class="btn">확인</form:button>
 					</div>
 
 				</form:form>
 			</div>
 		</div>
 	</div>
+</div>
 	<c:import url="/WEB-INF/views/include/bottom_info.jsp" />
 </body>
 </html>

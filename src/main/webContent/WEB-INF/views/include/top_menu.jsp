@@ -82,8 +82,8 @@
                         <a href="javascript:void(0)" class="nav-link nickname" style="text-decoration: none;">${loginMemberBean.nickname } 님</a>
                         <div class="dropdown-content">
                             <a href="${root}/member/info">내 정보</a>
-                            <a href="${root}/temp/payment">구독</a>
-                            <a href="${root }/board/main_sort?board_id=2">고객센터</a>
+                            <a href="${root}/temp/slide_popup">구독</a>
+                            <a href="${root }/board/main_sort?board_id=2">소식/정보</a>
                             <a href="${root}/member/logout">로그아웃</a>
                         </div>
                     </div>

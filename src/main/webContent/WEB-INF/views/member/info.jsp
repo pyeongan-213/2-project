@@ -28,6 +28,7 @@
     </div>
     
     <!-- 메인 콘텐츠 영역 -->
+   <div class="container_info info-page">
     <div class="container_info">
         <div class="wrapper">
             <form:form action="${root}member/modify" method="post" modelAttribute="infoMemberBean">
@@ -85,6 +86,7 @@
             </form:form>
         </div>
     </div>
+</div>
 </div>
     <!-- 푸터 추가 -->
     <c:import url="/WEB-INF/views/include/bottom_info.jsp" />

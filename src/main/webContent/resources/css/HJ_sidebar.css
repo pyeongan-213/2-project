@@ -66,7 +66,7 @@ nav h3 {
   align-items: center;
   --icon-width: 25px;
   position: absolute;
-  top: 8%;
+  top: 12%;
   right: -20%;
   width: calc(var(--icon-width) + 25px);
   height: calc(var(--icon-width) + 25px);
@@ -129,21 +129,22 @@ nav.nav-open .nav-links li {
 
 /* overlay 스타일 */
 .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0);
-  z-index: 1000;
-  transition: opacity 500ms ease;
-  opacity: 0;
-  pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1000;
+    transition: opacity 500ms ease;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .inputplaylistPlaceholder{
