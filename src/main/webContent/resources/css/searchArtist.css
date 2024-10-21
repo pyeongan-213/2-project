@@ -1,17 +1,25 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
 
-
+* {
+    outline: none;
+    box-sizing: border-box;
+    user-select: none; /* 모든 요소에서 드래그 방지 */
+}
 
 /* Base : 상단바 사이드바 하단바의 크기만큼 위치 이동 (필요하면 사용) */ 
 div#contentContainer{
-	margin-top : 60px;
+	margin-top : 100px;
 	margin-left : 245px;
 }
 
 
-
-
+.artist-photo{
+	position: relative;
+ 	margin-top : 100px;	
+}
+.artist-info {
+	padding-top : 110px;
+}
 div#artist-container {
 	padding : 20px 0;
 	position : absolute;

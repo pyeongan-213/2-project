@@ -19,9 +19,7 @@
 <link rel="icon" type="image/png" sizes="48x48"
 	href="${root}/img/tabicon.png">
 <!-- Bootstrap 및 사용자 정의 CSS -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
-	rel="stylesheet">
+
 <link rel="stylesheet" href="${root}/css/artistPage.css">
 </head>
 
@@ -39,7 +37,8 @@
 	<div id="contentContainer">
 
 		<div class="artist-info">
-			<!-- 가수 사진 -->
+			<!-- 가수 사진 --> 
+			
 			<c:choose>
 				<c:when test="${not empty artistImage}">
 					<img src="<c:out value='${artistImage}' />" alt="가수사진"
@@ -83,7 +82,9 @@
 				</p>
 			</div>
 		</div>
+		<br /> <br />
 		<hr />
+		
 		<!-- 앨범 리스트 -->
 		<div class="album-list">
 			<c:forEach var="album" items="${result.albumNameList}"

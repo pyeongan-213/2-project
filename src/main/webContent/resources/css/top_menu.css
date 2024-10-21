@@ -21,6 +21,7 @@
     color: #fff;
     text-decoration: none;
     margin-left: 10px; /* 로고를 오른쪽으로 20px 옮김 */
+    margin-top:-5px;
 }
 
 /* 중앙에 정렬하기 위한 컨테이너 */

@@ -175,7 +175,13 @@ nav.nav-open .nav-links li {
 	height : 600px;
 }
 
-.side-my-playlist{
-	font-size : 14px;
-	font-weight : 200;
+.Sideplaylistwrapper div a{
+	margin-top: 0px !important;
+	font-size : 14px !important;
+	font-weight : 400 ;
+}
+.Sideplaylistwrapper div a:hover{
+	background-color: #22ff22;
+	color: #111111;
+	font-weight : 600;
 }
