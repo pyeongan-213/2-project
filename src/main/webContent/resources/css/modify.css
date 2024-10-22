@@ -8,7 +8,7 @@
 body {
     background-color: #191414; /* 배경색: 검정 */
     font-family: 'Helvetica', 'Arial', sans-serif;
-    color: #fff; /* 기본 텍스트 색상 */
+    color: #f0f0f0; /* 기본 텍스트 색상 */
     margin: 0;
     padding: 0;
     display: flex;
@@ -50,7 +50,7 @@ body {
 }
 
 .modify-page .input-box input, select, textarea {
-    background-color: #f5f5f5; 
+    background-color: #f0f0f0; 
     border: none; /* 테두리 없음 */
     color: #191414; /* 텍스트 색상: 흰색 */
     width: 100%; /* 입력 필드가 전체 너비 차지 */
@@ -86,7 +86,7 @@ form:errors {
 /* 버튼 스타일 */
 .btn {
     background-color: #282828; 
-    color: white;
+    color: #f0f0f0;
     border: 2px solid #1DB954;
     border-radius: 50px; /* 둥근 모서리 */
     width: 100%; /* 버튼 너비 */
