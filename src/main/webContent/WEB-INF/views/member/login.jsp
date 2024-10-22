@@ -64,8 +64,13 @@
 		<div class="row">
 			<div class="col-sm-3"></div>
 			<div class="col-sm-6">
-				<div class="card shadow">
+				<div class="card shadow">															
 					<div class="card-body">
+					<!-- 로그인 로고 -->
+						<div class="login-logo text-center">
+							<img src="${root}/img/favicon.png" alt="로그인 로고"/>
+							<h1>DuckMusic에 로그인하기</h1>
+						</div>
 						<!-- 로그인 폼 -->
 						<form:form action="${root }member/login_pro" method='post'
 							modelAttribute="tempLoginMemberBean">

@@ -43,6 +43,8 @@
 		
 		$('#changeBtn').click(function() {
 			
+			$('#headerTitle').hide();
+			
 			$('.wrapper').css('height', '300px');
 			var email = $("#email").val();
 
@@ -118,14 +120,15 @@
 					<form:hidden path="password" />
 					<form:hidden path="email" />
 					<form:hidden path="join_date" />
-					<form:hidden path="role" />
 					<form:hidden path="logintype" />
 
+					<h1 id="headerTitle">회원정보 수정</h1>
+
 					<div class="input-box infoID">
-						<form:label path="age">나이</form:label>
-						<form:input path="age" value=""></form:input>
-						<form:errors path="age" style='color:red'/>
-						<i class='bx bx-home'></i>
+						<form:label path="nickname">닉네임</form:label>
+						<form:input path="nickname" placeholder="닉네임" value=""></form:input>
+						<form:errors path="nickname" style='color:red'/>
+						<i class='bx bxs-phone'></i>
 					</div>
 
 					<div class="input-box infoID">
@@ -136,11 +139,11 @@
 					</div>
 
 					<div class="input-box infoID">
-						<form:label path="nickname">닉네임</form:label>
-						<form:input path="nickname" placeholder="닉네임" value=""></form:input>
-						<form:errors path="nickname" style='color:red'/>
-						<i class='bx bxs-phone'></i>
-					</div>
+						<form:label path="birthday">생년월일</form:label>
+						<form:input path="birthday" type="date"></form:input>
+						<form:errors path="birthday" style='color:red'/>
+						<i class='bx bx-home'></i>
+					</div>									
 
 					<button type="button" id="changeBtn" class="btn infoID">정보수정</button>
 

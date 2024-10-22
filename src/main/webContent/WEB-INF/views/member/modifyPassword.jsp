@@ -154,7 +154,7 @@
 			modelAttribute="modifyPasswordBean">
 			<form:hidden path="authCode1" />
 			<form:hidden path="membername" />
-			<form:hidden path="age" />
+			<form:hidden path="birthday" />
 			<form:hidden path="join_date" />
 			<form:hidden path="real_name" />
 			<form:hidden path="role" />

@@ -86,7 +86,7 @@ public class MemberService {
 		
 		MemberBean tempModifyMemberBean = memberDao.getModifyMemberInfo(loginMemberBean.getMember_id());
 		modifyMemberBean.setMembername(tempModifyMemberBean.getMembername());
-		modifyMemberBean.setAge(tempModifyMemberBean.getAge());
+		modifyMemberBean.setBirthday(tempModifyMemberBean.getBirthday());
 		modifyMemberBean.setEmail(tempModifyMemberBean.getEmail());
 		modifyMemberBean.setReal_name(tempModifyMemberBean.getReal_name());
 		modifyMemberBean.setNickname(tempModifyMemberBean.getNickname());

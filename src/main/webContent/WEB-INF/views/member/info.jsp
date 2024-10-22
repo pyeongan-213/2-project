@@ -13,12 +13,6 @@
 	href="${root}/img/favicon.png">
 <link rel="stylesheet" href="${root}css/info.css" />
 <script src="${root }js/finisher-header.es5.min.js" type="text/javascript"></script>
-<style>
-    .required {
-        color: red; /* 빨간색으로 필수 항목 표시 */
-        margin-left: 3px; /* 라벨과 약간의 여백 */
-    }
-</style>
 </head>
 <body>
     <c:import url="/WEB-INF/views/include/top_menu.jsp" />
@@ -36,7 +30,7 @@
     <div class="container_info">
         <div class="wrapper">
             <form:form action="${root}member/modify" method="post" modelAttribute="infoMemberBean">
-                <h1>내 정보</h1>
+                <h1>회원 정보</h1>
                 
                 <div class="input-box">
                     <form:label path="membername">아이디</form:label>
@@ -46,15 +40,13 @@
                 
                 <div class="input-box">
                     <form:label path="nickname">닉네임</form:label>
-                    <span class="required">*</span> <!-- 빨간색 * 추가 -->
-                    <form:input path="nickname" placeholder="NickName" readonly="true" />
+                    <form:input path="nickname" class="editable" placeholder="NickName" readonly="true" />
                     <i class='bx bx-edit-alt'></i>
                 </div>
                 
                 <div class="input-box">
                     <form:label path="real_name">실명</form:label>
-                    <span class="required">*</span> <!-- 빨간색 * 추가 -->
-                    <form:input path="real_name" placeholder="Real Name" readonly="true" />
+                    <form:input path="real_name" class="editable" placeholder="Real Name" readonly="true" />
                     <i class='bx bxs-phone'></i>
                 </div>
                 
@@ -65,9 +57,8 @@
                 </div>
                 
                 <div class="input-box">
-                    <form:label path="age">나이</form:label>
-                    <span class="required">*</span> <!-- 빨간색 * 추가 -->
-                    <form:input path="age" placeholder="Age" readonly="true" />
+                    <form:label path="birthday">생년월일</form:label>
+                    <form:input path="birthday" class="editable" placeholder="birthday" readonly="true" />
                     <i class='bx bx-home'></i>
                 </div>
                 

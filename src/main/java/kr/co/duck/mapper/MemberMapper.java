@@ -14,7 +14,7 @@ public interface MemberMapper {
 	String checkMemberNameExist(String membername);
 
 	@Insert("insert into member values "
-			+ "(member_seq.nextval, #{membername}, #{password}, #{age}, #{email}, TO_CHAR(sysdate,'YYYY-MM-dd'), #{real_name}, #{nickname}, 'Duck 회원')")
+			+ "(member_seq.nextval, #{membername}, #{password}, #{birthday}, #{email}, TO_CHAR(sysdate,'YYYY-MM-dd'), #{real_name}, #{nickname}, 'Duck 회원')")
 	void addMemberInfo(MemberBean joinMemberBean);
 
 	//real_name, email(해진 추가)
@@ -32,10 +32,10 @@ public interface MemberMapper {
 	@Select("select member_id, nickname from member where membername = #{arg0}")
 	MemberBean getGoogleLoginMemberInfo(String membername);
 	
-	@Select("select membername, age, email, join_date, real_name, nickname, logintype from member where member_id = #{member_id}")
+	@Select("select membername, birthday, email, join_date, real_name, nickname, logintype from member where member_id = #{member_id}")
 	MemberBean getModifyMemberInfo(int member_id);
 	
-	@Update("update member set age = #{age}, email = #{email}, real_name = #{real_name}, nickname = #{nickname} where member_id = #{member_id}")
+	@Update("update member set birthday = #{birthday}, email = #{email}, real_name = #{real_name}, nickname = #{nickname} where member_id = #{member_id}")
 	void modifyMemberInfo(MemberBean modifyMemberBean);
 	
 	@Delete("delete from member where member_id = #{member_id}")

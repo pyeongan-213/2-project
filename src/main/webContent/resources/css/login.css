@@ -41,9 +41,9 @@ body {
 }
 
 input {
-    background-color: #333;
+    background-color: #f0f0f0;
     border: none;
-    color: #fff;
+    color: #191414;
     width: 100%;
     padding: 12px;
     border-radius: 5px;
@@ -68,7 +68,7 @@ input:focus {
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #ccc; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
+    color: #5f5f5f; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
     font-size: 15px; /* 아이콘 크기 */
     z-index: 10;
 }
@@ -86,7 +86,7 @@ label {
 /* 기본 버튼 스타일 */
 .btn {
     background-color: #1db954;
-    color: white;
+    color: #f0f0f0;
     border: none;
     border-radius: 50px;
     width: 100%;
@@ -108,7 +108,7 @@ label {
 
 .btn-link {
     background-color: transparent;
-    color: #fff;
+    color: #f0f0f0;
     border: none;
     font-size: 16px;
     cursor: pointer;
@@ -123,7 +123,7 @@ label {
 /* 구글 로그인 버튼 스타일 */
 .googleSignUp button {
     background-color: transparent;
-    color: #fff;
+    color: #f0f0f0;
     border: 2px solid #4285F4;
     border-radius: 50px;
     width: 100%;
@@ -166,6 +166,30 @@ label {
 }
 
 .search-icon {
-    top: 18px !important;
+    top: 21px !important;
 }
 
+.login-logo {
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 20px; /* 로고와 입력 필드 사이 간격 */
+}
+
+.login-logo img {
+    display: block;
+    margin: 0 auto;
+    width: 70px; /* 로고 크기 */
+    height: 70px;
+}
+
+h1 {
+	font-size: 24px;
+	color: #fff;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.search-input {
+    position: relative !important; /* 필요 시 추가 */
+    margin-top: 10px !important; /* 원하는 상단 여백 값으로 조정 */
+    margin-bottom: 10px !important; /* 필요한 경우 하단 여백 값 추가 */
+}

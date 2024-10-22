@@ -30,8 +30,8 @@ public class MemberBean implements Serializable {
 	private String password2; // 유저 비밀번호2 (임의 추가
 
 	// @Size(min = 1, max =3)
-	@Pattern(regexp = "[0-9]*")
-	private String age; // 유저 나이
+	//@Pattern(regexp = "[0-9]*")
+	private String birthday; // 유저 나이
 
 	@Email
 	private String email; // 유저 이메일
@@ -127,12 +127,12 @@ public class MemberBean implements Serializable {
 		this.password2 = password2;
 	}
 
-	public String getAge() {
-		return age;
+	public String getBirthday() {
+		return birthday;
 	}
 
-	public void setAge(String age) {
-		this.age = age;
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
 	}
 
 	public String getEmail() {

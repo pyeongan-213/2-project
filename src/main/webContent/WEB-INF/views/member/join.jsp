@@ -7,21 +7,33 @@
 <html>
 <head>
 <meta charset="UTF-8">
-  <title>회원가입</title>
-  <!-- 탭 아이콘 추가 -->
+<title>회원가입</title>
+<!-- 탭 아이콘 추가 -->
 <link rel="icon" type="image/png" sizes="80x80"
 	href="${root}/img/favicon.png">
-  
-  <!-- jQuery 라이브러리 추가 -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <link rel="stylesheet" href="${root }css/join.css" />
-  
-  <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
-<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<script src="${root }js/finisher-header.es5.min.js" type="text/javascript"></script>  
+<!-- jQuery 라이브러리 추가 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="${root }css/join.css" />
+
+<!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+	rel="stylesheet">
+<script src="${root }js/finisher-header.es5.min.js"
+	type="text/javascript"></script>
+	<style>
+    .required {
+        color: red; /* 빨간색으로 필수 항목 표시 */
+        margin-left: 3px; /* 라벨과 약간의 여백 */
+    }
+</style>
 </head>
 <script>
 	function checkMemberNameExist(){
@@ -74,7 +86,7 @@
 	
 	//사용자가 입력한 비밀번호 실시간으로 받아서 검증
 	function checkPasswordSecGrade(){
-		var password = document.getElementById("password").value;
+		var password = document.getElementById("passwordField").value;
 		var gradeElement = document.querySelector('.checkOutGrade');
 		
 		if(password.length === 0){
@@ -118,9 +130,11 @@
 
         if (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChars) {
             grade = "very strong";
-        } else if (hasUpperCase && hasLowerCase && hasNumber || (hasSpecialChars && hasLowerCase && hasNumber)) {
+        } else if ((hasUpperCase && hasLowerCase && hasNumber) || (hasSpecialChars && hasLowerCase && hasNumber)
+        		|| (hasUpperCase && hasLowerCase && hasSpecialChars) || (hasLowerCase && hasNumber && hasSpecialChars)) {
             grade = "strong";
-        } else if ((hasUpperCase && hasLowerCase) || (hasNumber && hasSpecialChars)) {
+        } else if ((hasUpperCase && hasLowerCase) || (hasNumber && hasSpecialChars) || (hasLowerCase && hasNumber)
+        		|| (hasUpperCase && hasNumber) || (hasUpperCase && hasSpecialChars) || (hasLowerCase && hasSpecialChars)) {
             grade = "medium";
         }
 
@@ -177,96 +191,104 @@
 
 <body>
 
-<c:import url="/WEB-INF/views/include/top_menu.jsp"/>
+	<c:import url="/WEB-INF/views/include/top_menu.jsp" />
 
-<div class="header finisher-header" style="width: 100%; height: 1100px;">
+	<div class="header finisher-header"
+		style="width: 100%; height: 1100px;">
 
-<div class="container_join">
-	<div class="row">
-		<div class="col-sm-3"></div>
-		<div class="col-sm-6">
-			<div class="card shadow">
-				<div class="card-body">
-					<form:form action="${root }member/join_pro" method="post" modelAttribute="joinMemberBean">
-						<form:hidden path="memberNameExist"/>
-						<div class="form-group">
-							<form:label path="nickname">닉네임</form:label>
-							<form:input path="nickname" class="form-control"/>
-							<form:errors path="nickname" style='color:red'/>
-						</div>
-						<div class="form-group">
-							<form:label path="membername">아이디</form:label>
-							<div class="input-group">
-								<form:input path="membername" class='form-control' onkeypress="resetMemberNameExist()"/>
-								<div class="input-group-append">
-									<button type="button" class="btn btn-primary" onclick="checkMemberNameExist()">중복확인</button>
+		<div class="container_join">
+			<div class="row">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-6">
+					<div class="card shadow">
+						<div class="card-body">
+						<h1>회원가입</h1>
+							<form:form action="${root }member/join_pro" method="post"
+								modelAttribute="joinMemberBean">
+								<form:hidden path="memberNameExist" />
+								<div class="form-group">
+									<form:label path="nickname">닉네임</form:label>
+									<form:input path="nickname" class="form-control" />
+									<form:errors path="nickname" style='color:red' />
 								</div>
-							</div> 
-							<form:errors path="membername" style='color:red'/>
-						</div>
-						<div class="form-group">
-							<form:label path="age">나이</form:label>
-							<form:input path="age" class="form-control"/>
-							<form:errors path="age" style='color:red'/>
-						</div>
-						<div class="form-group">
-							<form:label path="email">이메일</form:label>
-							<form:input path="email" class="form-control"/>
-							<form:errors path="email" style='color:red'/>
-						</div>
-						<div class="form-group">
-							<form:label path="real_name">실명</form:label>
-							<form:input path="real_name" class="form-control"/>
-							<form:errors path="real_name" style='color:red'/>
-						</div>
-						
-						<div class="form-group">
-                                <form:label path="password">비밀번호</form:label>
-                                <div class="input-group">
-                                    <form:password path="password" class="form-control" id="passwordField"/>
-                                    <div class="eyes input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-eye fa-lg"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div id="message" style="color:red"></div>                
-                                <form:errors path="password" style="color:red" />
-                            </div>
-                            
-						<div class="checkOutGrade">
-								보안 등급 : 
-						</div>
-						
-						<div class="form-group">
-							<form:label path="password2">비밀번호 확인</form:label>
-							<div class="input-group">
-								<form:password path="password2" class="form-control" id="passwordField2"/>
-								<div class="eyes-confirm input-group-append">
-									<span class="input-group-text">
-										<i class="fa fa-eye fa-lg"></i>
-									</span>
+								<div class="form-group">
+									<form:label path="membername">아이디</form:label>
+									<span class="required">*</span> <!-- 빨간색 * 추가 -->
+									<div class="input-group-membername">
+										<form:input path="membername" class='form-control'
+											onkeypress="resetMemberNameExist()" placeholder="영문 대소문자, 숫자 또는 이메일"/>
+										<div class="input-group-append">
+											<button type="button" class="btn btn-primary"
+												onclick="checkMemberNameExist()">중복확인</button>
+										</div>
+									</div>
+									<form:errors path="membername" style='color:red' />
 								</div>
-							</div>
-							<div id="message2" style="color:red"></div>
-							<form:errors path="password2" style="color:red"/>
-						</div>
+								<div class="form-group">
+									<form:label path="birthday">생년월일</form:label>
+									<form:input path="birthday" class="form-control" type="date" />
+									<form:errors path="birthday" style='color:red' />
+								</div>
+								<div class="form-group">
+									<form:label path="email">이메일</form:label>
+									<span class="required">*</span> <!-- 빨간색 * 추가 -->
+									<form:input path="email" class="form-control" />
+									<form:errors path="email" style='color:red' />
+								</div>
+								<div class="form-group">
+									<form:label path="real_name">실명</form:label>
+									<form:input path="real_name" class="form-control" />
+									<form:errors path="real_name" style='color:red' />
+								</div>
 
-						<div class="form-group">
-							<div class="text-right">
-								<form:button type="submit" class="btn btn-primary">회원가입</form:button>
-							</div>
+								<div class="form-group">
+									<form:label path="password" for="passwordField">비밀번호</form:label>
+									<span class="required">*</span> <!-- 빨간색 * 추가 -->
+									<div class="input-group">
+										<form:password path="password" class="form-control"
+											id="passwordField" oninput="checkPasswordSecGrade()" placeholder="영문 대소문자, 숫자 또는 특수기호"/>
+										<div class="eyes input-group-append">
+											<span class="input-group-text"> <i
+												class="fa fa-eye fa-lg"></i>
+											</span>
+										</div>
+									</div>
+									<div id="message" style="color: red"></div>
+									<form:errors path="password" style="color:red" />
+								</div>
+
+								<div class="form-group">
+									<form:label path="password2" for="passwordField2">비밀번호 확인</form:label>
+									<div class="input-group">
+										<form:password path="password2" class="form-control"
+											id="passwordField2" />
+										<div class="eyes-confirm input-group-append">
+											<span class="input-group-text"> <i
+												class="fa fa-eye fa-lg"></i>
+											</span>
+										</div>
+									</div>
+									<div id="message2" style="color: red"></div>
+									<form:errors path="password2" style="color:red" />
+								</div>
+
+								<div class="checkOutGrade">보안 등급 :</div>
+
+								<div class="form-group">
+									<div class="text-right">
+										<form:button type="submit" class="btn btn-primary">회원가입</form:button>
+									</div>
+								</div>
+							</form:form>
 						</div>
-					</form:form>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-</div>
-<!-- 회원가입 성공 시 SweetAlert 표시 -->
-<c:if test="${joinSuccess == true}">
-<script>
+	<!-- 회원가입 성공 시 SweetAlert 표시 -->
+	<c:if test="${joinSuccess == true}">
+		<script>
     Swal.fire({
         title: '가입이 완료되었습니다',
         text: '로그인 화면으로 이동합니다.',
@@ -282,11 +304,11 @@
         }
     });
 </script>
-</c:if>
+	</c:if>
 
-<c:import url="/WEB-INF/views/include/bottom_info.jsp"/>
+	<c:import url="/WEB-INF/views/include/bottom_info.jsp" />
 
-<script type="text/javascript">
+	<script type="text/javascript">
 new FinisherHeader({
   "count": 100,
   "size": {

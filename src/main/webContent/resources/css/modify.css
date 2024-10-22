@@ -8,7 +8,7 @@
 body {
     background-color: #191414; /* 배경색: 검정 */
     font-family: 'Helvetica', 'Arial', sans-serif;
-    color: #fff; /* 기본 텍스트 색상 */
+    color: #f0f0f0; /* 기본 텍스트 색상 */
     margin: 0;
     padding: 0;
     display: flex;
@@ -50,9 +50,9 @@ body {
 }
 
 .modify-page .input-box input, select, textarea {
-    background-color: #333; /* 입력 필드 배경: 다크 그레이 */
+    background-color: #f0f0f0; 
     border: none; /* 테두리 없음 */
-    color: #fff; /* 텍스트 색상: 흰색 */
+    color: #191414; /* 텍스트 색상: 흰색 */
     width: 100%; /* 입력 필드가 전체 너비 차지 */
     padding: 12px; /* 입력 필드 내부 패딩 */
     border-radius: 5px; /* 둥근 모서리 */
@@ -86,7 +86,7 @@ form:errors {
 /* 버튼 스타일 */
 .btn {
     background-color: #282828; 
-    color: white;
+    color: #f0f0f0;
     border: 2px solid #1DB954;
     border-radius: 50px; /* 둥근 모서리 */
     width: 100%; /* 버튼 너비 */
@@ -115,7 +115,7 @@ form:errors {
 }
 
 h2 {
-    text-align: left;
+    text-align: center;
     color: #1DB954; /* Spotify 그린 색상 */
     margin-bottom: 20px;
     font-size: 24px;
@@ -128,4 +128,12 @@ h2 {
 
 nav a {
   font-weight: 540 !important;
+}
+
+h1 {
+	font-size: 24px;
+	font-weight: bold;
+	color: #1DB954;
+	text-align: center;
+	margin-bottom: 20px;
 }
