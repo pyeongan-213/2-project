@@ -127,7 +127,7 @@ body {
 
 /* 마우스 올릴 때 재생 버튼이 나타남 */
 .artist:hover .play-button, .album:hover .play-button {
-    opacity: 0.95;
+    opacity: 0; /*미구현*/
 }
 
 /* 모두 표시 링크 스타일 */
