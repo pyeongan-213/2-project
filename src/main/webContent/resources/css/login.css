@@ -166,7 +166,7 @@ label {
 }
 
 .search-icon {
-    top: 18px !important;
+    top: 21px !important;
 }
 
 .login-logo {
@@ -186,4 +186,10 @@ h1 {
 	color: #fff;
 	font-weight: bold;
 	margin-bottom: 20px;
+}
+
+.search-input {
+    position: relative !important; /* 필요 시 추가 */
+    margin-top: 10px !important; /* 원하는 상단 여백 값으로 조정 */
+    margin-bottom: 10px !important; /* 필요한 경우 하단 여백 값 추가 */
 }
