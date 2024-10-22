@@ -12,12 +12,56 @@
 	src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <title>YouTube Search</title>
 <style>
-.album-table {
-	width: calc(100% - 10px); /* 좌우 여백 포함한 전체 너비 */
+.youtube-search-album-table {
+	width: 100%; /* 좌우 여백 포함한 전체 너비 */
 	min-width: 80%; /* 표의 최소 너비 설정 */
-	margin: 0 auto; /* 중앙 정렬 */
+	margin-right: 0; 
+}
+.youtube-search-album-table {
+	border-collapse: collapse; /* 셀 테두리가 겹치지 않도록 설정 */
+	overflow-y : scroll;
 }
 
+.youtube-search-album-table th, .youtube-search-album-table td {
+	padding: 10px;
+	text-align: center;
+	border: 1px solid #444; /* 테두리 색상과 두께 설정 */
+}
+
+.youtube-search-album-table tr {
+	height: 50px;
+}
+
+/* 테이블 헤더 구분선 */
+.youtube-search-album-table th {
+	background-color: #343434; /* 헤더 배경색 */
+	border-bottom: 2px solid #333; /* 헤더 아래 테두리 */
+}
+
+/* 테이블 셀 구분선 */
+.youtube-search-album-table td {
+	border-bottom: 1px solid #444; /* 셀 간 구분선 */
+}
+
+.youtube-search-album-table tr:hover {
+	background-color: #464A52;
+	-webkit-box-shadow: 0 6px 6px -6px #0E1119;
+	-moz-box-shadow: 0 6px 6px -6px #0E1119;
+	box-shadow: 0 6px 6px -6px #0E1119;
+}
+
+.youtube-search-album-table thead th h3 {
+	font-weight: bold;
+	font-size: 1em;
+	text-align: center;
+	color: #33FF33;
+}
+.youtube-search-album-table tbody td {
+	
+	font-size: 1em;
+	text-align: center;
+	color: #EEEEEE;
+}
 .img_album {
 	height: 90px;
 	width: 120px;
@@ -34,7 +78,7 @@
 
 	<c:if test="${not empty searchResults}">
 		<div class="album-table-container">
-			<table border="1" class="album-table">
+			<table border="1" class="youtube-search-album-table">
 				<thead>
 					<tr>
 						<th>앨범</th>

@@ -17,6 +17,7 @@
 <!-- 탭 아이콘 추가 -->
 <link rel="icon" type="image/png" sizes="48x48"
 	href="${root}/img/tabicon.png">
+
 <!-- CSS 및 Bootstrap 아이콘 추가 -->
 <link href="${root}/css/searchAlbum.css" rel="stylesheet"
 	type="text/css">
@@ -24,7 +25,18 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- 스타일 추가 -->
+<style>
+</style>
+
+<!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
 
 </head>
 
@@ -161,7 +173,19 @@
 																				'open');
 															},
 															error : function() {
-																alert('Failed to load search results.');
+																Swal.fire({
+																	icon: 'error',
+																	title: '로그인이 필요합니다!',
+																	text: '확인 버튼을 누르면 로그인 화면으로 이동합니다',
+																	background: '#3A3A3A',
+																	color: '#fff',
+																	confirmButtonColor: '#1db954',
+																	confirmButtonText: '확인'
+																}).then((result) => {
+																  if (result.isConfirmed) {
+																    window.location.href = "${root}/member/login"; // 메인 페이지로 리디렉션
+																  }
+																});
 															}
 														});
 											});
