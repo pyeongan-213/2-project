@@ -32,7 +32,7 @@ public interface BoardMapper {
 			+ "from boardpost c "
 			+ "join member m on c.member_id = m.member_id "
 			+ "where c.like_count > 0 "
-			+ "order by like_count desc "
+			+ "order by like_count desc, c.boardpost_id desc "
 			+ "fetch first 5 rows only")
 	List<ContentBean> getBestList();
 	

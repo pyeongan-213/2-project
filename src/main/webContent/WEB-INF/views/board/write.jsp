@@ -49,9 +49,9 @@
 		</div> --%>
 	</header>
 	<div class="board-container">
-		<div style="margin-left: 30px">
+		<div style="margin-left: 10px">
 		<form:form action="${root}board/write_pro" method="post" modelAttribute="writeContentBean" enctype="multipart/form-data">
-			<div style="margin-bottom: 15px;">
+			<div style="margin: 25px 0 15px;">
 				<span class="custom-select"> 
 				<form:select path="board_id" id="drop-down">
 					<form:option value="-1" disabled="disabled" selected="selected" style="color: #A9A9A9;">카테고리</form:option>
