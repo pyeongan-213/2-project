@@ -108,6 +108,23 @@ public class ManiaDBController {
 
 	}
 
+	@GetMapping("search/CrawlingAlbumDataMelon")
+	public String parseAlbumFromChart(@RequestParam("album_id") String album_id, Model model) {
+		try {
+			AlbumDetail result = crawlingAlbumMain.getAlbumDetail(album_id);
+
+			model.addAttribute("result", result);
+
+			return "search/searchAlbumInfo";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "main";
+		}
+
+	}
+	
+	
 	// 메인페이지에서 상세페이지로 넘어가는 요청을 처리하는 매핑; 앨범 클래스
 	@GetMapping("search/crawlingArtistMain")
 	public String parseArtistToMain(@RequestParam("artist") String artist,

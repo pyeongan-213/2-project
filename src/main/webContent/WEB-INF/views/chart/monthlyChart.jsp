@@ -3,32 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var='root' value="${pageContext.request.contextPath}" />
-
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="">
-<meta name="author" content="">
-<title>DuckMusic</title>
-
-<!-- 탭 아이콘 추가 -->
 <link rel="icon" type="image/png" sizes="48x48"
 	href="${root}/img/tabicon.png">
-
 <!-- CSS 및 Bootstrap 아이콘 추가 -->
-<link href="${root}/css/searchAlbum.css" rel="stylesheet"
-	type="text/css">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
-	rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- 스타일 추가 -->
-<style>
-</style>
+<link href="${root}/css/chart.css" rel="stylesheet" type="text/css">
+<meta charset="UTF-8">
+<title>Insert title here</title>
 
 <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
 <link
@@ -38,8 +21,17 @@
 	src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
 
-</head>
+<!-- 간단한 css 추가 -->
+<style>
+.img_album img{
+width : 120px;
+height : 100px;
+}
+</style>
 
+<!-- 자바스크립트 코드 추가 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
 <body>
 	<header>
 		<!-- top_menu.jsp 포함 -->
@@ -51,72 +43,44 @@
 		</div>
 	</header>
 
-	<div id="contentContainer">
-		<div class="background"></div>
-		<section>
-			<div class="album-info">
-				<div class="album-art">
-					<img src="${result.image}" alt="이미지를 불러올 수 없습니다." />
-					<div class="actions">
-						<div class="bookmark"></div>
-					</div>
-				</div>
-				<div class="album-details">
-					<h1>${result.albumName}</h1>
-					<h4>Artist : ${result.artistName}</h4>
-
-					<p class="album-description">
-					<h6>
-						<c:choose>
-
-							<c:when test="${fn:length(result.description) > 800}">
-
-								<span id="short-description"> <c:out
-										value="${fn:substring(result.description, 0, 800)}" />...
-								</span>
-								<span id="full-description" style="display: none;"> <c:out
-										value="${result.description}" />
-								</span>
-								<button id="toggle-description" onclick="toggleDescription()">더보기</button>
-							</c:when>
 
 
-							<c:otherwise>
-								<c:out value="${result.description}" />
-							</c:otherwise>
-						</c:choose>
-					</h6>
-					</p>
-				</div>
-			</div>
 
-			<table class="album-table">
-				<thead>
-					<tr>
-						<th class="column-count"><h3>#</h3></th>
-						<th class="column-title"><h3>제목</h3></th>
-						<th class="column-playtime"><h3>재생시간</h3></th>
-						<th class="column-action"><h3></h3></th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="track" items="${result.trackList}"
-						varStatus="status">
-						<tr>
-							<td class="column-count">${status.count}</td>
-							<td class="column-title">${track}</td>
-							<td class="column-playtime">${result.runningTimeList[status.index]}</td>
-							<td class="column-action">
-								<!-- 모달을 통해 YouTube 검색 페이지 열기 -->
-								<button class="openModal" data-track="${track}"
-									data-artist="${result.artistName}">+</button>
-							</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-		</section>
-	</div>
+	<!-- body -->
+
+	<table border="1" class="chart-selector">
+		<tr>
+			<th onclick="location.href='${root}/chart/melonChart'">Top 100</th>
+			<th onclick="location.href='${root}/chart/dailyChart'">일간 차트</th>
+			<th onclick="location.href='${root}/chart/weeklyChart'">주간 차트</th>
+			<th class="chart-selector-selected">월간 차트</th>
+		</tr>
+	</table>
+	<table border="1" class="chart-chart-table">
+		<thead>
+			<tr>
+				<th>Rank</th>
+				<th>이미지</th>
+				<th>Title</th>
+				<th>Album</th>
+				<th>추가하기</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach var="song" items="${songs}">
+				<tr>
+					<td>${song.rank}</td>
+					<td><img src="${song.img}" alt="NaN" /></td>
+					<td><h4>${song.title}</h4>
+						<h6>${song.artist}</h6></td>
+					<td><h6>${song.album}</h6></td>
+					<td><button class="openModal" data-track="${song.title}"
+							data-artist="${song.artist}">+</button></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+
 
 	<!-- Modal 팝업 -->
 	<div class="modal-wrapper">
@@ -197,25 +161,6 @@
 						});
 	</script>
 
-	<script>
-		function toggleDescription() {
-			const shortDesc = document.getElementById('short-description');
-			const fullDesc = document.getElementById('full-description');
-			const toggleButton = document.getElementById('toggle-description');
-
-			if (fullDesc.style.display === 'none') {
-				// 전체 텍스트를 보여주고 버튼 텍스트를 '접기'로 변경
-				shortDesc.style.display = 'none';
-				fullDesc.style.display = 'inline';
-				toggleButton.innerText = '접기';
-			} else {
-				// 전체 텍스트를 숨기고 짧은 설명과 '더보기' 버튼 표시
-				shortDesc.style.display = 'inline';
-				fullDesc.style.display = 'none';
-				toggleButton.innerText = '더보기';
-			}
-		}
-	</script>
-
+	<script src="${root}/js/playlist.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package kr.co.duck.controller;
+package kr.co.duck.crawling;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class ChartController {
+public class CrawlingDailyChart {
 
-    @RequestMapping("/chart/chartMain")
-    public String getMelonChart(Model model) {
+    @RequestMapping("/chart/dailyChart")
+    public String getDailyChart(Model model) {
         List<Song> songs = new ArrayList<>();
 
         try {
-            String url = "https://www.melon.com/chart/month/index.htm";
+            String url = "https://www.melon.com/chart/day/index.htm";
             Document doc = Jsoup.connect(url)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
                     .get();
@@ -28,11 +28,17 @@ public class ChartController {
             Elements rows = doc.select("table tbody tr");
 
             for (Element row : rows) {
+            	String album_id = row.select(".ellipsis.rank03 a").attr("href");
+            	album_id = album_id.replace("javascript:melon.link.goAlbumDetail('","" );
+            	album_id = album_id.replace("');","" );
+            	//System.out.println(album_id);		
+            	
                 String title = row.select(".ellipsis.rank01 a").text(); // 곡 제목
+                String img = row.select(".image_typeAll img").attr("src");
                 String artist = row.select(".checkEllipsis a").text(); // 아티스트 (중복 제거)
                 String album = row.select(".ellipsis.rank03 a").text(); // 앨범명
                 String rank = row.select(".rank").text(); // 순위
-                songs.add(new Song(rank, title, artist, album)); // Song 객체 생성 및 리스트에 추가
+                songs.add(new Song(album_id, rank, img ,title, artist, album)); // Song 객체 생성 및 리스트에 추가
             }
 
             System.out.println("Number of songs: " + songs.size());
@@ -42,24 +48,45 @@ public class ChartController {
         }
 
         model.addAttribute("songs", songs); // JSP로 데이터 전달
-        return "chart/chartMain"; // melonChart.jsp로 이동
+        return "chart/dailyChart"; // melonChart.jsp로 이동
     }
 
     // Song 클래스: 멜론 차트 정보를 담는 객체
     public static class Song {
+    	private String album_id;
         private String rank;
+        private String img;
         private String title;
         private String artist;
         private String album;
 
-        public Song(String rank, String title, String artist, String album) {
-            this.rank = rank;
-            this.title = title;
-            this.artist = artist;
-            this.album = album;
-        }
+       
 
-        public String getRank() {
+        
+
+		public Song(String album_id, String rank, String img, String title, String artist, String album) {
+			super();
+			this.album_id = album_id;
+			this.rank = rank;
+			this.img = img;
+			this.title = title;
+			this.artist = artist;
+			this.album = album;
+		}
+
+		public String getAlbum_id() {
+			return album_id;
+		}
+
+		public void setAlbum_id(String album_id) {
+			this.album_id = album_id;
+		}
+
+		public String getImg() {
+			return img;
+		}
+
+		public String getRank() {
             return rank;
         }
 
