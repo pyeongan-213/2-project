@@ -1,4 +1,4 @@
-package kr.co.duck.controller;
+package kr.co.duck.crawling;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,15 +8,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class ChartController {
+public class CrawlingMonthlyChart {
 
-    @RequestMapping("/chart/chartMain")
-    public String getMelonChart(Model model) {
+	@RequestMapping("/chart/monthlyChart")
+    public String getMonthlyChart(Model model) {
         List<Song> songs = new ArrayList<>();
 
         try {
@@ -29,10 +30,11 @@ public class ChartController {
 
             for (Element row : rows) {
                 String title = row.select(".ellipsis.rank01 a").text(); // 곡 제목
+                String img = row.select(".image_typeAll img").attr("src");
                 String artist = row.select(".checkEllipsis a").text(); // 아티스트 (중복 제거)
                 String album = row.select(".ellipsis.rank03 a").text(); // 앨범명
                 String rank = row.select(".rank").text(); // 순위
-                songs.add(new Song(rank, title, artist, album)); // Song 객체 생성 및 리스트에 추가
+                songs.add(new Song(rank, img ,title, artist, album)); // Song 객체 생성 및 리스트에 추가
             }
 
             System.out.println("Number of songs: " + songs.size());
@@ -42,37 +44,46 @@ public class ChartController {
         }
 
         model.addAttribute("songs", songs); // JSP로 데이터 전달
-        return "chart/chartMain"; // melonChart.jsp로 이동
+        return "chart/monthlyChart"; // melonChart.jsp로 이동
     }
 
     // Song 클래스: 멜론 차트 정보를 담는 객체
-    public static class Song {
-        private String rank;
-        private String title;
-        private String artist;
-        private String album;
+	 public static class Song {
+	        private String rank;
+	        private String img;
+	        private String title;
+	        private String artist;
+	        private String album;
 
-        public Song(String rank, String title, String artist, String album) {
-            this.rank = rank;
-            this.title = title;
-            this.artist = artist;
-            this.album = album;
-        }
+	       
 
-        public String getRank() {
-            return rank;
-        }
+	        public Song(String rank, String img, String title, String artist, String album) {
+				super();
+				this.rank = rank;
+				this.img = img;
+				this.title = title;
+				this.artist = artist;
+				this.album = album;
+			}
 
-        public String getTitle() {
-            return title;
-        }
+			public String getImg() {
+				return img;
+			}
 
-        public String getArtist() {
-            return artist;
-        }
+			public String getRank() {
+	            return rank;
+	        }
 
-        public String getAlbum() {
-            return album;
-        }
-    }
-}
+	        public String getTitle() {
+	            return title;
+	        }
+
+	        public String getArtist() {
+	            return artist;
+	        }
+
+	        public String getAlbum() {
+	            return album;
+	        }
+	    }
+	}

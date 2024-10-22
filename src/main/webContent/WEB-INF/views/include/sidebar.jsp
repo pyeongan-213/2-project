@@ -31,7 +31,9 @@
 		<ul class="nav-links" style="padding: 0;">
 			<li class="link"><a href="${root}/board/main">Board</a></li>
 			<li class="link"><a href="${root}/quiz/quizlobby">Quiz</a></li>
-			<li class="link"><a href="${root}/search/randomAlbumPage">RANDOM</a></li>
+			<li class="link"><a href="${root}/chart/melonChart">Chart</a></li>
+			
+			<%-- <li class="link"><a href="${root}/search/randomAlbumPage">RANDOM</a></li> --%>
 
 		</ul>
 		<div class="SideplaylistMakerWrapper">
