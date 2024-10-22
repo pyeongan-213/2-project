@@ -37,6 +37,17 @@
         height: auto;
 }
 
+.error-message {
+  color: #b71c1c; /* 짙은 빨간색으로 경고 강조 */
+  background-color: #fcd4d6; /* 연한 빨간색 배경 */
+  opacity: 0.9;
+  border: 1px solid #b71c1c; /* 에러 메시지 테두리 */
+  padding: 5px 10px; /* 메시지 주변 여백 */
+  border-radius: 5px; /* 둥근 테두리 */
+  font-weight: bold;
+  font-size: 14px; /* 적당한 크기 */
+  display: inline-block;
+}
 </style>
 </head>
 <body>
@@ -44,9 +55,7 @@
 		<!-- top_menu.jsp 포함 -->
 		<jsp:include page="/WEB-INF/views/include/top_menu.jsp" />
 		<!-- Sidebar 포함 -->
-		<%-- <div class="sidebar">
-		<jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
-		</div> --%>
+		<%-- <jsp:include page="/WEB-INF/views/include/sidebar.jsp" /> --%>
 	</header>
 	<div class="board-container">
 		<div style="margin-left: 10px">
@@ -61,9 +70,9 @@
 				</form:select>
 				</span>
 				<span style="margin-left: 10px;">
-				<form:input path="content_title" style="width: 400px; font-size: 16px; padding: 3px; margin-right: 20px;" 
+				<form:input path="content_title" style="width: 400px; font-size: 16px; padding: 3px; margin-right: 5px;" 
 				placeholder="제목" />
-				<form:errors path="content_title" style='color:red'/>
+				<form:errors path="content_title" cssClass="error-message"/>
 				</span>
 			</div>
 			
