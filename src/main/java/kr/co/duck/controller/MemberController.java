@@ -156,7 +156,7 @@ public class MemberController {
 	    memberService.modifyMemberInfo(modifyMemberBean);
 
 	    // 세션에 있는 로그인 된 회원 정보 갱신
-	    loginMemberBean.setAge(modifyMemberBean.getAge());
+	    loginMemberBean.setBirthday(modifyMemberBean.getBirthday());
 	    loginMemberBean.setNickname(modifyMemberBean.getNickname());
 	    loginMemberBean.setReal_name(modifyMemberBean.getReal_name());
 

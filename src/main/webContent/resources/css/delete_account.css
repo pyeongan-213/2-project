@@ -41,6 +41,9 @@ body {
 h2 {
     color: #1db954; /* 강조 색상 */
     margin-bottom: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .delete_container .input-group {
@@ -52,9 +55,9 @@ h2 {
     position: absolute;
     top: 35%;
     right: 10px;
-    transform: translateY(-50%);
+    transform: translateY(-40%);
     cursor: pointer;
-    color: #ccc; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
+    color: #5f5f5f; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
     font-size: 15px; /* 아이콘 크기 */
     z-index: 10;
 }
@@ -74,9 +77,9 @@ label {
 
 .delete_container input[type="password"],
 .delete_container input[type="text"] {
-    background-color: #333;
+    background-color: #f5f5f5;
     border: none;
-    color: #fff;
+    color: #191414;
     width: 100%;
     padding: 12px;
     border-radius: 5px;

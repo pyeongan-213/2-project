@@ -41,9 +41,9 @@ body {
 }
 
 input {
-    background-color: #333;
+    background-color: #f5f5f5;
     border: none;
-    color: #fff;
+    color: #191414;
     width: 100%;
     padding: 12px;
     border-radius: 5px;
@@ -68,7 +68,7 @@ input:focus {
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #ccc; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
+    color: #5f5f5f; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
     font-size: 15px; /* 아이콘 크기 */
     z-index: 10;
 }
@@ -169,3 +169,21 @@ label {
     top: 18px !important;
 }
 
+.login-logo {
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 20px; /* 로고와 입력 필드 사이 간격 */
+}
+
+.login-logo img {
+    display: block;
+    margin: 0 auto;
+    width: 70px; /* 로고 크기 */
+    height: 70px;
+}
+
+h1 {
+	font-size: 24px;
+	color: #fff;
+	font-weight: bold;
+	margin-bottom: 20px;
+}

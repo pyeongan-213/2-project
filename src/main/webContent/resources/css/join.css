@@ -39,9 +39,9 @@ body {
 }
 
 input {
-    background-color: #333; /* 입력 필드 배경: 다크 그레이 */
+    background-color: #F5F5F5; 
     border: none; /* 테두리 없음 */
-    color: #fff; /* 텍스트 색상: 흰색 */
+    color: #191414; /* 텍스트 색상: 흰색 */
     width: 100%; /* 입력 필드가 전체 너비 차지 */
     padding: 12px; /* 입력 필드 내부 패딩 */
     border-radius: 5px; /* 둥근 모서리 */
@@ -59,6 +59,15 @@ input:focus {
     position: relative;
 }
 
+input[type="date"] {
+	font-size: 16px;
+	color: #919497;
+}
+
+input::placeholder {
+	font-size: 12px;
+}
+
 /* 눈 아이콘의 위치 및 스타일 */
 .eyes {
     position: absolute;
@@ -66,7 +75,7 @@ input:focus {
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #ccc; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
+    color: #5f5f5f; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
     font-size: 15px; /* 아이콘 크기 */
     z-index: 10;
 }
@@ -77,7 +86,7 @@ input:focus {
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #ccc; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
+    color: #5f5f5f; /* 아이콘 색상: 더 눈에 띄게 흰색으로 변경 */
     font-size: 15px; /* 아이콘 크기 */
     z-index: 10;
 }
@@ -126,7 +135,7 @@ form:errors {
 /* 중복 확인 버튼 */
 .input-group-append .btn {
     background-color: #1DB954;
-    color: white;
+    color: #F5F5F5;
     border: none;
     padding: 10px 20px;
     font-size: 14px;
@@ -174,6 +183,44 @@ form:errors {
 	font-weight: normal;
 }
 
-canvas {
-    aspect-ratio: auto 1006 / 1200 !important;
+/* 아이디 입력창과 중복확인 버튼만 적용되는 스타일 */
+.input-group-membername {
+    display: flex;
+    align-items: center; /* 입력창과 버튼이 수직으로 중앙에 정렬 */
+}
+
+.input-group-membername .btn {
+    background-color: #1DB954; /* 중복확인 버튼 배경색 */
+    color: white;
+    border: none;
+    font-size: 14px; /* 폰트 크기 */
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 100%; /* 버튼 높이를 입력창과 동일하게 */
+    padding: 12px 20px; /* 버튼의 내부 여백 조정 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    margin-left: 10px; /* 입력 필드와 버튼 간의 간격 */
+    display: flex;
+    align-items: center; /* 텍스트를 수직 가운데 정렬 */
+    justify-content: center; /* 텍스트를 수평 가운데 정렬 */
+    transform: translateY(3px); /* 버튼을 2px 아래로 이동 */
+}
+
+.input-group-membername .btn:hover {
+    background-color: #1ed760; /* 호버 시 밝은 그린 */
+}
+
+/* 아이디 입력 필드와 중복확인 버튼을 한 줄에 맞추기 */
+.input-group-membername .form-control {
+    padding-right: 10px; /* 입력 필드와 버튼의 간격 조정 */
+    height: 100%; /* 입력 필드와 버튼의 높이 동일하게 설정 */
+}
+
+h1 {
+	font-size: 24px;
+	font-weight: bold;
+	color: #1DB954;
+	margin-bottom: 20px;
+	text-align: center;
 }
