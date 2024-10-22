@@ -37,6 +37,18 @@
         });
     });
 </script>
+
+<style>
+:root {
+    --body-font: "Inter", sans-serif;
+    --theme-bg: #191414;
+    --body-color: #808191;
+    --button-bg: #353340;
+    --border-color: rgba(128, 129, 145, 0.24);
+    --video-bg: #252936;
+    --delay: 0s;
+}
+</style>
 </head>
 <body>
 	<div class="navbar fixed-top">

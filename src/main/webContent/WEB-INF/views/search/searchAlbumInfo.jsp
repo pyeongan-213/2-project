@@ -84,7 +84,7 @@
 						<th class="column-count"><h3>#</h3></th>
 						<th class="column-title"><h3>제목</h3></th>
 						<th class="column-playtime"><h3>재생시간</h3></th>
-						<th class="column-action"><h3>-</h3></th>
+						<th class="column-action"><h3></h3></th>
 					</tr>
 				</thead>
 				<tbody>
