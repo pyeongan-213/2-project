@@ -31,6 +31,11 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <!-- 유튜브 API 로드 -->
 
+<!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+
 <% 
     // JSP에서 로그인된 사용자 정보 추출
     String userId = (session.getAttribute("loginMemberBean") != null)
@@ -84,6 +89,20 @@
 			</div>
 			<!-- 퀴즈 게임 영역 -->
 			<div class="quiz-room-game-center">
+			  <div class="noite"></div> <!-- 배경 요소 추가 -->
+		
+		    <div class="constelacao"></div> <!-- 별자리 요소 추가 -->
+		
+		    <div class="lua">
+		        <div class="textura"></div>
+		    </div> <!-- 달 요소 추가 -->
+		
+		    <div class="chuvaMeteoro"></div> <!-- 유성 요소 추가 -->
+		
+		    <div class="floresta">
+		        <img src="https://raw.githubusercontent.com/interaminense/starry-sky/master/src/img/bgTree.png" alt="" />
+		    </div> <!-- 숲 이미지 추가 -->
+			
 				<!-- 정답자 및 곡 정보 (재생 버튼 위) -->
 				<div id="answer-info" class="answer-info hidden">
 					<p id="correct-player" class="answer-player"></p>
@@ -126,7 +145,7 @@
 					<button id="tooltip-minimize-btn">ㅡ</button>
 				</div>
 				<div id="tooltip-body" class="tooltip-body">
-					<p>&nbsp;!준비완료(필수)</p>
+					<p>&nbsp;!준비완료(방장제외)</p>
 					<p>&nbsp;!게임타입변경</p>
 					<p>&nbsp;!힌트 or !hint</p>
 					<p>&nbsp;!스킵 or !skip</p>

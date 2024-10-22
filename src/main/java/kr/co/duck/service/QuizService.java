@@ -103,6 +103,7 @@ public class QuizService {
         System.out.println("뮤직 데이터 DB 저장 완료");
     }
 
+    
     @Transactional(readOnly = true)
     public List<QuizMusic> getQuizByQuizId(int quizId) {
         List<QuizMusic> quizMusicList = quizMusicRepository.findByQuizId(quizId);

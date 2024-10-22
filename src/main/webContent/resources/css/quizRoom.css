@@ -5,13 +5,226 @@
 	user-select: none;
 }
 
-html, body {
+/* 전체 HTML 및 배경 스타일 */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: verdana;
+  background-color: #003A69;
+}
+
+/* 배경 관련 스타일 추가 */
+.noite {
+  background: -webkit-linear-gradient(top, rgb(0, 0, 0) 50%, rgb(25, 19, 39) 80%, rgb(43, 32, 72));
+  width: 130%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+.constelacao {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  animation: rotate 600s infinite linear;
+}
+
+.estrela {
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  animation-name: estrela;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.estrela.style1 { animation-duration: 0.5s; animation-name: estrela; }
+.estrela.style2 { animation-duration: 1s; animation-name: estrela; }
+.estrela.style3 { animation-duration: 1.5s; animation-name: estrela; }
+.estrela.style4 { animation-duration: 2s; animation-name: estrelaDestacada; }
+
+.estrela.tam1 { width: 1px; height: 1px; }
+.estrela.tam2 { width: 2px; height: 2px; }
+.estrela.tam3 { width: 3px; height: 3px; }
+
+.estrela.opacity1 { opacity:  1; }
+.estrela.opacity2 { opacity: .5; }
+.estrela.opacity3 { opacity: .1; }
+
+.meteoro {
+  position: absolute;
+  background-color: #fff;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+}
+
+.meteoro:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+  width: 0;
+  height: 0;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  border-left: 85px solid white;
+  position: absolute;
+  left: 2px;
+  top: 0;
+}
+
+.meteoro.style1 { animation-name: meteoroStyle1; }
+.meteoro.style2 { animation-name: meteoroStyle2; }
+.meteoro.style3 { animation-name: meteoroStyle3; }
+.meteoro.style4 { animation-name: meteoroStyle4; }
+
+.lua {
+  position: absolute;
+  right: 350px;
+  top: 150px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  box-shadow: 0 0 160px 0px #fff, 0 0 30px -4px #fff, 0 0 8px 2px rgba(255, 255, 255, 0.26);
+  background-color: #fff;
+  animation-name: lua;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 10s;
+}
+
+.lua .textura {
+  background-image: url(https://raw.githubusercontent.com/interaminense/starry-sky/master/src/img/bgMoon.png);
+  background-position: center;
+  background-size: 100%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: 0.4;
+}
+
+.floresta {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.floresta img {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+@keyframes escurecer {
+  0%   { top: 0; }
+  100% { top: 100%; }
+}
+
+@keyframes estrela {
+  0% {
+    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.05);
+  }
+}
+
+@keyframes estrelaDestacada {
+  0% {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 1);
+  }
+  20% {
+    background-color: #FFC4C4;
+    box-shadow: 0 0 10px 0px rgb(255, 196, 196, 1);
+  }
+  80% {
+    background-color: #C4CFFF;
+    box-shadow: 0 0 10px 0px rgb(196, 207, 255, 1);
+  }
+  100% {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes meteoroStyle1 {
+  0% { opacity: 0; right: 300px; top: 100px; }
+  30% { opacity: .3; }
+  60% { opacity: .3; }
+  100% { opacity: 0; right: 1000px; top: 600px; }
+}
+
+@keyframes meteoroStyle2 {
+  0% { opacity: 0; right: 700px; top: 100px; }
+  30% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { opacity: 0; right: 1400px; top: 600px; }
+}
+
+@keyframes meteoroStyle3 {
+  0% { opacity: 0; right: 300px; top: 300px; }
+  30% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { opacity: 0; right: 1000px; top: 800px; }
+}
+
+@keyframes meteoroStyle4 {
+  0% { opacity: 0; right: 700px; top: 300px; }
+  30% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { opacity: 0; right: 1400px; top: 800px; }
+}
+
+@keyframes lua {
+  0%{
+    box-shadow: 0 0 160px 0px #fff, 0 0 30px -4px #fff, 0 0 8px 2px rgba(255, 255, 255, 0.26);
+  }
+  50% {
+    box-shadow: 0 0 80px 0px #fff, 0 0 30px -4px #fff, 0 0 8px 2px rgba(255, 255, 255, 0.26);
+  }
+  100% {
+    box-shadow: 0 0 160px 0px #fff, 0 0 30px -4px #fff, 0 0 8px 2px rgba(255, 255, 255, 0.26);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+
+
+/* html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
 	font-family: verdana;
 	background-color: #003A69;
-}
+} */
 
 .quiz-room-container {
 	display: flex;
@@ -33,7 +246,7 @@ html, body {
 /* 플레이어 목록 전체 컨테이너 */
 .player-list-container {
     position: absolute;
-    top: 13%;  /* 세로 가운데 정렬 */
+    top: 15%; /* 세로 가운데 정렬 */
     left: 12%; /* 가로 가운데 정렬 */
     transform: translate(-50%, -50%); /* 정중앙으로 이동 */
     height: 100px;
@@ -70,7 +283,7 @@ html, body {
 .player-list li {
 	
     padding: 12px;
-    margin-bottom: 12px; /* 항목 간격 */
+    margin-bottom: 8px; /* 항목 간격 */
     border-radius: 8px; /* 둥근 테두리 */
     color: #c1fdd9; /* 텍스트 색상 */
     font-size: 16px; /* 글씨 크기 */
@@ -84,6 +297,11 @@ html, body {
     background-position: 10px center; /* 이미지 위치 */
     background-repeat: no-repeat; /* 이미지 반복 안 함 */
     padding-left: 30px; /* 이미지와 텍스트 간격 */
+}
+
+/* 방장인 플레이어 아이템 스타일 */
+.player-list li.host-player {
+    background-image: url('../img/플레이어아이콘방장_quiz.png'); /* 방장 이미지를 다른 경로로 설정 */
 }
 
 /* 마지막 플레이어 항목에만 적용되는 스타일 제거 */
@@ -221,7 +439,7 @@ html, body {
 /* 채팅 및 메시지 스타일 */
 .quiz-room-chat-section {
     width: 300px;
-    height: 90%;
+    height: 87%;
     left:0.9%;
     display: flex;
     flex-direction: column;
@@ -231,7 +449,7 @@ html, body {
     border-radius: 10px;
     margin: 20px;
     position: relative; /* position 추가 */
-    bottom: -42px; /* 아래로 이동할 값 조정 */
+    bottom: -65px; /* 아래로 이동할 값 조정 */
 }
 
 .quiz-room-chat-messages {
@@ -243,10 +461,10 @@ html, body {
     margin-bottom: 10px;
 }
 
-.quiz-room-chat-input-wrapper {
+ .quiz-room-chat-input-wrapper {
     display: flex;
     gap: 10px;
-}
+} 
 
 .quiz-room-chat-input {
     flex: 1;
@@ -268,8 +486,8 @@ html, body {
 /* 툴팁 전체 컨테이너 */
 #command-tooltip {
     position: absolute;
-    top: 62px;
-    left: 62.5%;
+    top: 12%;
+    left: 63.5%;
     right: 350px;
     width: 250px;
     background-color: #1f1f33;
@@ -348,8 +566,8 @@ html, body {
 /* 최대화 버튼 */
 #tooltip-maximize-btn {
     position: absolute;
-    top: 70px;
-    left: 76%; 
+    top: 90px;
+    left: 77%; 
     background-color: #2d2d4f;
     border: none;
     border-radius: 50%;
@@ -544,7 +762,7 @@ a:hover span:nth-child(2):after {
     border-radius: 10px;  /* 둥근 모서리 */
     color: #00ffff;  /* 텍스트 색상 */
     margin-left: auto;  /* 오른쪽 정렬을 위해 auto로 설정 */
-    margin-bottom: -10px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
+    margin-bottom: -2px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
     clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
     max-width: 100%;  /* 최대 너비 설정 */
     word-break: break-word;  /* 긴 단어 줄바꿈 */
@@ -560,7 +778,7 @@ a:hover span:nth-child(2):after {
     border-radius: 10px;  /* 둥근 모서리 */
     color: #00ffff;  /* 텍스트 색상 */
     margin-left: auto;  /* 오른쪽 정렬을 위해 auto로 설정 */
-    margin-bottom: -10px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
+    margin-bottom: -2px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
     clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
     max-width: 100%;  /* 최대 너비 설정 */
     word-break: break-word;  /* 긴 단어 줄바꿈 */
@@ -574,7 +792,7 @@ a:hover span:nth-child(2):after {
     padding: 8px 12px;
     border-radius: 10px;
     margin-left: auto;  /* 오른쪽 정렬을 위해 auto로 설정 */
-    margin-bottom: -10px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
+    margin-bottom: -2px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
     clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
     max-width: 100%;  /* 최대 너비 설정 */
     word-break: break-word;  /* 긴 단어 줄바꿈 */
@@ -594,7 +812,8 @@ a:hover span:nth-child(2):after {
     display: block;  /* 블록 요소로 설정 */
     max-width: 100%;
     margin-left: auto;
-    margin-top: 40px; /* 위쪽 여백을 넉넉하게 추가 */
-    margin-bottom: 10px; /* 아래쪽 여백을 추가 */
+    margin-top: 30px; /* 위쪽 여백을 넉넉하게 추가 */
+    margin-bottom: -15px; /* 아래쪽 여백을 추가 */
     
 }
+

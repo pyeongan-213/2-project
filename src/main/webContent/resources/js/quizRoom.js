@@ -22,6 +22,7 @@ let currentQuizType = 'songTitle'; // 기본값을 '노래 제목 맞히기'로 
 const correctAnswerSound = new Audio(`${root}/audio/correct_answer.mp3`);
 const startEffectSound = new Audio(`${root}/audio/starteffect.mp3`);
 const changeTypeSound = new Audio(`${root}/audio/changType.mp3`);
+const coineffectSound = new Audio(`${root}/audio/coineffect.mp3`);
 
 
 
@@ -34,6 +35,13 @@ function getRoomIdFromPath() {
 		? pathSegments[roomIndex + 1]
 		: 1;  // 기본값 1 반환
 
+}
+
+// **준비완료 효과음 재생 함수**
+function playcoineffectSound() {
+	coineffectSound.play().catch(error => {
+		console.error('오디오 재생 오류:', error);
+	});
 }
 
 // **정답 효과음 재생 함수**
@@ -84,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			tooltip.style.visibility = 'visible';
 
 			// 툴팁 위치를 고정값으로 리셋
-			tooltip.style.top = '62px';  // 초기 top 위치로 리셋
-			tooltip.style.left = '62.5%';  // 초기 left 위치로 리셋
+			tooltip.style.top = '12%';  // 초기 top 위치로 리셋
+			tooltip.style.left = '63.5%';  // 초기 left 위치로 리셋
 
 			// 최대화 버튼 숨기기
 			maximizeButton.style.display = 'none';
@@ -97,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			tooltip.style.visibility = 'hidden';
 
 			// 최대화 버튼의 위치도 리셋 (최소화된 위치 고정)
-			maximizeButton.style.top = '70px';
-			maximizeButton.style.left = '76%';
+			maximizeButton.style.top = '90px';
+			maximizeButton.style.left = '77%';
 			maximizeButton.style.display = 'block';
 		}
 	}
@@ -219,21 +227,65 @@ function connectWebSocket() {
 		});
 
 
+
 		// 채팅 구독
-		stompClient.subscribe(`/sub/chat/${roomId}`, (message) => {
-			const chatMessage = JSON.parse(message.body);
+stompClient.subscribe(`/sub/chat/${roomId}`, (message) => {
+    const chatMessage = JSON.parse(message.body);
 
-			if (chatMessage.sender === currentUserNickname) {
-				return;
-			}
+    // 본인이 보낸 메시지는 처리하지 않음
+    if (chatMessage.sender === currentUserNickname) {
+        return;
+    }
 
-			const normalizedMessage = chatMessage.message ? chatMessage.message.trim().toLowerCase() : '';
-			if (normalizedMessage === '') return;
+    const normalizedMessage = chatMessage.message ? chatMessage.message.trim().toLowerCase() : '';
+    if (normalizedMessage === '') return;
 
-			const isCorrectAnswer = currentAnswers.some(answer => isExactMatch(normalizedMessage, answer));
-			displayChatMessage(chatMessage.sender, chatMessage.message, isCorrectAnswer);
-		});
+    // 정답 여부 확인
+    const isCorrectAnswer = currentAnswers.some(answer => isExactMatch(normalizedMessage, answer));
+    displayChatMessage(chatMessage.sender, chatMessage.message, isCorrectAnswer);
 
+    // !힌트 명령어가 입력되었는지 확인
+    if (['!힌트', '!hint'].includes(normalizedMessage)) {
+        console.log("힌트 명령어 감지됨");
+
+        // 힌트 표시 함수 호출
+        const hint = generateHint();  // 힌트를 생성하고
+        displayHint(hint);  // 화면에 힌트를 표시
+
+      /*  // WebSocket으로 힌트 정보를 다른 참가자에게 전송
+        stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
+            sender: currentUserNickname,
+            message: `힌트: ${hint}`,
+            messageId: Date.now()  // 고유한 메시지 ID 생성
+        }));*/
+    }
+
+    // !스킵 명령어가 입력되었는지 확인
+    if (['!스킵', '!skip'].includes(normalizedMessage)) {
+        console.log("스킵 명령어 감지됨");
+        skipQuiz(chatMessage.sender);  // 스킵 함수 호출
+    }
+});
+
+// **힌트 생성 함수**
+function generateHint() {
+    let hint = '';
+    for (let i = 0; i < currentAnswer.length; i++) {
+        // 현재 힌트 인덱스까지 글자를 표시하고 나머지는 'O'로 처리
+        hint += i <= hintIndex ? currentAnswer[i] : 'O';
+    }
+    hintIndex++;  // 다음 힌트를 위해 인덱스를 증가시킴
+    return hint;
+}
+
+// **힌트를 화면에 표시하는 함수**
+function displayHint(hint) {
+    const hintDisplay = document.getElementById('hint-info');
+    hintDisplay.textContent = `힌트: ${hint}`;  // 힌트 내용을 표시
+    hintDisplay.classList.remove('hidden');  // 힌트 영역을 표시
+}
+
+		
 		// 퀴즈 타입 변경 정보 구독
 		stompClient.subscribe(`/sub/quiz/${roomId}/changeType`, (message) => {
 			const msg = JSON.parse(message.body);
@@ -243,55 +295,62 @@ function connectWebSocket() {
 			console.log(`게임 타입이 ${typeLabel}로 변경되었습니다.`);
 		});
 
-		stompClient.subscribe(`/sub/quiz/${roomId}/hintMessage`, (message) => {
+		/*stompClient.subscribe(`/sub/quiz/${roomId}/hintMessage`, (message) => {
 			const hintMessage = JSON.parse(message.body);
 			console.log('수신된 힌트 메시지:', hintMessage);
 			displayHint(hintMessage.hint);  // 화면에 힌트 표시
-		});
+		});*/
 
 
-		// 정답자 정보 수신
-		stompClient.subscribe(`/sub/quiz/${roomId}/correctAnswer`, (message) => {
+		// WebSocket에서 정답자 정보를 구독하여 처리
+		stompClient.subscribe(`/sub/quizRoom/${roomId}/correctAnswer`, (message) => {
 		    const correctAnswerMessage = JSON.parse(message.body);
-		    const correctPlayer = correctAnswerMessage.sender;  // 정답자
-		    const songName = correctAnswerMessage.songName;  // 노래 제목
-		    const currentAnswers = correctAnswerMessage.currentAnswers;  // 정답 목록
 		
-		    console.log('정답 정보 수신:', correctPlayer, songName, currentAnswers);
-		    displayAnswerInfo(correctPlayer, songName, currentAnswers);  // 화면에 정답 정보 표시
-		});
-
-		//타이머 구독
-		stompClient.subscribe(`/sub/quiz/${roomId}/timer`, (message) => {
-			const timerMessage = JSON.parse(message.body);
-			const timeLeft = timerMessage.timeLeft;
-
-			// 모든 참가자 화면에 타이머 표시
-			startCountdown(timeLeft);
-		});
-
+		    // 정답자 정보를 화면에 표시
+		    displayAnswerInfo(correctAnswerMessage.sender, correctAnswerMessage.songName);
+		 	startCountdown();
+		  });  
+	
+		// **정답 정보 표시 함수**
+		function displayAnswerInfo(sender, songName) {
+		    document.getElementById('correct-player').textContent = `정답자: ${sender}`;
+		    document.getElementById('song-info').textContent = songName || currentSongName;
+		    document.getElementById('answer-info').classList.remove('hidden');
+		}
+		
 		// 플레이어 목록 구독 설정
 		if (!playerSubscription) {
-			playerSubscription = stompClient.subscribe(`/sub/quizRoom/${roomId}/players`, (message) => {
-				const chatMessage = JSON.parse(message.body);
-				if (chatMessage.type === 'PLAYER_LIST') {
-					updatePlayerList(chatMessage.message);
-				} else if (chatMessage.type === 'PLAYER_JOIN') {
-					addPlayerToList(chatMessage.sender);
-				} else if (chatMessage.type === 'PLAYER_LEAVE') {
-					removePlayerFromList(chatMessage.sender);
-				}
-			});
-
-			fetch(`${root}/quiz/rooms/${roomId}/players`)
-				.then(response => response.json())
-				.then(data => {
-					if (data.success) {
-						updatePlayerList(data.players);
-					}
-				})
-				.catch(error => console.error("플레이어 목록 업데이트 오류:", error));
+		    playerSubscription = stompClient.subscribe(`/sub/quizRoom/${roomId}/players`, (message) => {
+		        const chatMessage = JSON.parse(message.body);
+		        
+		        // 플레이어 목록 처리
+		        if (chatMessage.type === 'PLAYER_LIST') {
+		            updatePlayerList(chatMessage.message);
+		        } else if (chatMessage.type === 'PLAYER_JOIN') {
+		            addPlayerToList(chatMessage.sender);
+		        } else if (chatMessage.type === 'PLAYER_LEAVE') {
+		            removePlayerFromList(chatMessage.sender);
+		        } 
+		        
+		        // 정답자 정보 처리
+		        else if (chatMessage.type === 'CORRECT_ANSWER') {
+		            const correctPlayer = chatMessage.sender;  // 정답자 닉네임
+		            const songName = chatMessage.songName;  // 정답 노래 제목
+		            displayCorrectPlayer(correctPlayer, songName);  // 정답자 화면에 표시
+		        }
+		    });
+		
+		    // 서버에서 플레이어 목록 가져오기
+		    fetch(`${root}/quiz/rooms/${roomId}/players`)
+		        .then(response => response.json())
+		        .then(data => {
+		            if (data.success) {
+		                updatePlayerList(data.players);
+		            }
+		        })
+		        .catch(error => console.error("플레이어 목록 업데이트 오류:", error));
 		}
+
 
 		// 준비완료 상태 변경 구독
 		stompClient.subscribe(`/sub/quiz/${roomId}/ready`, (message) => {
@@ -314,20 +373,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 플레이어 목록 갱신 함수
 function updatePlayerList(players) {
-	const playerListContainer = document.getElementById('players');  // 'players' id를 가진 ul 요소 선택
-	playerListContainer.innerHTML = '';  // 기존 목록 초기화
+    const playerListContainer = document.getElementById('players');  // 'players' id를 가진 ul 요소 선택
+    playerListContainer.innerHTML = '';  // 기존 목록 초기화
 
-	// 플레이어 목록을 순회하며 li 요소로 추가
-	players.forEach(player => {
-		const playerItem = document.createElement('li');  // 각 플레이어를 li 요소로 생성
-		playerItem.className = 'player-item';  // li 요소에 클래스 설정
+    // 플레이어 목록을 순회하며 li 요소로 추가
+    players.forEach((player, index) => {
+        const playerItem = document.createElement('li');  // 각 플레이어를 li 요소로 생성
+        playerItem.className = 'player-item';  // li 요소에 기본 클래스 설정
 
-		// 플레이어 닉네임 설정
-		playerItem.textContent = player;  // 닉네임으로 처리
+        // 첫 번째 플레이어를 방장으로 설정
+        if (index === 0) {
+            playerItem.classList.add('host-player');  // 첫 번째 플레이어에 방장 클래스를 추가
+        }
 
-		playerListContainer.appendChild(playerItem);  // ul 요소에 li 요소 추가
-	});
+        // 플레이어 닉네임 설정
+        playerItem.textContent = player;  // 닉네임으로 처리
+
+        playerListContainer.appendChild(playerItem);  // ul 요소에 li 요소 추가
+    });
 }
+
 
 
 function updatePlayerReadyStatus(playerName, isReady) {
@@ -339,12 +404,12 @@ function updatePlayerReadyStatus(playerName, isReady) {
 		if (playerNickname === playerName) {
 			if (isReady) {
 				item.classList.add('ready');
-				if (!item.innerHTML.includes('✔')) {
-					item.innerHTML += ' ✔';  // 준비완료 체크 표시 추가
+				if (!item.textContent.includes('✔')) {
+					item.textContent += ' ✔';  // 준비완료 체크 표시 추가
 				}
 			} else {
 				item.classList.remove('ready');
-				item.innerHTML = item.innerHTML.replace(' ✔', '');  // 준비취소 시 체크 표시 제거
+				item.textContent  = item.textContent.replace(' ✔', '');  // 준비취소 시 체크 표시 제거
 			}
 		}
 	});
@@ -437,7 +502,6 @@ async function startQuiz() {
 					currentAnswer = quiz.answer[0];
 				} else {
 					console.error('퀴즈 데이터가 올바르지 않습니다. (answer 없음)');
-					alert("퀴즈를 불러오는 중 오류가 발생했습니다.");
 					return;
 				}
 			} else if (currentQuizType === 'artistName') {
@@ -447,7 +511,6 @@ async function startQuiz() {
 					currentSongName = quiz.artistName;
 					currentAnswer = quiz.artist[0];
 				} else {
-					alert("퀴즈를 불러오는 중 오류가 발생했습니다.");
 					return;
 				}
 			} else {
@@ -545,7 +608,7 @@ function processChatMessage(sender, message, messageId) {
 
 	const normalizedMessage = message.trim().toLowerCase();  // 메시지를 소문자로 변환하고 공백 제거
 
-	if (['!스킵', '!skip'].includes(message)) {
+	if (['!스킵', '!skip'].includes(normalizedMessage)) {
 		stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
 			sender: currentUserNickname,
 			message: '!스킵',
@@ -555,12 +618,18 @@ function processChatMessage(sender, message, messageId) {
 		return;
 	}
 
-	if (['!힌트', '!hint'].includes(message)) {
-		stompClient.send(`/pub/quiz/${roomId}/hintMessage`, {}, JSON.stringify({
+	if (['!힌트', '!hint'].includes(normalizedMessage)) {
+		// 힌트를 생성하고 내 화면에 표시
+		const hint = generateHint();  
+		displayHint(hint);  // 내 화면에 힌트를 표시
+
+		// 다른 사용자에게도 힌트 정보를 전송
+		stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
 			sender: currentUserNickname,
-			message: '!힌트',
+			message: `힌트: ${hint}`,
 			messageId: messageId
 		}));
+
 		return;
 	}
 
@@ -577,6 +646,32 @@ function processChatMessage(sender, message, messageId) {
 	}
 }
 
+// **힌트 생성 함수**
+function generateHint() {
+    let hint = '';
+    for (let i = 0; i < currentAnswer.length; i++) {
+        // 현재 힌트 인덱스까지 글자를 표시하고 나머지는 'O'로 처리
+        hint += i <= hintIndex ? currentAnswer[i] : 'O';
+    }
+    hintIndex++;  // 다음 힌트를 위해 인덱스를 증가시킴
+    return hint;
+}
+
+// **힌트를 화면에 표시하는 함수**
+function displayHint(hint) {
+    const hintDisplay = document.getElementById('hint-info');
+    hintDisplay.textContent = `힌트: ${hint}`;  // 힌트 내용을 표시
+    hintDisplay.classList.remove('hidden');  // 힌트 영역을 표시
+}
+
+
+function displayAnswerInfo(sender, songName) {
+    document.getElementById('correct-player').textContent = `정답자: ${sender}`;
+    document.getElementById('song-info').textContent = songName || currentSongName;  // 노래 제목을 표시
+    document.getElementById('answer-info').classList.remove('hidden');  // 정답 정보 섹션을 표시
+}
+
+
 // **힌트 표시 함수**
 function displayHint() {
     const hintDisplay = document.getElementById('hint-info');
@@ -592,6 +687,7 @@ function displayHint() {
         // 현재 힌트 인덱스까지 글자를 표시하고 나머지는 'O'로 처리
         hint += i <= hintIndex ? currentAnswer[i] : 'O';
     }
+    
     
     hintIndex++;  // 다음 힌트를 위해 인덱스를 증가시킴
     hintDisplay.textContent = `힌트: ${hint}`;  // 힌트 내용을 표시
@@ -654,61 +750,58 @@ function isExactMatch(userAnswer, correctAnswer) {
 }
 
 function checkAnswer(sender, userAnswer) {
-    console.log('사용자가 입력한 정답:', userAnswer);
-    console.log('현재 정답 목록:', currentAnswers);
+    const normalizedUserAnswer = normalizeAnswer(userAnswer);
 
-    const normalizedUserAnswer = normalizeAnswer(userAnswer);  // 사용자 입력을 정규화
-
-    // 정답 확인
+    // 정답 리스트를 순회하며 정확한 일치를 확인
     const isCorrect = currentAnswers.some(correctAnswer => {
         const normalizedCorrectAnswer = normalizeAnswer(correctAnswer);
-        console.log('정답 비교:', normalizedUserAnswer, 'vs', normalizedCorrectAnswer);
-        return normalizedUserAnswer === normalizedCorrectAnswer;  // 정답 비교
+        return normalizedUserAnswer === normalizedCorrectAnswer;  // 전체 일치 확인
     });
 
     if (isCorrect) {
-        console.log('정답을 맞췄습니다:', sender);
-        playCorrectAnswerSound();
+        // 정답자 로컬 처리
+        playCorrectAnswerSound(); // 정답 맞췄을 때 효과음 재생
+        displayAnswerInfo(sender); // 로컬에서 정답 정보 표시
 
-        // 정답자 정보를 WebSocket을 통해 전송
+        // WebSocket을 통해 다른 사람들에게 정답자 정보를 전송
         stompClient.send(`/pub/quiz/${roomId}/correctAnswer`, {}, JSON.stringify({
             sender: sender,
-            songName: currentSongName,
-            currentAnswers: currentAnswers
+            songName: currentSongName
         }));
 
-        hideHint();  // 힌트 숨기기
-        startCountdown();  // 다음 퀴즈를 위한 카운트다운 시작
-        currentAnswers = [];  // 정답 목록 초기화
+        hideHint(); // 힌트 숨기기
+        startCountdown(); // 카운트다운 시작
     } else {
-        console.log('정답이 아닙니다:', userAnswer);
+        // 오답 처리
+        console.log('오답입니다.');
     }
 }
 
 
-
-function displayAnswerInfo(sender, songName, currentAnswers) {
-    console.log('정답자:', sender);
-    console.log('노래 제목:', songName);
-    console.log('정답 목록:', currentAnswers);
-
+function displayCorrectPlayer(correctPlayer, songName) {
+    const playerItems = document.querySelectorAll('.player-item');
     const correctPlayerElement = document.getElementById('correct-player');
     const songInfoElement = document.getElementById('song-info');
     const answerInfoElement = document.getElementById('answer-info');
 
-    // 요소가 존재하는지 확인
-    if (!correctPlayerElement || !songInfoElement || !answerInfoElement) {
-        console.error('정답 정보를 표시할 요소를 찾을 수 없습니다.');
-        return;
-    }
+    // 모든 플레이어에서 정답자 강조 제거
+    playerItems.forEach(item => {
+        item.classList.remove('correct-player');
+    });
+
+    // 정답자를 찾아서 강조
+    playerItems.forEach(item => {
+        const playerNickname = item.textContent.replace(' ✔', '').trim();
+        if (playerNickname === correctPlayer) {
+            item.classList.add('correct-player');  // 정답자 강조
+        }
+    });
 
     // 정답자와 노래 제목을 화면에 표시
-    correctPlayerElement.textContent = `정답자: ${sender}`;
+    correctPlayerElement.textContent = `정답자: ${correctPlayer}`;
     songInfoElement.textContent = `노래 제목: ${songName}`;
     answerInfoElement.classList.remove('hidden');  // 정답 정보 섹션 표시
 }
-
-
 
 
 function startCountdown(timeLeft = 10) {
@@ -727,14 +820,24 @@ function startCountdown(timeLeft = 10) {
 		timeLeft: timeLeft
 	}));
 
+	// 타이머 시작
 	countdownInterval = setInterval(() => {
 		timeLeft--;
 		countdownDisplay.textContent = `다음 퀴즈가 시작됩니다 (${timeLeft})`;
 
-		// 타이머를 모든 참가자에게 지속적으로 전송
-		stompClient.send(`/pub/quiz/${roomId}/timer`, {}, JSON.stringify({
-			timeLeft: timeLeft
-		}));
+		// 타이머를 모든 참가자에게 지속적으로 전송 (주석 처리된 부분은 필요 시 활성화)
+		// stompClient.send(`/pub/quiz/${roomId}/timer`, {}, JSON.stringify({ timeLeft: timeLeft }));
+
+		// !스킵 또는 !skip 명령어가 감지된 경우
+		if (isSkipping) {
+			clearInterval(countdownInterval); // 타이머 종료
+			countdownInterval = null; // 초기화
+			hideAnswerInfo();  // 정답 정보 숨기기
+			console.log('스킵 명령어로 타이머가 중지되었습니다.');
+			startQuiz();  // 다음 퀴즈 시작
+			isSkipping = false;  // 스킵 상태 초기화
+			return;  // 함수 종료
+		}
 
 		// 남은 시간이 0이 되었을 때
 		if (timeLeft < 0) {
@@ -811,7 +914,7 @@ function displayChatMessage(sender, message, isCorrectAnswer) {
 	chatMessages.appendChild(messageElement);
 
 	// 너무 많은 메시지가 쌓일 경우 제거
-	const MAX_CHAT_MESSAGES = 12;
+	const MAX_CHAT_MESSAGES = 10;
 	while (chatMessages.children.length > MAX_CHAT_MESSAGES) {
 		chatMessages.removeChild(chatMessages.firstChild);
 	}
@@ -882,7 +985,8 @@ async function sendMessage() {
 				messageId: messageId
 			}));
 
-			displayChatMessage(currentUserNickname, "!스킵", false);  // 채팅창에 명령어 표시
+			//displayChatMessage(currentUserNickname, "!스킵", false);  // 채팅창에 명령어 표시
+			hideAnswerInfo();
 			skipQuiz(currentUserNickname);  // 스킵 처리 함수 호출
 			return;
 		}
@@ -890,14 +994,14 @@ async function sendMessage() {
 		if (['!힌트', '!hint'].includes(message)) {
 			console.log("힌트 명령어 감지됨");
 
-			// WebSocket으로 힌트 명령어를 전송하여 모든 참가자에게 알림
-			stompClient.send(`/pub/quiz/${roomId}/hintMessage`, {}, JSON.stringify({
+		// WebSocket으로 힌트 명령어를 전송하여 모든 참가자에게 알림
+			stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
 				sender: currentUserNickname, // 힌트를 요청한 유저의 닉네임
 				message: '!힌트', // 힌트 메시지 전송
 				messageId: messageId  // 메시지 고유 ID
 			}));
-
-			// 힌트 메시지를 전송한 후 바로 리턴 (별도의 구독 추가 없음)
+			displayChatMessage(currentUserNickname, "!힌트", false);  // 채팅창에 명령어 표시
+			displayHint2();
 			return;  // 메시지 저장 등의 추가 작업 없이 바로 리턴
 
 			// **명령어 처리: 게임 타입 변경**
@@ -927,12 +1031,11 @@ async function sendMessage() {
 
 			// 채팅창에 명령어 표시
 			displayChatMessage(currentUserNickname, "!준비완료", false);
-
 			// **UI에서 준비 상태 체크표시 추가**
 			updatePlayerReadyStatus(currentUserNickname, true);  // 준비완료 상태로 UI 업데이트
-
 			// **모든 참가자가 준비되었는지 확인 후 방장에게 게임 시작 요청**
 			await checkAllPlayersReadyAndNotifyHost();  // 변경된 함수
+			playcoineffectSound();
 			return;
 		}
 
@@ -964,6 +1067,7 @@ async function sendMessage() {
 		if (isCorrectAnswer) {
 			displayChatMessage(currentUserNickname, message, true);  // 정답인 경우 파란색 처리
 			checkAnswer(currentUserNickname, message);
+			hideAnswerInfo();
 		} else {
 			displayChatMessage(currentUserNickname, message, false);  // 일반 메시지 처리
 		}
@@ -971,12 +1075,57 @@ async function sendMessage() {
 		await saveChatMessage(roomId, currentUserId, message);
 
 	} catch (error) {
-		console.error("메시지 전송 중 오류:", error);
 	} finally {
 		chatInput.value = '';  // 입력창 초기화
 		isSendingMessage = false;  // 전송 완료 후 상태 해제
 	}
 }
+
+let isAnswerDisplayed = false;  // 정답자 표시 상태를 추적하는 변수
+
+// **힌트 표시 함수**
+function displayHint2() {
+    const hintDisplay = document.getElementById('hint-info');
+
+    // 정답자가 이미 표시중이면 힌트를 표시하지 않음
+    if (isAnswerDisplayed) {
+        console.log("정답자가 표시중이므로 힌트를 표시하지 않습니다.");
+        return;
+    }
+
+    // 힌트 인덱스가 이미 끝에 도달했을 때 힌트를 더 이상 표시하지 않음
+    if (hintIndex >= currentAnswer.length) return;
+
+    let hint = '';
+    for (let i = 0; i < currentAnswer.length; i++) {
+        hint += i <= hintIndex ? currentAnswer[i] : 'O';
+    }
+
+    hintIndex++;
+    hintDisplay.textContent = `힌트: ${hint}`;
+    hintDisplay.classList.remove('hidden');
+}
+
+// **정답자 정보 표시 함수 (정답자 표시 중일 때 힌트 숨김 처리)**
+function displayAnswerInfo(sender, songName) {
+    isAnswerDisplayed = true;  // 정답자가 표시되고 있음을 나타냄
+
+    document.getElementById('correct-player').textContent = `정답자: ${sender}`;
+    document.getElementById('song-info').textContent = songName || currentSongName;
+    document.getElementById('answer-info').classList.remove('hidden');
+
+    // 정답자가 표시되었으므로 힌트도 숨김
+    hideHint();
+}
+
+// **힌트 숨기기 함수**
+function hideHint() {
+    const hintDisplay = document.getElementById('hint-info');
+    hintDisplay.classList.add('hidden');
+    hintDisplay.textContent = '';
+    hintIndex = 0;  // 힌트 인덱스를 초기화
+}
+
 
 // **모든 참가자가 준비되었는지 확인하고, 방장에게 알림**
 async function checkAllPlayersReadyAndNotifyHost() {
@@ -1005,17 +1154,20 @@ function updatePlayerReadyStatus(currentUserNickname, isReady) {
 	const playerItems = document.querySelectorAll('.player-item');
 
 	playerItems.forEach(item => {
-		const playerNickname = item.textContent.trim();
-		// playerNickname과 입력된 playerName이 일치하는지 확인
+		// 텍스트에서 '✔'을 제거하고 닉네임만 남겨서 비교
+		const playerNickname = item.textContent.replace(' ✔', '').trim();
+		
 		if (playerNickname === currentUserNickname) {
 			if (isReady) {
 				item.classList.add('ready');
-				if (!item.innerHTML.includes('✔')) {
-					item.innerHTML += ' ✔';  // 준비완료 체크 표시 추가
+				// 체크 표시가 없는 경우에만 추가
+				if (!item.textContent.includes('✔')) {
+					item.textContent += ' ✔';  // 준비완료 체크 표시 추가
 				}
 			} else {
 				item.classList.remove('ready');
-				item.innerHTML = item.innerHTML.replace(' ✔', '');  // 준비취소 시 체크 표시 제거
+				// 체크 표시가 있는 경우에만 제거
+				item.textContent = item.textContent.replace(' ✔', '');  // 준비취소 시 체크 표시 제거
 			}
 		}
 	});
@@ -1104,3 +1256,63 @@ function checkAllPlayersReadyAndNotifyHost() {
 		}
 	}).catch(error => console.error('플레이어 준비 상태 확인 중 오류:', error));
 }
+
+document.getElementById('play-toggle-btn').addEventListener('click', function() {
+    this.classList.toggle('active');
+    const playIcon = document.getElementById('play-icon');
+    
+    // 버튼의 상태에 따라 재생 아이콘 변경
+    if (this.classList.contains('active')) {
+        playIcon.classList.replace('bi-play-circle-fill', 'bi-pause-circle-fill');
+    } else {
+        playIcon.classList.replace('bi-pause-circle-fill', 'bi-play-circle-fill');
+    }
+});
+
+function init(){
+
+  //estrelas
+
+  var style = ["style1", "style2", "style3", "style4"];
+  var tam = ["tam1", "tam1", "tam1", "tam2", "tam3"];
+  var opacity = ["opacity1", "opacity1", "opacity1", "opacity2", "opacity2", "opacity3"];
+
+  function getRandomArbitrary(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  var estrela = "";
+  var qtdeEstrelas = 250;
+  var noite = document.querySelector(".constelacao");
+  var widthWindow = window.innerWidth;
+  var heightWindow = window.innerHeight;
+
+  for (var i = 0; i < qtdeEstrelas; i++) {
+    estrela += "<span class='estrela " + style[getRandomArbitrary(0, 4)] + " " + opacity[getRandomArbitrary(0, 6)] + " "
+    + tam[getRandomArbitrary(0, 5)] + "' style='animation-delay: ." +getRandomArbitrary(0, 9)+ "s; left: "
+    + getRandomArbitrary(0, widthWindow) + "px; top: " + getRandomArbitrary(0, heightWindow) + "px;'></span>";
+  }
+
+  noite.innerHTML = estrela;
+
+  //meteoros
+
+  var numeroAleatorio = 5000;
+
+  setTimeout(function(){
+    carregarMeteoro();
+  }, numeroAleatorio);
+
+  function carregarMeteoro(){
+    setTimeout(carregarMeteoro, numeroAleatorio);
+    numeroAleatorio = getRandomArbitrary(5000, 10000);
+    var meteoro = "<div class='meteoro "+ style[getRandomArbitrary(0, 4)] +"'></div>";
+    document.getElementsByClassName('chuvaMeteoro')[0].innerHTML = meteoro;
+    setTimeout(function(){
+      document.getElementsByClassName('chuvaMeteoro')[0].innerHTML = "";
+    }, 1000);
+  }
+
+}
+
+window.onload = init;
