@@ -79,6 +79,8 @@ html, body {
 .card-title img {
     width: 100%;
     height: auto;
+    border-radius: 0px;
+    margin: 0;
 }
 
 .card-con {
@@ -110,7 +112,7 @@ section:not(#sectionPin) {
   position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 2rem;
+  grid-gap: 3.5rem;
   margin: auto;
   place-items: center;
 }
@@ -125,20 +127,22 @@ section#payment{
   background: #000000;
 }
 
-img {
-  height: 50vh;
+section img {
+  height: 65vh;
   width: auto;
   object-fit: cover;
+  border-radius: 50px;
+  margin-right: 25px;
 }
 
 h1 {
-  font-size: 5rem;
+  font-size: 105px;
   line-height: 1;
   font-weight: 800;
   margin-bottom: 0;
   position: absolute;
-  top: 15vh;
-  left: 10vw;
+  top: 30vh;
+  left: 8vw;
   z-index: 4;
   overflow-wrap: break-word;
   hyphens: auto;
@@ -177,8 +181,8 @@ h2 {
   overflow: hidden;
   display: flex;
   left: 0;
-  background: black;
-  color: var(--bg-color);
+  background: #292935;
+  color: black;
   margin: 0;
   background: cover;
 }
@@ -198,15 +202,6 @@ h2 {
   padding: 0 2vw;
 }
 
-p {
-  position: absolute;
-  bottom: 10vh;
-  right: 10vw;
-  width: 200px;
-  line-height: 1.5;
-  color: white;
-}
-
 c-scrollbar{
    background-color: white;
 }
@@ -214,7 +209,7 @@ c-scrollbar{
 .pay{
    display: flex;
    border-radius: 8px;
-   margin-top: 60px;
+   /* margin-top: 60px; */
 }
 
 .by-month, .by-year {
@@ -234,7 +229,16 @@ c-scrollbar{
 }
 
 .btn{
-   margin-top: 55PX;
+	position: absolute;
+	left: 30px;
+	bottom: 15px;
+	width: 85%;
+	height: 45px;
+	border: 1px solid wheat;
+	border-radius: 25px;
+	color: white;
+	background-color: #4a606f;
+	font-size: 18px;
 }
 
 </style>
@@ -257,21 +261,24 @@ c-scrollbar{
 					<span>당신의 일상에</span> <span>음악을 더하다</span>
 					<!-- <span>section</span> -->
 					<span
-						style="position: fixed; top: 200px; left: 5px; color: white; font-size: 30px">언제
+						style="position: fixed; top: 235px; left: 8px; color: white; font-size: 34px">언제
 						어디서나 음악과 함께!</span>
 				</h1>
 
 				<div class="test-pic"
-					style="position: fixed; top: 35vh; margin-left: 48vw;">
-					<img alt="예시" src="${root}/img/고양이와헤드셋여자아이.jpg">
-				</div>
+					style="position: fixed; top: 25vh; margin-left: 40vw;">
+					<img alt="예시" src="${root}/img/헤드폰모델2.jpg">
 				
+					<img alt="예시" src="${root}/img/헤드폰모델3.jpg">
+				
+					<img alt="예시" src="${root}/img/헤드폰모델1.jpg">
+				</div>
 			</div>
 		</section>
 
 		<section id="sectionPin">
 			<div class="pin-wrap">
-				<h2 style="color: white;">
+				<h2 style="color: #F5F5F5;">
 					전 세계 음악 팬들과 <br /> 소통하는 커뮤니티, <br /> 그리고 즐거운 퀴즈 게임! <br /> 최신
 					음악부터 <br /> 숨겨진 명곡까지, <br /> 음악을 더 재미있게 <br /> 즐겨보세요
 				</h2>
@@ -289,12 +296,25 @@ c-scrollbar{
 
 				<div class="card-container">
 					<div class="card-title">
-						<img src="${root}/img/미래도시,비.jpg" alt="사진" />
+						<img src="${root}/img/메인캡쳐.jpg" alt="사진" />
 					</div>
 					<div class='card-con'>
 						<h3>1억개 이상의 트랙을 제공합니다.</h3>
-						<div style="display: block; margin: 15% 0;">광고 없는 음악 라이브러리에서
-							인기 아티스트나 좋아하는 노래를 발견해 보세요.</div>
+						<div style="display: block; margin: 15% 0;">
+						광고 없는 음악 라이브러리에서
+						인기 아티스트나 좋아하는 노래를 발견해 보세요.</div>
+					</div>
+				</div>
+
+				<div class="card-container">
+					<div class="card-title">
+						<img src="${root}/img/게시판캡쳐.jpg" alt="사진" />
+					</div>
+					<div class='card-con'>
+						<h3>커뮤니티</h3>
+						<div style="display: block; margin: 10% 0;">
+						커뮤니티에서 다양한 음악 취향을 공유하고, 다른 음악 팬들과 소통해보세요. 
+    					새로운 아티스트와 곡을 발견하고, 함께 음악을 즐기는 경험을 나누세요!</div>
 					</div>
 				</div>
 
@@ -303,20 +323,10 @@ c-scrollbar{
 						<img src="${root}/img/미래도시,비.jpg" alt="사진" />
 					</div>
 					<div class='card-con'>
-						<h3>믹스와 라디오</h3>
-						<div style="display: block; margin: 15% 0;">My Mix에서 당신의 취향에
-							맞춘 개인화된 플레이리스트를 받아보거나, Artist Radio에서 새로운 음악을 탐험해보세요.</div>
-					</div>
-				</div>
-
-				<div class="card-container">
-					<div class="card-title">
-						<img src="${root}/img/미래도시,비.jpg" alt="사진" />
-					</div>
-					<div class='card-con'>
-						<h3>DuckMusic 라이브</h3>
-						<div style="display: block; margin: 15% 0;">친구, 가족 또는 다른 팬들과
-							함께 실시간으로 음악을 경험해 보세요.</div>
+						<h3>DuckMusic 퀴즈</h3>
+						<div style="display: block; margin: 15% 0;">
+						친구, 가족 또는 다른 팬들과 함께 음악 퀴즈를 풀며 실력을 겨뤄보세요! 
+    					누가 가장 많은 정답을 맞힐 수 있을까요?</div>
 					</div>
 				</div>
 			</div>
@@ -326,39 +336,72 @@ c-scrollbar{
 		<div id="stars"></div>
 		<div id="stars2"></div>
 		<div id="stars3"></div>
-			<h1 style="position: relative; top: 0; left: 0;"
+			<h1 style="position: relative; top: 0; left: 0; font-size: 82px;"
 				data-scroll data-scroll-speed="1">
 				<span>광고 없이 무제한 스트리밍!</span> 
-				<span style="font-size: 4rem; margin-top: 10px;"> 지금 구독하고 더 자유롭게 음악을 즐겨보세요.</span>
+				<span style="font-size: 56px; margin-top: 10px;"> 지금 구독하고 더 자유롭게 음악을 즐겨보세요.</span>
 			</h1>
 			<div class="pay">
 				<div class="by-month">
 					<div class="wave"></div>
 					<div class="wave"></div>
 					<div class="wave"></div>
-					<h2 style="position: inherit; z-index: 2;">월간결제</h2>
-					<div style="position: inherit; z-index: 2;">Experience
-						best-in-class sound quality that opens up every detail with HiRes
-						Free Lossless Audio Codec (HiRes FLAC). Best enjoyed on 5G or
-						WiFi with a hardware connection.</div>
-					<div style="position: inherit; z-index: 2; margin-top: 25px;">9,900원</div>
+					<h2 style="position: inherit; z-index: 2; margin: 25px 0; color: #ffd2d7">월간결제</h2>
+					<div style="position: inherit; z-index: 2; font-weight: bold;">1개월 동안 무료
+					</div>
+					<div style="position: inherit; z-index: 2; color: #a0a0a0; font-size: 14px;">체험 기간 종료 후 매월 ₩9,900(부가세 별도) 결제</div>
+					<hr style="position: inherit; z-index: 2; border:none; height:1px; background: #5a5d6a;"/>
+					<div style="position: inherit; z-index: 2; margin-top: 25px;">
+					<ul style="margin-left:80px; text-align: left;">
+					<li>Premium 계정 1개</li>
+					<li>언제든 해지 가능</li>
+					</ul>
+					</div>
 					<button class="btn">결제하기</button>
 				</div>
-					<div class="by-year">
+				<div class="by-year">
 					<div class="wave"></div>
 					<div class="wave"></div>
 					<div class="wave"></div>
-					<h2 style="position: inherit; z-index: 2;">연간결제</h2>
-					<div style="position: inherit; z-index: 2;">Get the music
-						you love on the go without worrying about data. Useful when you
-						have a weak signal, are reaching your data cap, or are running
-						out of download space.</div>
-					<div style="position: inherit; z-index: 2; margin-top: 25px;">99,000원</div>
+					<h2 style="position: inherit; z-index: 2; margin: 25px 0; color: #ffc862;">연간결제</h2>
+					<div style="position: inherit; z-index: 2; font-weight: bold;">매년 ₩99,000(부가세 별도)</div>
+					<hr style="position: inherit; z-index: 2; border:none; height:1px; background: #5a5d6a;"/>
+					<div style="position: inherit; z-index: 2; margin-top: 25px;">
+					<ul style="margin-left:70px; text-align: left;">
+					<li>Premium 별도 계정 2개</li>
+					<li>언제든 해지 가능</li>
+					</ul>
+					</div>
 					<button class="btn">결제하기</button>
 				</div>
+				<div class="by-year">
+					<div class="wave"></div>
+					<div class="wave"></div>
+					<div class="wave"></div>
+					<h2 style="position: inherit; z-index: 2; margin: 25px 0; color: #17a7d1;">체험판</h2>
+					<div style="position: inherit; z-index: 2; font-weight: bold;">매월 ₩7,900(부가세 별도)</div>
+					<hr style="position: inherit; z-index: 2; border:none; height:1px; background: #5a5d6a;"/>
+					<div style="position: inherit; z-index: 2; margin-top: 25px;">
+					<ul style="margin-left:40px; text-align: left;">
+					<li>Premium 체험판 계정 1개</li>
+					<li>다운로드 기능을 사용할 수 없음</li>
+					<li>언제든 해지 가능</li>
+					</ul>
+					</div>
+					<button class="btn">결제하기</button>
+				</div>	
 		</div>
+		
+		<footer>
+      	<!-- bottom_info.jsp 포함 -->
+      	<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
+   		</footer>
+		
 		</section>
 	</div>
+	
+	
+   
 	<script>
    	//1번째 섹션 배경 애니메이션
 	new FinisherHeader({
