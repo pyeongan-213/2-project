@@ -58,7 +58,7 @@ body {
 
 /* Main content 스타일 */
 .main-content {
-    margin-left: 80px;
+    margin-left: 0px;
     flex-grow: 1;
     background-color: var(--theme-bg);
     padding: 40px;

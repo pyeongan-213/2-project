@@ -47,6 +47,8 @@ public class MemberBean implements Serializable {
 	// 1 = code, 2 = input code
 	private String authCode1;
 	private String authCode2;
+	
+	private int score;
 
 	// 기본 생성자
 	public MemberBean() {
@@ -190,5 +192,14 @@ public class MemberBean implements Serializable {
 	public void setAuthCode2(String authCode2) {
 		this.authCode2 = authCode2;
 	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
 
 }

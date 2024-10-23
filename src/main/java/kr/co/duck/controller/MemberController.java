@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.duck.beans.MemberBean;
+import kr.co.duck.domain.MemberGameStats;
 import kr.co.duck.service.MemberService;
 import kr.co.duck.validator.MemberValidator;
 
@@ -70,9 +71,6 @@ public class MemberController {
 
 	        // 세션에서 원래 페이지 URI 가져오기
 	        String redirectURI = (String) session.getAttribute("redirectURI");
-
-	        // 로그로 확인
-	        //System.out.println("Redirect URI after login: " + redirectURI);
 
 	        // redirectURI가 "/"가 아니라면 해당 경로로 리다이렉트
 	        if (redirectURI != null && !redirectURI.equals("/") && !redirectURI.isEmpty()) {
@@ -128,9 +126,16 @@ public class MemberController {
 	}
 
 	@GetMapping("/info")
-	public String info(@ModelAttribute("infoMemberBean") MemberBean infoMemberBean) {
+	public String info(@ModelAttribute("infoMemberBean") MemberBean infoMemberBean, Model model) {
 
-		infoMemberBean = memberService.getModifyMemberInfo(infoMemberBean);
+		// 로그인한 사용자의 게임 점수 가져오기
+        int gameScore = memberService.getGameScore(loginMemberBean.getMember_id());
+		
+		infoMemberBean = memberService.getModifyMemberInfo(infoMemberBean);	
+		
+		// 모델에 게임 점수 추가
+	    model.addAttribute("infoMemberBean", infoMemberBean);
+	    infoMemberBean.setScore(gameScore); // score를 infoMemberBean에 설정
 
 		return "member/info";
 	}
@@ -226,5 +231,7 @@ public class MemberController {
 		MemberValidator validator1 = new MemberValidator();
 		binder.addValidators(validator1);
 	}
+	
+
 
 }

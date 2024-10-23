@@ -41,6 +41,9 @@ public class MemberGameStats {
 
     @Column(name = "PLAY_TIME", nullable = false)
     private int playTime = 0;
+    
+    @Column(name = "SCORE", nullable = false)
+    private int score = 0;
 
     // 기본 생성자
     public MemberGameStats() {
@@ -124,7 +127,15 @@ public class MemberGameStats {
         this.playTime = playTime;
     }
 
-    // 승리 횟수 업데이트 메서드
+    public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	// 승리 횟수 업데이트 메서드
     public void incrementWinNum() {
         this.winNum += 1;
         this.totalGameNum += 1;
@@ -156,6 +167,7 @@ public class MemberGameStats {
                 ", soloExitNum=" + soloExitNum +
                 ", makeRoomNum=" + makeRoomNum +
                 ", playTime=" + playTime +
+                ", score=" + score +
                 '}';
     }
 }
