@@ -291,6 +291,26 @@ function displayHint(hint) {
 }
 
 		
+		// WebSocket 연결 시 재생/정지 상태 변경 메시지 구독
+	stompClient.subscribe(`/sub/quiz/${roomId}/playStatus`, (message) => {
+    const playStatus = JSON.parse(message.body);
+
+    if (playStatus.action === 'play') {
+        // 재생 동작 수행
+        const player = document.getElementById('youtube-player');
+        player.src = `https://www.youtube.com/embed/${playStatus.videoCode}?autoplay=1&start=${playStatus.currentTime}&mute=0`;
+        isPlaying = true;
+        updatePlayIcon();
+    } else if (playStatus.action === 'pause') {
+        // 정지 동작 수행
+        const player = document.getElementById('youtube-player');
+        player.src = '';
+        isPlaying = false;
+        updatePlayIcon();
+    }
+});
+
+		
 		// 퀴즈 타입 변경 정보 구독
 		stompClient.subscribe(`/sub/quiz/${roomId}/changeType`, (message) => {
 			const msg = JSON.parse(message.body);
@@ -300,11 +320,10 @@ function displayHint(hint) {
 			console.log(`게임 타입이 ${typeLabel}로 변경되었습니다.`);
 		});
 
-		/*stompClient.subscribe(`/sub/quiz/${roomId}/hintMessage`, (message) => {
-			const hintMessage = JSON.parse(message.body);
-			console.log('수신된 힌트 메시지:', hintMessage);
-			displayHint(hintMessage.hint);  // 화면에 힌트 표시
-		});*/
+		stompClient.subscribe(`/sub/quiz/${roomId}/hideHint`, (message) => {
+		   		 console.log("힌트 숨기기 메시지 수신");
+   				 hideHint();  // 힌트를 숨기는 함수 호출
+		});
 
 
 		// WebSocket에서 정답자 정보를 구독하여 처리
@@ -579,6 +598,14 @@ function togglePlayPause() {
 		isPlaying = false;
 		playstartEffectSound();
 		isStoppedByUser = true;  // 사용자가 음악을 수동으로 중지했음을 기록
+		
+		// 재생 상태를 모든 참가자에게 전송
+        stompClient.send(`/pub/quiz/${roomId}/playStatus`, {}, JSON.stringify({
+            action: 'pause',
+            videoCode: currentVideo,
+            currentTime: player.currentTime
+        }));
+		
 	} else {
 		console.log('음악 재개');
 		playstartEffectSound();
@@ -598,6 +625,13 @@ function togglePlayPause() {
 	}
 
 	updatePlayIcon();  // 재생 아이콘 업데이트
+	
+		// 재생 상태를 모든 참가자에게 전송
+        stompClient.send(`/pub/quiz/${roomId}/playStatus`, {}, JSON.stringify({
+            action: 'play',
+            videoCode: currentVideo,
+            currentTime: player.currentTime
+        }));
 }
 
 
@@ -800,8 +834,11 @@ function checkAnswer(sender, userAnswer) {
             sender: sender,
             songName: currentSongName
         }));
+        // **힌트 숨기기 메시지를 전송**
+		stompClient.send(`/pub/quiz/${roomId}/hidehint`, {}, JSON.stringify({}));
 
         hideHint(); // 힌트 숨기기
+        hideanswerinfo();
         startCountdown(); // 카운트다운 시작
     } else {
         // 오답 처리
@@ -909,6 +946,8 @@ function hideHint() {
 	const hintDisplay = document.getElementById('hint-info');
 	hintDisplay.classList.add('hidden');
 	hintDisplay.textContent = '';
+	hintIndex = 0;  // 힌트 인덱스를 초기화
+	
 }
 
 // **채팅 메시지 화면에 표시**

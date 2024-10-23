@@ -105,8 +105,6 @@ public class QuizController {
     }
 
     // **정답 제출 및 정답자 정보 전송**
-    
-    
     @MessageMapping("/quiz/{roomId}/correctAnswer")
     public void sendCorrectAnswer(CorrectAnswerMessage message, @DestinationVariable String roomId) {
     	  // 방에 있는 모든 사용자에게 정답자와 타이머 정보를 전송
@@ -114,6 +112,19 @@ public class QuizController {
         simpMessagingTemplate.convertAndSend("/sub/quizRoom/" + roomId + "/correctAnswer", message);
     }
 
+    @MessageMapping("/quiz/{roomId}/playStatus")
+    public void handlePlayPauseMessage(@DestinationVariable int roomId, Map<String, Object> message) {
+        // 클라이언트로부터 수신한 재생 상태 메시지를 모든 참가자에게 전송
+    	simpMessagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/playStatus", message);
+    }
+
+    
+    
+    // 힌트 숨기기 메시지 전송 메서드 추가
+    public void sendHideHintMessage(int roomId) {
+        // 모든 클라이언트에게 힌트를 숨기라는 메시지 전송
+        messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/hideHint", new HashMap<>());
+    }
     
  // **힌트 전송**
     @MessageMapping("/quiz/{roomId}/hintMessage")
