@@ -1050,7 +1050,8 @@ async function sendMessage() {
 		// **명령어 처리: 스킵**
 		if (['!스킵', '!skip'].includes(message)) {
 			console.log("스킵 명령어 감지됨");
-
+			
+			displayChatMessage(currentUserNickname, "!스킵", false);  // 채팅창에 명령어 표시
 			stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
 				sender: currentUserNickname,
 				message: '!스킵',
