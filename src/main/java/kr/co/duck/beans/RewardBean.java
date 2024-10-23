@@ -5,10 +5,11 @@ import java.util.List;
 
 public class RewardBean {
 	private List<String> reward_list = new ArrayList<>();
-
+	
 	// 기본 생성자
 	public RewardBean() {
 	}
+	
 
 	// Getter
 	public List<String> getReward_list() {

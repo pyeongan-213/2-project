@@ -1,22 +1,19 @@
 package kr.co.duck.domain;
 
 import org.springframework.stereotype.Service;
+
 import kr.co.duck.repository.MemberRepository;
 import kr.co.duck.repository.QuizRoomAttendeeRepository;
-import kr.co.duck.repository.RewardRepository;
 
 @Service
 public class MemberCommand {
 	private final MemberRepository memberRepository;
 	private final QuizRoomAttendeeRepository quizRoomAttendeeRepository; // QuizRoom과 관련된 레포지토리
-	private final RewardRepository rewardRepository;
 
 	// 생성자
-	public MemberCommand(MemberRepository memberRepository, QuizRoomAttendeeRepository quizRoomAttendeeRepository,
-			RewardRepository rewardRepository) {
+	public MemberCommand(MemberRepository memberRepository, QuizRoomAttendeeRepository quizRoomAttendeeRepository) {
 		this.memberRepository = memberRepository;
 		this.quizRoomAttendeeRepository = quizRoomAttendeeRepository;
-		this.rewardRepository = rewardRepository;
 	}
 
 	// 멤버 객체 저장하기
@@ -48,10 +45,10 @@ public class MemberCommand {
 			quizRoomAttendeeRepository.deleteAllByMember(member);
 		}
 
-		// 리워드 여부 확인
-		if (rewardRepository.existsByMember(member)) {
-			rewardRepository.deleteAllByMember(member);
-		}
+		/*
+		 * // 리워드 여부 확인 if (rewardRepository.existsByMember(member)) {
+		 * rewardRepository.deleteAllByMember(member); }
+		 */
 
 		// 회원 삭제
 		deleteMember(member);

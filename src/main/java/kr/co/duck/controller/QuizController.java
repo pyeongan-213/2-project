@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.duck.domain.CorrectAnswerMessage;
 import kr.co.duck.domain.QuizMusic;
 import kr.co.duck.service.ChatService;
 import kr.co.duck.service.QuizService;
@@ -37,11 +38,14 @@ public class QuizController {
     @Autowired
     private ChatService chatService;
     
+    private SimpMessagingTemplate simpMessagingTemplate;
+    
     // **생성자 주입을 통한 의존성 주입**
-    public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate, ChatService chatService) {
+    public QuizController(QuizService quizService, SimpMessagingTemplate messagingTemplate, ChatService chatService, SimpMessagingTemplate simpMessagingTemplate) {
         this.quizService = quizService;
         this.messagingTemplate = messagingTemplate;
         this.chatService = chatService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     // **퀴즈 생성: QuizMusic 객체를 저장**
@@ -101,36 +105,26 @@ public class QuizController {
     }
 
     // **정답 제출 및 정답자 정보 전송**
-    
     @MessageMapping("/quiz/{roomId}/correctAnswer")
-    @SendTo("/sub/quiz/{roomId}/correctAnswer")
-    public Map<String, Object> submitAnswer(
-            @DestinationVariable int roomId,
-            @RequestBody Map<String, Object> payload) {
-
-        int memberId = (int) payload.get("memberId");
-        int quizId = (int) payload.get("quizId");
-        String answer = (String) payload.get("answer");
-
-        boolean isCorrect = quizService.submitAnswer(memberId, quizId, answer.trim());
-
-        Map<String, Object> answerMessage = new HashMap<>();
-        if (isCorrect) {
-            answerMessage.put("isCorrect", true);
-            answerMessage.put("playerId", memberId);
-            answerMessage.put("message", "정답입니다!");
-            answerMessage.put("songName", quizService.getSongName(quizId)); // **songName 추가**
-
-            // 정답자 정보를 WebSocket을 통해 전송
-            messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/correctAnswer", answerMessage);
-        } else {
-            answerMessage.put("isCorrect", false);
-            answerMessage.put("message", "오답입니다!");
-        }
-
-        return answerMessage;
+    public void sendCorrectAnswer(CorrectAnswerMessage message, @DestinationVariable String roomId) {
+    	  // 방에 있는 모든 사용자에게 정답자와 타이머 정보를 전송
+        message.setTimer(10);  // 타이머를 10초로 설정
+        simpMessagingTemplate.convertAndSend("/sub/quizRoom/" + roomId + "/correctAnswer", message);
     }
 
+    @MessageMapping("/quiz/{roomId}/playStatus")
+    public void handlePlayPauseMessage(@DestinationVariable int roomId, Map<String, Object> message) {
+        // 클라이언트로부터 수신한 재생 상태 메시지를 모든 참가자에게 전송
+    	simpMessagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/playStatus", message);
+    }
+
+    
+    
+    // 힌트 숨기기 메시지 전송 메서드 추가
+    public void sendHideHintMessage(int roomId) {
+        // 모든 클라이언트에게 힌트를 숨기라는 메시지 전송
+        messagingTemplate.convertAndSend("/sub/quiz/" + roomId + "/hideHint", new HashMap<>());
+    }
     
  // **힌트 전송**
     @MessageMapping("/quiz/{roomId}/hintMessage")

@@ -17,7 +17,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
+	<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+	
     <script>
         // JavaScript에 root 경로 전달
         window.root = '${pageContext.request.contextPath}';
@@ -39,8 +40,10 @@
         <div class="sidebar">
             <jsp:include page="/WEB-INF/views/include/sidebar.jsp" />
         </div>
-
+        
+		
         <div class="main-content">
+         <div class="main-line">
             <div class="header">
                 <div class="header-left">
                     <h1>퀴즈 로비</h1>
@@ -67,6 +70,9 @@
                         </c:forEach>
                     </ul>
                 </div>
+                
+                </div>
+                
             </section>
         </div>
     </div>
@@ -112,7 +118,7 @@
             <h2>비밀번호 입력</h2>
             <form id="password-form">
                 <label for="roomPassword">비밀번호:</label> 
-                <input type="password" id="roomPassword" name="roomPassword" required>
+                <input type="password" id ="roomPassword" name="roomPassword" required>
                 <button type="button" id="submit-password">참여</button>
             </form>
         </div>
@@ -120,5 +126,7 @@
 
     <jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
     <script src="${root}/js/quizlobby.js"></script>
+    <!-- SweetAlert 다크 테마 및 스크립트 추가 -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 </body>
 </html>

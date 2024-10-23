@@ -1,17 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
 /* 전체 스타일 유지 */
 * {
+	-webkit-font-smoothing: antialiased;
 	outline: none;
 	box-sizing: border-box;
 	user-select: none;
 }
 
-html, body {
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	font-family: verdana;
-	background-color: #003A69;
+/* 전체 HTML 및 배경 스타일 */
+
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
 }
+
+
+body, html {
+    font-family: var(--body-font);
+    color: var(--body-color);
+    background-color: #1E1E1E; /* 약간 밝은 어두운 배경 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden; /* 페이지 전체에서 스크롤을 비활성화 */	
+}
+
+.night {
+  position: absolute; /* 절대 위치로 변경해 화면 전체를 덮도록 설정 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* 화면 전체 너비 */
+  height: 100vh; /* 화면 전체 높이 */
+  transform: rotateZ(45deg);
+  pointer-events: none; /* 유성우가 사용자 인터랙션을 방해하지 않도록 설정 */
+}
+
+.shooting_star {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(-45deg, #5f91ff, rgba(0, 0, 255, 0));
+  border-radius: 999px;
+  filter: drop-shadow(0 0 6px #699bff);
+  animation: tail 3000ms ease-in-out infinite, shooting 3000ms ease-in-out infinite;
+}
+
+/* 유성우의 무작위 위치와 애니메이션 딜레이를 설정 */
+.shooting_star {
+  top: calc(100% * var(--rand1));
+  left: calc(100% * var(--rand2) ); /* 좌우로 더 넓은 영역에서 시작하도록 조정 */
+  animation-delay: calc(3s * var(--rand3));
+}
+
+@keyframes tail {
+  0% {
+    width: 0;
+  }
+  30% {
+    width: 100px;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes shooting {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(300px);
+  }
+}
+
+/* 40개의 shooting_star를 각각 무작위 위치와 딜레이로 설정 */
+.shooting_star:nth-child(1) { --rand1: 0.0; --rand2: -0.4; --rand3: 1.3; }
+.shooting_star:nth-child(2) { --rand1: 0.0; --rand2: -0.3; --rand3: 1.5; }
+.shooting_star:nth-child(3) { --rand1: 0.0; --rand2: -0.2; --rand3: 1.4; }
+.shooting_star:nth-child(4) { --rand1: 0.0; --rand2: -0.1; --rand3: 0.9; }
+.shooting_star:nth-child(5) { --rand1: 0.0; --rand2: 0.0; --rand3: 1.1; }
+.shooting_star:nth-child(6) { --rand1: 0.0; --rand2: 0.1; --rand3: 1.4; }
+.shooting_star:nth-child(7) { --rand1: 0.0; --rand2: 0.2; --rand3: 1.2; }
+.shooting_star:nth-child(8) { --rand1: 0.0; --rand2: 0.3; --rand3: 1.3; }
+.shooting_star:nth-child(9) { --rand1: 0.0; --rand2: 0.4; --rand3: 0.6; }
+.shooting_star:nth-child(10) { --rand1: 0.0; --rand2: 0.5; --rand3: 0.7; }
+.shooting_star:nth-child(11) { --rand1: 0.0; --rand2: 0.6; --rand3: 1.3; }
+.shooting_star:nth-child(12) { --rand1: 0.0; --rand2: 0.7; --rand3: 1.1; }
+.shooting_star:nth-child(13) { --rand1: 0.0; --rand2: 0.8; --rand3: 0.9; }
+.shooting_star:nth-child(14) { --rand1: 0.0; --rand2: 0.9; --rand3: 1.0; }
+.shooting_star:nth-child(15) { --rand1: 0.0; --rand2: 1.0; --rand3: 1.2; }
+.shooting_star:nth-child(16) { --rand1: 0.0; --rand2: 1.1; --rand3: 0.4; }
+.shooting_star:nth-child(17) { --rand1: 0.0; --rand2: 1.2; --rand3: 0.5; }
+.shooting_star:nth-child(18) { --rand1: 0.0; --rand2: 1.3; --rand3: 0.6; }
+.shooting_star:nth-child(19) { --rand1: 0.0; --rand2: 1.4; --rand3: 0.7; }
+.shooting_star:nth-child(20) { --rand1: 0.0; --rand2: 1.5; --rand3: 0.8; }
+.shooting_star:nth-child(21) { --rand1: 0.75; --rand2: -0.5; --rand3: 1.5; }
+.shooting_star:nth-child(22) { --rand1: 0.8; --rand2: -0.4; --rand3: 1.3; }
+.shooting_star:nth-child(23) { --rand1: 0.85; --rand2: -0.3; --rand3: 1.1; }
+.shooting_star:nth-child(24) { --rand1: 0.9; --rand2: -0.2; --rand3: 1.2; }
+.shooting_star:nth-child(25) { --rand1: 0.95; --rand2: -0.1; --rand3: 1.3; }
+.shooting_star:nth-child(26) { --rand1: 0.2; --rand2: 0.4; --rand3: 0.5; }
+.shooting_star:nth-child(27) { --rand1: 0.3; --rand2: 0.5; --rand3: 0.6; }
+.shooting_star:nth-child(28) { --rand1: 0.4; --rand2: 0.6; --rand3: 0.7; }
+.shooting_star:nth-child(29) { --rand1: 0.5; --rand2: 0.7; --rand3: 0.8; }
+.shooting_star:nth-child(30) { --rand1: 0.6; --rand2: 0.8; --rand3: 0.9; }
+.shooting_star:nth-child(31) { --rand1: 0.7; --rand2: 0.9; --rand3: 1.0; }
+.shooting_star:nth-child(32) { --rand1: 0.8; --rand2: 1.0; --rand3: 1.1; }
+.shooting_star:nth-child(33) { --rand1: 0.9; --rand2: 1.1; --rand3: 1.2; }
+.shooting_star:nth-child(34) { --rand1: 0.5; --rand2: 1.2; --rand3: 0.7; }
+.shooting_star:nth-child(35) { --rand1: 0.2; --rand2: 0.3; --rand3: 0.4; }
+.shooting_star:nth-child(36) { --rand1: 0.25; --rand2: 0.4; --rand3: 0.5; }
+.shooting_star:nth-child(37) { --rand1: 0.3; --rand2: 0.5; --rand3: 0.6; }
+.shooting_star:nth-child(38) { --rand1: 0.35; --rand2: 0.6; --rand3: 0.7; }
+.shooting_star:nth-child(39) { --rand1: 0.4; --rand2: 0.7; --rand3: 0.8; }
+.shooting_star:nth-child(40) { --rand1: 0.45; --rand2: 0.8; --rand3: 0.9; }
+
+
+
 
 .quiz-room-container {
 	display: flex;
@@ -23,6 +131,10 @@ html, body {
 .quiz-room-main {
 	display: flex;
 	flex-grow: 1;
+	/*background-image: url('../img/quizback.png');*/
+	background-size: cover;
+
+
 }
 
 .score {
@@ -33,14 +145,14 @@ html, body {
 /* 플레이어 목록 전체 컨테이너 */
 .player-list-container {
     position: absolute;
-    top: 13%;  /* 세로 가운데 정렬 */
+    top: 14%; /* 세로 가운데 정렬 */
     left: 12%; /* 가로 가운데 정렬 */
     transform: translate(-50%, -50%); /* 정중앙으로 이동 */
     height: 100px;
     width: 300px;
     padding: 20px;
     border-radius: 10px; /* 둥근 모서리 */
-/*     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 부드러운 그림자 */
+    /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 부드러운 그림자 */
     z-index: 1000;
     text-align: center;
     background: transparent; /* 배경 제거 */
@@ -63,14 +175,13 @@ html, body {
     padding: 0;
     margin: 0;
     max-height: 250px; /* 최대 높이 설정 */
-    overflow-y: auto; /* 세로 스크롤 가능하게 */
 }
 
 /* 개별 플레이어 아이템 스타일 */
 .player-list li {
 	
     padding: 12px;
-    margin-bottom: 12px; /* 항목 간격 */
+    margin-bottom: 15px; /* 항목 간격 */
     border-radius: 8px; /* 둥근 테두리 */
     color: #c1fdd9; /* 텍스트 색상 */
     font-size: 16px; /* 글씨 크기 */
@@ -86,6 +197,11 @@ html, body {
     padding-left: 30px; /* 이미지와 텍스트 간격 */
 }
 
+/* 방장인 플레이어 아이템 스타일 */
+.player-list li.host-player {
+    background-image: url('../img/플레이어아이콘방장_quiz.png'); /* 방장 이미지를 다른 경로로 설정 */
+}
+
 /* 마지막 플레이어 항목에만 적용되는 스타일 제거 */
 .player-list li:last-child {
     margin-bottom: 0;
@@ -98,21 +214,6 @@ html, body {
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* hover 시 그림자 강조 */
 }
-
-/* 스크롤바 스타일 (웹킷 기반 브라우저에서 작동) */
-.player-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.player-list::-webkit-scrollbar-thumb {
-    background-color: #ddd; /* 밝은 스크롤바 */
-    border-radius: 4px;
-}
-
-.player-list::-webkit-scrollbar-track {
-    background-color: transparent; /* 배경색 제거 */
-}
-
 
 
 /* 중앙 콘텐츠와의 정렬 */
@@ -129,21 +230,6 @@ html, body {
 	color: #6c63ff;
 }
 
-/* #start-quiz-btn {
-	margin-top: 20px;
-	padding: 10px 20px;
-	border: none;
-	background-color: #6c63ff;
-	color: white;
-	border-radius: 8px;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
-}
-
-#start-quiz-btn:hover {
-	background-color: #5a54e8;
-} */
-
 .quiz-room-game-center {
 	flex: 1;
 	display: flex;
@@ -154,47 +240,47 @@ html, body {
 	margin: 20px;
 }
 
-/* 음악 아이콘 */
+/* 음악 아이콘*/
 .quiz-room-music-icon {
     cursor: pointer;
     position: relative;
-    width: 120px; /* 부모 요소의 크기 지정 */
-    height: 120px; /* 부모 요소의 크기 지정 */
-    left: 9%;
+    width: 120px;
+    height: 120px; 
+    left: 6%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease;
 }
 
-/* 클릭 시 축소 효과 */
+/*클릭 시 축소 효과*/
 .quiz-room-music-icon:active {
     transform: scale(0.9);
 }
 
-/* 아이콘 스타일 */
+/*아이콘 스타일*/
 .quiz-room-music-icon i {
     font-size: 100px;
     color: #6a6ae3;
     transition: color 0.3s ease;
 }
 
-/* 재생 중인 상태 */
+/*재생 중인 상태*/
 .quiz-room-music-icon.playing i {
-    color: #ff6666; /* 재생 중일 때 색상 */
+    color: #ff6666;
 }
 
-/* 재생 중인 상태 스타일 */
+/*재생 중인 상태 스타일*/
 .quiz-room-music-icon.playing i {
-	color: #ff6666; /* 재생 중일 때 색상 */
+	color: #ff6666; 
 }
 
 
-/* 정답자 정보 표시 */
+/* 정답자 정보 표시*/
 #answer-info {
 	position: absolute;
 	top: 25%; /* 재생 버튼 위에 위치 */
-	left: 45%; /* 가운데 정렬 */
+	left: 43%; /* 가운데 정렬 */
 	transform: translate(-50%, -50%); /* 수평, 수직 중앙 정렬 */
 	text-align: center;
 	color: #ff66b2;
@@ -221,17 +307,18 @@ html, body {
 /* 채팅 및 메시지 스타일 */
 .quiz-room-chat-section {
     width: 300px;
-    height: 90%;
+    height: 87%;
     left:0.9%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 10px;
-    background-color: #1f1d2b;
+    background-color: #808080;
     border-radius: 10px;
+    opacity: 0.9;
     margin: 20px;
     position: relative; /* position 추가 */
-    bottom: -42px; /* 아래로 이동할 값 조정 */
+    bottom: -64px; /* 아래로 이동할 값 조정 */
 }
 
 .quiz-room-chat-messages {
@@ -243,10 +330,10 @@ html, body {
     margin-bottom: 10px;
 }
 
-.quiz-room-chat-input-wrapper {
+ .quiz-room-chat-input-wrapper {
     display: flex;
     gap: 10px;
-}
+} 
 
 .quiz-room-chat-input {
     flex: 1;
@@ -268,8 +355,8 @@ html, body {
 /* 툴팁 전체 컨테이너 */
 #command-tooltip {
     position: absolute;
-    top: 62px;
-    left: 62.5%;
+    top: 12%;
+    left: 63.5%;
     right: 350px;
     width: 250px;
     background-color: #1f1f33;
@@ -348,8 +435,8 @@ html, body {
 /* 최대화 버튼 */
 #tooltip-maximize-btn {
     position: absolute;
-    top: 70px;
-    left: 76%; 
+    top: 90px;
+    left: 77%; 
     background-color: #2d2d4f;
     border: none;
     border-radius: 50%;
@@ -399,7 +486,7 @@ html, body {
 #hint-info {
     position: absolute;
     top: 25%; /* 부모 요소의 위쪽에 가까운 위치 */
-    left: 45%; /* 수평 중앙 정렬 */
+    left: 43%; /* 수평 중앙 정렬 */
     transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
     text-align: center;
     font-size: 1.5rem;
@@ -413,7 +500,7 @@ html, body {
 #next-quiz-timer {
     position: absolute;
     top: 31%; /* 화면 정가운데에서 조금 아래 위치 */
-    left: 46%; /* 수평 중앙 정렬 */
+    left: 43.5%; /* 수평 중앙 정렬 */
     transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
     font-size: 1.2rem; /* 텍스트 크기 */
     color: #ffffff; /* 텍스트 색상 */
@@ -445,97 +532,6 @@ html, body {
     }
 }
 
-
-
-
-
-.gamebtn {
-    position: absolute;
-    top: 70%;
-    left: 48%;
-    transform: translate(-50%, -50%);
-}
-a {
-    display: flex; /* 두 span을 같은 줄에 배치 */
-    align-items: stretch; /* 같은 높이로 맞춤 */
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 30px;
-}
-a span {
-    flex: 1; /* 동일한 너비로 확장 */
-    padding: 15px;
-    transition: 0.5s;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-a span:nth-child(1) {
-    color: #fff;
-    background: #0000ff;
-}
-a span:nth-child(2) {
-    color: #fff;
-    background: #ff3636;
-}
-a span:nth-child(1):before {
-    content: attr(data-attr);
-    position: absolute;
-    top: 0;
-    left: -280%;
-    background: #ff3636;
-    padding: 15px;
-    transition: 0.5S;
-    transform-origin: top;
-    transform: rotateX(90deg) translateY(-50%);
-}
-a:hover span:nth-child(1):before {
-    transform: rotateX(0deg) translateY(0%);
-} 
-a span:nth-child(2):before {
-    content: attr(data-attr);
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #400000;
-    padding: 15px;
-    transition: 0.5S;
-    transform-origin: bottom;
-    transform: rotateX(90deg) translateY(50%);
-}
-a:hover span:nth-child(2):before {
-    transform: rotateX(0deg) translateY(0%);
-} 
-a  span:nth-child(1):after {
-  content: attr(data-attr);
-  padding: 15px;
-  position: absolute;
-  top: 0;
-  left: -280%;
-  background: #400000;
-  transform-origin: bottom;
-  transform: rotateX(0deg) translateY(0%);
-  transition: 0.5s;
-}
-a:hover span:nth-child(1):after {
-  transform: rotateX(90deg) translateY(50%);
-}
-a span:nth-child(2):after {
-    content: attr(data-attr);
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ff3636;
-    padding: 15px;
-    transition: 0.5S;
-    transform-origin: top;
-    transform: rotateX(0deg) translateY(0%);
-}
-a:hover span:nth-child(2):after {
-    transform: rotateX(90deg) translateY(-50%);
-} 
-
 /* 자신의 메시지 스타일 */
 .chat-message-right {
     float: right;  /* 오른쪽에 배치 */
@@ -544,7 +540,7 @@ a:hover span:nth-child(2):after {
     border-radius: 10px;  /* 둥근 모서리 */
     color: #00ffff;  /* 텍스트 색상 */
     margin-left: auto;  /* 오른쪽 정렬을 위해 auto로 설정 */
-    margin-bottom: -10px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
+    margin-bottom: -2px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
     clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
     max-width: 100%;  /* 최대 너비 설정 */
     word-break: break-word;  /* 긴 단어 줄바꿈 */
@@ -560,7 +556,7 @@ a:hover span:nth-child(2):after {
     border-radius: 10px;  /* 둥근 모서리 */
     color: #00ffff;  /* 텍스트 색상 */
     margin-left: auto;  /* 오른쪽 정렬을 위해 auto로 설정 */
-    margin-bottom: -10px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
+    margin-bottom: -2px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
     clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
     max-width: 100%;  /* 최대 너비 설정 */
     word-break: break-word;  /* 긴 단어 줄바꿈 */
@@ -574,7 +570,7 @@ a:hover span:nth-child(2):after {
     padding: 8px 12px;
     border-radius: 10px;
     margin-left: auto;  /* 오른쪽 정렬을 위해 auto로 설정 */
-    margin-bottom: -10px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
+    margin-bottom: -2px;  /* 메시지 간의 아래쪽 여백 (간격 조절) */
     clear: both;  /* 이전 플로트 요소와 충돌하지 않도록 설정 */
     max-width: 100%;  /* 최대 너비 설정 */
     word-break: break-word;  /* 긴 단어 줄바꿈 */
@@ -594,7 +590,150 @@ a:hover span:nth-child(2):after {
     display: block;  /* 블록 요소로 설정 */
     max-width: 100%;
     margin-left: auto;
-    margin-top: 40px; /* 위쪽 여백을 넉넉하게 추가 */
-    margin-bottom: 10px; /* 아래쪽 여백을 추가 */
+    margin-top: 30px; /* 위쪽 여백을 넉넉하게 추가 */
+    margin-bottom: -15px; /* 아래쪽 여백을 추가 */
     
+}
+
+/*테스트*/
+:root {
+  --color: #95f9fe;
+}
+
+.quiz-button-main {
+  bottom: -110%;
+  left: 50%;
+  position: relative;
+  padding: 12px 35px;
+  background: var(--color);
+  font-size: 17px;
+  font-weight: 500;
+  color: #181818;
+  border: 3px solid var(--color);
+  border-radius: 8px;
+  box-shadow: 0 0 0 #fec1958c;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.quiz-star-1 {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 25px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 1s cubic-bezier(0.05, 0.83, 0.43, 0.96);
+}
+
+.quiz-star-2 {
+  position: absolute;
+  top: 45%;
+  left: 45%;
+  width: 15px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 1s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.quiz-star-3 {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  width: 5px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 1s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.quiz-star-4 {
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  width: 8px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 0.8s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.quiz-star-5 {
+  position: absolute;
+  top: 25%;
+  left: 45%;
+  width: 15px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 0.6s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.quiz-star-6 {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  width: 5px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 0.8s ease;
+}
+
+.quiz-button-main:hover {
+  background: transparent;
+  color: var(--color);
+  box-shadow: 0 0 25px #fec1958c;
+}
+
+.quiz-button-main:hover .quiz-star-1 {
+  top: -80%;
+  left: -30%;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.quiz-button-main:hover .quiz-star-2 {
+  top: -25%;
+  left: 10%;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.quiz-button-main:hover .quiz-star-3 {
+  top: 55%;
+  left: 25%;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.quiz-button-main:hover .quiz-star-4 {
+  top: 30%;
+  left: 80%;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.quiz-button-main:hover .quiz-star-5 {
+  top: 25%;
+  left: 115%;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.quiz-button-main:hover .quiz-star-6 {
+  top: 5%;
+  left: 60%;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.hidden-svg {
+  display: none;
+}
+
+.star {
+  fill: #FFFDEF;
 }

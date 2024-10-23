@@ -1,3 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+  
+}
+
+
+body {
+    font-family: var(--body-font);
+    color: var(--body-color);
+    background-color: #1E1E1E; /* 약간 밝은 어두운 배경 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-line{
+	color: #1E1E1E;
+	box-shadow: 0 1px 5px rgba(60, 60, 60, 0.9);
+	position: relative;
+	margin-top: 40px;
+	padding: 30px;
+}
 
 /* 전체 컨테이너 */
 .quiz-lobby .lobby-container {
@@ -20,11 +48,8 @@
 }
 
 .quiz-lobby .header-left h1 {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: bold;
-    position: relative;
-    margin-left: -8px;
-    margin-top : 12px;
 }
 
 .quiz-lobby .header button {
@@ -45,7 +70,7 @@
 
 /* 방 목록 컨테이너 */
 .quiz-lobby .room-list-container {
-    margin-top: 30px;
+    margin-top: -30px;
     padding: 20px;
 }
 
@@ -99,6 +124,7 @@
 }
 
 .quiz-lobby .room-users {
+	margin-bottom: 10px;
     font-size: 16px;
     color: #9aa0a6;
 }
@@ -149,6 +175,7 @@
     z-index: 1000;
     left: 50%;
     top: 50%;
+    background-color: #3A3A3A;
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
@@ -158,62 +185,114 @@
 
 /* 모달 콘텐츠 */
 .modal-content {
-    background-color: white;
+    background-color: #004040;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: none; /* 애니메이션 제거 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
-
 
 /* 닫기 버튼 스타일 */
 .close, .close-password-modal {
-    color: #aaa;
+    color: #fff;
     float: right;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
 .close:hover, .close-password-modal:hover {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+    color: #FFD700;
 }
 
-/* 모달 애니메이션 */
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10%);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 모달 창 내의 입력 폼 스타일 */
+/* 입력 필드 스타일 */
 .modal input[type="text"], .modal input[type="password"], .modal input[type="number"], .modal select {
     width: 100%;
     padding: 10px;
-    margin: 8px 0;
+    margin: 12px 0;
     display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #444;
+    border-radius: 6px;
     box-sizing: border-box;
+    background-color: #2A2A2A;
+    color: #FFF;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 버튼 스타일 */
+.modal input[type="text"]:focus, .modal input[type="password"]:focus, .modal input[type="number"]:focus, .modal select:focus {
+    border-color: #00FFFF;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
 
-
+/* 최대 곡 수 버튼 스타일 */
 .music-button {
-    margin: 5px;
-    padding: 10px 20px;
+    background-color: #005050;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    margin: 4px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.music-button:hover {
+    background-color: #009090;
+    transform: scale(1.05);
+}
+
+/* 제출 버튼 스타일 */
+button[type="submit"], #submit-password {
+    background-color: #008080;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    width: 100%;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:hover, #submit-password:hover {
+    background-color: #00B3B3;
+    transform: scale(1.05);
+}
+
+/* 레이블 스타일 */
+.modal label {
+    color: #C0C0C0;
+    font-size: 13px;
+    margin-top: 8px;
+    display: block;
+}
+
+/* 헤더 스타일 */
+.modal h2 {
+    color: #FFD700;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+
+/* 버튼 스타일 */
+.music-button {
+    margin: 3px;
+    margin-top: 10px;
+    padding: 9px 17px;
     border: 1px solid #000;
-    background-color: #f0f0f0;
+    background-color: none;
     cursor: pointer;
     transition: box-shadow 1s ease-out;
 }
