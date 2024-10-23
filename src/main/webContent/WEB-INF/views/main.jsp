@@ -54,7 +54,8 @@
 					<div
 						style="display: flex; justify-content: space-between; align-items: center; postion: sticky;">
 						<h2 class="section-artist">인기 아티스트</h2>
-						<%-- <a href="${root}/artists/all" class="see-all-link">모두 표시</a> --%>
+						
+						<a href="${root}/search/randomAlbumPage" class="see-all-link">새로운 곡을 찾고 싶으세요?</a>
 					</div>
 					<div class="artists-grid">
 						<!-- 아티스트 정보 동적 출력 -->

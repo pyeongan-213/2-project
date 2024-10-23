@@ -1,3 +1,4 @@
+
 /* 전체 컨테이너 */
 .quiz-lobby .lobby-container {
     width: 80%;
@@ -19,8 +20,11 @@
 }
 
 .quiz-lobby .header-left h1 {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: bold;
+    position: relative;
+    margin-left: -8px;
+    margin-top : 12px;
 }
 
 .quiz-lobby .header button {

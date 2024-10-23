@@ -58,10 +58,12 @@ body {
 
 /* Main content 스타일 */
 .main-content {
-    margin-left: 80px;
+    margin-left: 0px;
     flex-grow: 1;
     background-color: var(--theme-bg);
-    padding: 40px;
+    padding-left: 70px;
+    padding-top: 20px;
+    padding-right: 40px;
     overflow: auto;
     margin-top: 40px;
 }
