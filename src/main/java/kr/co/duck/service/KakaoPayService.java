@@ -1,5 +1,6 @@
 package kr.co.duck.service;
 
+import kr.co.duck.beans.KakaopayInfoBean;
 import kr.co.duck.beans.MemberBean;
 import kr.co.duck.domain.KakaopayInfo;
 import kr.co.duck.repository.KaokaopayInfoRepository;
@@ -75,7 +76,7 @@ public class KakaoPayService {
       }
    }
 
-   // 결제 승인 메서드 수정
+// 결제 승인 메서드 수정
    public KaKaoApproveResponse requestPaymentApprove(String tid, String pgToken) {
       try {
          Map<String, String> parameters = new HashMap<>();
@@ -97,6 +98,12 @@ public class KakaoPayService {
             throw new IllegalStateException("로그인 정보가 없습니다.");
          }
          int memberID = loginMemberBean.getMember_id(); // memberID 추출
+         
+         // KakaopayInfoBean 객체 생성 및 저장
+         KakaopayInfoBean kakaopayInfo = new KakaopayInfoBean();
+         kakaopayInfo.setMember_id(memberID);
+         kakaopayInfo.setTid(tid);
+         kakaopayInfo.setSid(approveResponse.getSid());        
 
          // memberID와 함께 KakaopayInfo 저장
          repository.save(KakaopayInfo.of(tid, Objects.requireNonNull(approveResponse).getSid(), memberID));
