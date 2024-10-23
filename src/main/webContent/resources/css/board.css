@@ -96,7 +96,7 @@ thead th {
 }
 
 .write-btn {
-	background: #74E885;
+	background: #4CAF50;
 	color: black;
 	border: none;
 	border-radius: 4px;
@@ -113,7 +113,7 @@ thead th {
 }
 
 .write-btn:hover {
-	background: #BC5ADC;
+	background: #75f079;
 }
 
 .pagination {
