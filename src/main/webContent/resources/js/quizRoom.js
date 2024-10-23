@@ -320,9 +320,9 @@ function displayHint(hint) {
 		function displayAnswerInfo(sender, songName) {
 		    document.getElementById('correct-player').textContent = `정답자: ${sender}`;
 		    document.getElementById('song-info').textContent = songName || currentSongName;
-		    document.getElementById('answer-info').classList.remove('hidden');
-			hidehint();
+		    document.getElementById('answer-info').classList.remove('hidden');	
 		}
+		
 		
 		// 플레이어 목록 구독 설정
 		if (!playerSubscription) {
@@ -359,6 +359,12 @@ function displayHint(hint) {
 		}
 
 
+			// 타이머 구독 추가
+		    stompClient.subscribe(`/sub/quiz/${roomId}/timer`, (message) => {
+		        const timerData = JSON.parse(message.body);
+		        const timeLeft = timerData.timeLeft;
+		        displayTimer(timeLeft);  // 타이머를 화면에 표시
+		    });
 		// 준비완료 상태 변경 구독
 		stompClient.subscribe(`/sub/quiz/${roomId}/ready`, (message) => {
 			const readyMessage = JSON.parse(message.body);
@@ -852,7 +858,7 @@ function startCountdown(timeLeft = 10) {
 		countdownDisplay.textContent = `다음 퀴즈가 시작됩니다 (${timeLeft})`;
 
 		// 타이머를 모든 참가자에게 지속적으로 전송 (주석 처리된 부분은 필요 시 활성화)
-		// stompClient.send(`/pub/quiz/${roomId}/timer`, {}, JSON.stringify({ timeLeft: timeLeft }));
+		 stompClient.send(`/pub/quiz/${roomId}/timer`, {}, JSON.stringify({ timeLeft: timeLeft }));
 
 		// !스킵 또는 !skip 명령어가 감지된 경우
 		if (isSkipping) {
@@ -1094,7 +1100,8 @@ async function sendMessage() {
 		if (isCorrectAnswer) {
 			displayChatMessage(currentUserNickname, message, true);  // 정답인 경우 파란색 처리
 			checkAnswer(currentUserNickname, message);
-			hideAnswerInfo();
+			startCountdown();
+			hideanswerinfo();
 			hidehint();
 		} else {
 			displayChatMessage(currentUserNickname, message, false);  // 일반 메시지 처리
