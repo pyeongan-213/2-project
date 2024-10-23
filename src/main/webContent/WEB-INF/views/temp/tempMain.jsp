@@ -110,7 +110,7 @@ section:not(#sectionPin) {
   position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 2rem;
+  grid-gap: 3.5rem;
   margin: auto;
   place-items: center;
 }
@@ -198,15 +198,6 @@ h2 {
   padding: 0 2vw;
 }
 
-p {
-  position: absolute;
-  bottom: 10vh;
-  right: 10vw;
-  width: 200px;
-  line-height: 1.5;
-  color: white;
-}
-
 c-scrollbar{
    background-color: white;
 }
@@ -214,7 +205,7 @@ c-scrollbar{
 .pay{
    display: flex;
    border-radius: 8px;
-   margin-top: 60px;
+   /* margin-top: 60px; */
 }
 
 .by-month, .by-year {
@@ -356,10 +347,46 @@ c-scrollbar{
 						out of download space.</div>
 					<div style="position: inherit; z-index: 2; margin-top: 25px;">99,000원</div>
 					<button class="btn">결제하기</button>
-				</div>
+				</div>	
 		</div>
+		<div class="pay" style="margin-bottom: 20px;">
+				<div class="by-month">
+					<div class="wave"></div>
+					<div class="wave"></div>
+					<div class="wave"></div>
+					<div class="wave"></div>
+					<h2 style="position: inherit; z-index: 2;">월간결제</h2>
+					<div style="position: inherit; z-index: 2;">Experience
+						best-in-class sound quality that opens up every detail with HiRes
+						Free Lossless Audio Codec (HiRes FLAC). Best enjoyed on 5G or
+						WiFi with a hardware connection.</div>
+					<div style="position: inherit; z-index: 2; margin-top: 25px;">9,900원</div>
+					<button class="btn">결제하기</button>
+				</div>
+					<div class="by-year">
+					<div class="wave"></div>
+					<div class="wave"></div>
+					<div class="wave"></div>
+					<h2 style="position: inherit; z-index: 2;">연간결제</h2>
+					<div style="position: inherit; z-index: 2;">Get the music
+						you love on the go without worrying about data. Useful when you
+						have a weak signal, are reaching your data cap, or are running
+						out of download space.</div>
+					<div style="position: inherit; z-index: 2; margin-top: 25px;">99,000원</div>
+					<button class="btn">결제하기</button>
+				</div>	
+		</div>
+		
+		<footer>
+      	<!-- bottom_info.jsp 포함 -->
+      	<jsp:include page="/WEB-INF/views/include/bottom_info.jsp" />
+   		</footer>
+		
 		</section>
 	</div>
+	
+	
+   
 	<script>
    	//1번째 섹션 배경 애니메이션
 	new FinisherHeader({
