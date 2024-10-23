@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import kr.co.duck.repository.QuizRoomAttendeeRepository;
 import kr.co.duck.repository.QuizRoomRepository;
 import kr.co.duck.repository.QuizStartSetRepository;
-import kr.co.duck.repository.RewardRepository;
 
 @Service
 public class QuizCommand {
@@ -13,15 +12,13 @@ public class QuizCommand {
 	private final QuizRoomRepository quizRoomRepository;
 	private final QuizRoomAttendeeRepository quizRoomAttendeeRepository;
 	private final QuizStartSetRepository quizStartSetRepository;
-	private final RewardRepository rewardRepository;
 
 	// 생성자
 	public QuizCommand(QuizRoomRepository quizRoomRepository, QuizRoomAttendeeRepository quizRoomAttendeeRepository,
-			QuizStartSetRepository quizStartSetRepository, RewardRepository rewardRepository) {
+			QuizStartSetRepository quizStartSetRepository) {
 		this.quizRoomRepository = quizRoomRepository;
 		this.quizRoomAttendeeRepository = quizRoomAttendeeRepository;
 		this.quizStartSetRepository = quizStartSetRepository;
-		this.rewardRepository = rewardRepository;
 	}
 
 	////////////// TODO QuizRoom 관련
@@ -62,10 +59,5 @@ public class QuizCommand {
 		quizStartSetRepository.deleteByRoomId(roomId);
 	}
 
-	////////////// TODO Reward 관련
-	// 리워드 저장하기
-	public void saveReward(Reward reward) {
-		rewardRepository.save(reward);
-	}
 
 }

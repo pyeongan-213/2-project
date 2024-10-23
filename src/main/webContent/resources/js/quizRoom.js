@@ -251,6 +251,11 @@ stompClient.subscribe(`/sub/chat/${roomId}`, (message) => {
         // 힌트 표시 함수 호출
         const hint = generateHint();  // 힌트를 생성하고
         displayHint(hint);  // 화면에 힌트를 표시
+        
+        if (startQuizButton) {
+		startQuizButton.addEventListener('click', startQuiz);  // 새로운 리스너 추가
+		 hidehint();
+	}
 
       /*  // WebSocket으로 힌트 정보를 다른 참가자에게 전송
         stompClient.send(`/pub/chat/${roomId}`, {}, JSON.stringify({
@@ -316,6 +321,7 @@ function displayHint(hint) {
 		    document.getElementById('correct-player').textContent = `정답자: ${sender}`;
 		    document.getElementById('song-info').textContent = songName || currentSongName;
 		    document.getElementById('answer-info').classList.remove('hidden');
+			hidehint();
 		}
 		
 		// 플레이어 목록 구독 설정
@@ -337,6 +343,7 @@ function displayHint(hint) {
 		            const correctPlayer = chatMessage.sender;  // 정답자 닉네임
 		            const songName = chatMessage.songName;  // 정답 노래 제목
 		            displayCorrectPlayer(correctPlayer, songName);  // 정답자 화면에 표시
+		        	hidehint();
 		        }
 		    });
 		
@@ -482,7 +489,15 @@ async function startQuiz() {
 
 			const readyStatusData = await readyStatusResponse.json();
 			if (!readyStatusData.allReady) {
-				alert("모든 참가자가 준비되지 않았습니다. 게임을 시작할 수 없습니다.");
+				     Swal.fire({
+            title: '준비완료요망',
+            text: '모든 참가자가 준비되지 않았습니다. 게임을 시작할 수 없습니다.',
+            icon: 'warning',
+            background: '#3A3A3A',
+			color: '#fff',
+			confirmButtonColor: '#1db954',
+            confirmButtonText: '확인'
+        });
 				return;
 			}
 		}
@@ -516,7 +531,10 @@ async function startQuiz() {
 			} else {
 				console.error('알 수 없는 퀴즈 타입입니다:', currentQuizType);
 				return;
-			}
+			}		
+
+  			// **퀴즈 시작 시 힌트 숨기기**
+            hideHint();
 
 			// 퀴즈 시작
 			hintIndex = 0;
@@ -557,11 +575,13 @@ function togglePlayPause() {
 		isStoppedByUser = true;  // 사용자가 음악을 수동으로 중지했음을 기록
 	} else {
 		console.log('음악 재개');
+		playstartEffectSound();
 
 		// 사용자가 수동으로 음악을 중지하고, 타이머가 끝난 후 다시 재생할 경우 새로운 퀴즈 시작
 		if (isStoppedByUser && isQuizCompleted) {
 			console.log('새로운 퀴즈로 이동합니다.');
 			startQuiz();  // 새로운 퀴즈 시작
+			playstartEffectSound();
 		} else {
 			const embedUrl = `https://www.youtube.com/embed/${currentVideo}?autoplay=1`;
 			player.src = embedUrl;  // 기존 음악 재개
@@ -580,13 +600,18 @@ document.querySelector('.quiz-room-music-icon').addEventListener('click', toggle
 
 // **재생 아이콘 업데이트**
 function updatePlayIcon() {
-	const musicIcon = document.querySelector('.quiz-room-music-icon i');
-	if (isPlaying) {
-		musicIcon.classList.replace('bi-play-circle-fill', 'bi-pause-circle-fill');
-	} else {
-		musicIcon.classList.replace('bi-pause-circle-fill', 'bi-play-circle-fill');
-	}
+    const musicIcon = document.querySelector('.quiz-room-music-icon i');
+    if (isPlaying) {
+        // 음악이 재생 중일 때는 일시정지 아이콘을 표시
+        musicIcon.classList.remove('bi-play-circle-fill');
+        musicIcon.classList.add('bi-pause-circle-fill');
+    } else {
+        // 음악이 정지 상태일 때는 재생 아이콘을 표시
+        musicIcon.classList.remove('bi-pause-circle-fill');
+        musicIcon.classList.add('bi-play-circle-fill');
+    }
 }
+
 
 // **힌트를 화면에 표시하는 함수**
 function updateHintDisplay(hint) {
@@ -639,6 +664,7 @@ function processChatMessage(sender, message, messageId) {
 	// 메시지 화면에 표시
 	if (isCorrectAnswer) {
 		displayChatMessage(sender, message, true);  // 정답인 경우 파란색 처리
+		hidehint();
 		displayAnswerInfo(sender, currentSongName, currentAnswers); // currentSongName과 currentAnswers를 전달
 		checkAnswer(sender, message);
 	} else {
@@ -833,6 +859,7 @@ function startCountdown(timeLeft = 10) {
 			clearInterval(countdownInterval); // 타이머 종료
 			countdownInterval = null; // 초기화
 			hideAnswerInfo();  // 정답 정보 숨기기
+			hidehint();
 			console.log('스킵 명령어로 타이머가 중지되었습니다.');
 			startQuiz();  // 다음 퀴즈 시작
 			isSkipping = false;  // 스킵 상태 초기화
@@ -1068,6 +1095,7 @@ async function sendMessage() {
 			displayChatMessage(currentUserNickname, message, true);  // 정답인 경우 파란색 처리
 			checkAnswer(currentUserNickname, message);
 			hideAnswerInfo();
+			hidehint();
 		} else {
 			displayChatMessage(currentUserNickname, message, false);  // 일반 메시지 처리
 		}
@@ -1107,7 +1135,7 @@ function displayHint2() {
 }
 
 // **정답자 정보 표시 함수 (정답자 표시 중일 때 힌트 숨김 처리)**
-function displayAnswerInfo(sender, songName) {
+/*function displayAnswerInfo(sender, songName) {
     isAnswerDisplayed = true;  // 정답자가 표시되고 있음을 나타냄
 
     document.getElementById('correct-player').textContent = `정답자: ${sender}`;
@@ -1116,7 +1144,7 @@ function displayAnswerInfo(sender, songName) {
 
     // 정답자가 표시되었으므로 힌트도 숨김
     hideHint();
-}
+}*/
 
 // **힌트 숨기기 함수**
 function hideHint() {
@@ -1183,7 +1211,7 @@ function hideHint() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-	const startQuizButton = document.getElementById('start-quiz-btn');
+	const startQuizButton = document.getElementById('quiz-button-start');
 	const sendChatBtn = document.getElementById('send-chat-btn');
 	const chatInput = document.getElementById('chat-input');
 
@@ -1191,7 +1219,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	if (startQuizButton) {
 		startQuizButton.addEventListener('click', startQuiz);  // 새로운 리스너 추가
 	}
-
+	
 	// 채팅 전송 버튼에 대한 이벤트 리스너 추가
 	if (sendChatBtn) {
 		sendChatBtn.addEventListener('click', sendMessage);  // 새로운 리스너 추가
@@ -1243,7 +1271,7 @@ async function leaveRoom() {
 }
 
 function enableStartButton() {
-	const startButton = document.getElementById('start-quiz-btn');
+	const startButton = document.getElementById('quiz-button-start');
 	startButton.disabled = false;  // 게임 시작 버튼 활성화
 }
 
@@ -1259,60 +1287,39 @@ function checkAllPlayersReadyAndNotifyHost() {
 
 document.getElementById('play-toggle-btn').addEventListener('click', function() {
     this.classList.toggle('active');
-    const playIcon = document.getElementById('play-icon');
-    
-    // 버튼의 상태에 따라 재생 아이콘 변경
-    if (this.classList.contains('active')) {
-        playIcon.classList.replace('bi-play-circle-fill', 'bi-pause-circle-fill');
+   
+/*    // 버튼의 상태에 따라 재생 아이콘 변경
+     const playIcon = document.getElementById('play-icon');
+    if (isPlaying) {
+        // 음악이 재생 중일 때는 일시정지 아이콘을 표시
+        playIcon.classList.remove('bi-play-circle-fill');
+        playIcon.classList.add('bi-pause-circle-fill');
     } else {
-        playIcon.classList.replace('bi-pause-circle-fill', 'bi-play-circle-fill');
-    }
+        // 음악이 정지 상태일 때는 재생 아이콘을 표시
+        playIcon.classList.remove('bi-pause-circle-fill');
+        playIcon.classList.add('bi-play-circle-fill');
+    }*/
 });
 
-function init(){
+document.querySelectorAll('.shooting_star').forEach((star) => {
+  star.style.setProperty('--rand1', Math.random());
+  star.style.setProperty('--rand2', Math.random() * 2 - 0.5); // -0.5에서 1.5 사이의 값을 설정하여 전체 화면을 커버
+  star.style.setProperty('--rand3', Math.random());
+});
 
-  //estrelas
+//테스트
+/*var RANDOM = function(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
 
-  var style = ["style1", "style2", "style3", "style4"];
-  var tam = ["tam1", "tam1", "tam1", "tam2", "tam3"];
-  var opacity = ["opacity1", "opacity1", "opacity1", "opacity2", "opacity2", "opacity3"];
-
-  function getRandomArbitrary(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
-
-  var estrela = "";
-  var qtdeEstrelas = 250;
-  var noite = document.querySelector(".constelacao");
-  var widthWindow = window.innerWidth;
-  var heightWindow = window.innerHeight;
-
-  for (var i = 0; i < qtdeEstrelas; i++) {
-    estrela += "<span class='estrela " + style[getRandomArbitrary(0, 4)] + " " + opacity[getRandomArbitrary(0, 6)] + " "
-    + tam[getRandomArbitrary(0, 5)] + "' style='animation-delay: ." +getRandomArbitrary(0, 9)+ "s; left: "
-    + getRandomArbitrary(0, widthWindow) + "px; top: " + getRandomArbitrary(0, heightWindow) + "px;'></span>";
-  }
-
-  noite.innerHTML = estrela;
-
-  //meteoros
-
-  var numeroAleatorio = 5000;
-
-  setTimeout(function(){
-    carregarMeteoro();
-  }, numeroAleatorio);
-
-  function carregarMeteoro(){
-    setTimeout(carregarMeteoro, numeroAleatorio);
-    numeroAleatorio = getRandomArbitrary(5000, 10000);
-    var meteoro = "<div class='meteoro "+ style[getRandomArbitrary(0, 4)] +"'></div>";
-    document.getElementsByClassName('chuvaMeteoro')[0].innerHTML = meteoro;
-    setTimeout(function(){
-      document.getElementsByClassName('chuvaMeteoro')[0].innerHTML = "";
-    }, 1000);
-  }
-
-}
-
-window.onload = init;
+var PARTICLES = document.querySelectorAll('.star');
+PARTICLES.forEach(function(P) {
+  P.setAttribute('style', `
+    --angle: ` + RANDOM(0, 360) + `;
+    --duration: ` + RANDOM(6, 20) + `;
+    --delay: ` + RANDOM(1, 10) + `;
+    --alpha: ` + (RANDOM(40, 90) / 100) + `;
+    --size: ` + RANDOM(2, 6) + `;
+    --distance: ` + RANDOM(40, 200) + `;
+  `);
+});*/

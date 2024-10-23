@@ -5,6 +5,11 @@ import kr.co.duck.domain.MemberGameStats;
 
 public interface MemberGameStatsRepository extends JpaRepository<MemberGameStats, Integer> {
     
-    // 필요한 추가적인 메서드가 있으면 여기에 정의
 	MemberGameStats findByMemberId(int memberId);
+	
+	// 멤버 아이디로 스코어 찾기( 나중에 쿼리문 작성예정 )
+	//MemberGameStats findByMemberscore(int memberId);
+
 }
+
+

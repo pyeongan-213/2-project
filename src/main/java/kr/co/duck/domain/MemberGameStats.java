@@ -41,6 +41,9 @@ public class MemberGameStats {
 
     @Column(name = "PLAY_TIME", nullable = false)
     private int playTime = 0;
+    
+    @Column(name = "Score", nullable = false)
+    private int score = 0;
 
     // 기본 생성자
     public MemberGameStats() {
@@ -49,14 +52,38 @@ public class MemberGameStats {
     // memberId로 초기화하는 생성자
     public MemberGameStats(int memberId) {
         this.memberId = memberId;
-    }
+    } 
+    
+    public MemberGameStats(int statsId, int memberId, int winNum, int loseNum, int totalGameNum, int enterGameNum,
+			int soloExitNum, int makeRoomNum, int playTime, int score) {
+		super();
+		this.statsId = statsId;
+		this.memberId = memberId;
+		this.winNum = winNum;
+		this.loseNum = loseNum;
+		this.totalGameNum = totalGameNum;
+		this.enterGameNum = enterGameNum;
+		this.soloExitNum = soloExitNum;
+		this.makeRoomNum = makeRoomNum;
+		this.playTime = playTime;
+		this.score = score;
+	}
 
-    // Getter와 Setter
+	// Getter와 Setter
+       
     public int getStatsId() {
         return statsId;
     }
 
-    public void setStatsId(int statsId) {
+    public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public void setStatsId(int statsId) {
         this.statsId = statsId;
     }
 

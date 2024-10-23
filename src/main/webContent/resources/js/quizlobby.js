@@ -250,7 +250,15 @@ async function createRoom(event) {
     // 필수 입력 요소 확인
     if (!maxMusic || !quizRoomType) {
         console.error('필수 입력 요소가 누락되었습니다.');
-        alert('필수 입력 요소를 확인해주세요.');
+        Swal.fire({
+            title: '입력 오류',
+            text: '필수 입력 요소를 확인해주세요.',
+            icon: 'warning',
+            background: '#3A3A3A',
+			color: '#fff',
+			confirmButtonColor: '#1db954',
+            confirmButtonText: '확인'
+        });
         return;
     }
 
@@ -271,18 +279,44 @@ async function createRoom(event) {
 
         if (response.ok) {
             const data = await response.json();
-            alert('방이 생성되었습니다!');
-            currentRoomId = data.roomId;
-            closeModal(); // 모달 닫기
-            window.location.href = `${root}/quiz/rooms/${data.roomId}`;
+            Swal.fire({
+                title: '방 생성 완료',
+                text: '새로운 방이 성공적으로 생성되었습니다!',
+                icon: 'success',
+                background: '#3A3A3A',
+				color: '#fff',
+				confirmButtonColor: '#1db954',
+                confirmButtonText: '확인'
+            }).then(() => {
+                currentRoomId = data.roomId;
+                closeModal(); // 모달 닫기
+                window.location.href = `${root}/quiz/rooms/${data.roomId}`;
+            });
         } else {
-            alert('로그인 후 이용해주세요.');
+            Swal.fire({
+                title: '로그인 필요',
+                text: '로그인 후 이용해주세요.',
+                icon: 'warning',
+                background: '#3A3A3A',
+				color: '#fff',
+				confirmButtonColor: '#1db954',
+                confirmButtonText: '확인'
+            });
         }
     } catch (error) {
         console.error('방 생성 중 오류:', error);
-        alert('방 생성 중 오류가 발생했습니다.');
+        Swal.fire({
+            title: '오류 발생',
+            text: '방 생성 중 오류가 발생했습니다.',
+            icon: 'error',
+            background: '#3A3A3A',
+			color: '#fff',
+			confirmButtonColor: '#1db954',
+            confirmButtonText: '확인'
+        });
     }
 }
+
 
 // 참여 버튼 이벤트 리스너 추가
 function addJoinRoomEventListeners() {
@@ -292,7 +326,15 @@ function addJoinRoomEventListeners() {
             const requiresPassword = button.getAttribute('data-requires-password') === 'true';
 
             if (!roomId) {
-                alert('방 ID를 찾을 수 없습니다.');
+                Swal.fire({
+                    title: '오류',
+                    text: '방 ID를 찾을 수 없습니다.',
+                    icon: 'error',
+                    background: '#3A3A3A',
+					color: '#fff',
+					confirmButtonColor: '#1db954',
+                    confirmButtonText: '확인'
+                });
                 return;
             }
 
@@ -324,7 +366,15 @@ function openPasswordModal(roomId) {
 // 방 참여 처리
 async function joinRoom(roomId, roomPassword = '') {
     if (!currentUserId) {
-        alert('로그인 후 사용해 주세요.');
+        Swal.fire({
+            title: '로그인 필요',
+            text: '로그인 후 사용해 주세요.',
+            icon: 'warning',
+		 	background: '#3A3A3A',
+			color: '#fff',
+			confirmButtonColor: '#1db954',
+            confirmButtonText: '확인'
+        });
         return;
     }
 
@@ -334,22 +384,47 @@ async function joinRoom(roomId, roomPassword = '') {
         userId: currentUserId
     };
 
-   	try {
+    try {
         const response = await fetch(`${root}/quiz/rooms/join`, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(requestData)
-    });
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        });
 
         if (response.ok) {
-            alert('방에 참여하였습니다!');
-            currentRoomId = roomId;
-            window.location.href = `${root}/quiz/rooms/${roomId}`;
+            Swal.fire({
+                title: '성공',
+                text: '방에 참여하였습니다!',
+                icon: 'success',
+                background: '#3A3A3A',
+				color: '#fff',
+				confirmButtonColor: '#1db954',
+                confirmButtonText: '확인'
+            }).then(() => {
+                currentRoomId = roomId;
+                window.location.href = `${root}/quiz/rooms/${roomId}`;
+            });
         } else {
-            alert('방 참여에 실패했습니다.');
+            Swal.fire({
+                title: '로그인 필요',
+	            text: '로그인 후 사용해 주세요.',
+	            icon: 'warning',
+			 	background: '#3A3A3A',
+				color: '#fff',
+				confirmButtonColor: '#1db954',
+	            confirmButtonText: '확인'
+            });
         }
     } catch (error) {
         console.error('방 참여 오류:', error);
-        alert('방 참여 중 오류가 발생했습니다.');
+        Swal.fire({
+            title: '오류',
+            text: '방 참여 중 오류가 발생했습니다.',
+            icon: 'error',
+            background: '#3A3A3A',
+			color: '#fff',
+			confirmButtonColor: '#1db954',
+            confirmButtonText: '확인'
+        });
     }
 }
