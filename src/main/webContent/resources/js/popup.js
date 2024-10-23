@@ -66,7 +66,7 @@ function openPopup(popupId) {
     popups.forEach(popup => {
         popup.classList.remove('active');  // 모든 팝업 닫기
     });
-    
+
     const selectedPopup = document.getElementById(popupId);
     selectedPopup.classList.add('active');  // 선택된 팝업 열기
 }
@@ -128,8 +128,8 @@ function closePopup(popupId) {
 	Mocean.prototype.getViewportHeight = function() {
 
 		var docElement = document.documentElement,
-				client     = docElement['clientHeight'],
-				inner      = window['innerHeight'];
+			client     = docElement['clientHeight'],
+			inner      = window['innerHeight'];
 
 		if( client < inner )
 			return inner;
@@ -195,14 +195,14 @@ function closePopup(popupId) {
 
 	MoceanModal.prototype.bindUIActions = function() {
 		$(document).on( Mocean.buttonPressedEvent,
-										'.mocean-modal-button',
-										$.proxy(this.open, this)
-									);
+			'.mocean-modal-button',
+			$.proxy(this.open, this)
+		);
 
 		$(document).on( Mocean.buttonPressedEvent,
-										'.mocean-modal-close, [data-mocean-dismiss="modal"]',
-										$.proxy(this.close, this)
-									);
+			'.mocean-modal-close, [data-mocean-dismiss="modal"]',
+			$.proxy(this.close, this)
+		);
 
 		var self = this;
 
@@ -218,35 +218,26 @@ function closePopup(popupId) {
 			return;
 		}
 
-		var $button = $(e.target),
-				target  = $button.data('mocean-target');
+		var $button = $(e.currentTarget), // e.target 대신 e.currentTarget 사용
+			target  = $button.data('target'); // 'target'으로 변경
 
 		this.$element = $(target || '#mocean-modal-wrap');
 
 		if ( !this.$element.length ) return;
 
 		// Mocean Modal Type
-		this.modalMocean     = $button.data( 'mocean-type' );
-		this.modalMoceanOut  = $button.data( 'mocean-out-type' );
+		this.modalMocean     = $button.data('mocean-type');
+		this.modalMoceanOut  = $button.data('mocean-out-type');
 
-		if ( $button.data( 'mocean-needs-perspective' ) ) {
-			this.$body.addClass( 'mocean-perspective' );
+		if ( $button.data('mocean-needs-perspective') ) {
+			this.$body.addClass('mocean-perspective');
 			this.hasPerspective = true;
 		}
 
-		// check if the mocean class is already added
-		if ( this.$element.hasClass( this.modalMocean ) || this.modalMocean === undefined ) {
-			this.showModal();
-		} else {
-			this.modalMoceanProvided = false;
-			this.$element.addClass( this.modalMocean );
-
-			this.$element.on( Mocean.transitionAnimationEndEvent, $.proxy(function() {
-				this.$element.off( Mocean.transitionAnimationEndEvent );
-				this.showModal();
-			}, this));
-		}
+		// 모달 열기
+		this.showModal();
 	};
+
 
 	MoceanModal.prototype.close = function( e ) {
 		e.preventDefault();
@@ -309,4 +300,7 @@ function closePopup(popupId) {
 	window.Mocean.Modal = MoceanModal();
 
 })(this);
+
+
+
 
