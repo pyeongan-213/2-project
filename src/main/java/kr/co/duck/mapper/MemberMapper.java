@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import kr.co.duck.beans.MemberBean;
+import kr.co.duck.domain.MemberGameStats;
 
 public interface MemberMapper {
 
@@ -47,5 +48,7 @@ public interface MemberMapper {
 	@Update("update member set password = #{password} where email = #{email}")
 	void modifyMemberPassword(@Param("password") String password, @Param("email") String email);
 	
+	@Select("select COALESCE(s.score, 0) from member m LEFT JOIN member_game_stats s on m.member_id = s.member_id where m.member_id = #{member_id}")
+	Integer getGameScore(int member_id);
 
 }

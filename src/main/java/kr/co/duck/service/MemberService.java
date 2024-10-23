@@ -38,10 +38,6 @@ public class MemberService {
 		
 		if(tempLoginMemberBean2 != null) {
 
-			loginMemberBean.setMember_id(tempLoginMemberBean2.getMember_id());
-			loginMemberBean.setNickname(tempLoginMemberBean2.getNickname());
-			
-
 			loginMemberBean.setMember_id(tempLoginMemberBean2.getMember_id());			
 			loginMemberBean.setNickname(tempLoginMemberBean2.getNickname());
 			
@@ -124,6 +120,10 @@ public class MemberService {
     
     public void modifyMemberPassword(String Password, String email) {
     	memberDao.modifyMemberPassword(Password, email);
+    }
+    
+    public int getGameScore(int member_id) {
+    	return memberDao.getGameScore(member_id);
     }
 	
 }
