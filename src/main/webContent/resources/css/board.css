@@ -20,7 +20,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	background: #191414; /* 배경 색상 추가 (선택 사항) */
-    margin: 80px 70px 20px 70px;
+    margin: 70px 70px 20px 70px;
 	justify-content: center;
 }
 
