@@ -47,7 +47,6 @@ body {
 .btn-group {
 	display: flex;
 	flex-wrap: wrap;
-	max-width: 350px;
 }
 
 .btn-group button {
@@ -155,9 +154,7 @@ p {
     font-size: 16px;
 }
 
-.yearly-btn .button-header {
-    background-color: #01DF3A; /* 같은 색상을 유지 */
-}
+
 
 
 

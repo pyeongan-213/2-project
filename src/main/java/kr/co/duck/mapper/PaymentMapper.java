@@ -30,4 +30,8 @@ public interface PaymentMapper {
     // ���� ���� ����
     @Delete("DELETE FROM Payment WHERE payment_id = #{payment_id}")
     void deletePayment(int payment_id);
+    
+    
+    @Insert("insert INTO Kakaopay_info values (#{KAKAOPAY_INFO_ID}, #{MEMBER_ID}, #{TID}, #{SID} )" )
+    		void insertKakaopay_info(int kakaopay_info_id, int member_id, String tid, String sid);
 }

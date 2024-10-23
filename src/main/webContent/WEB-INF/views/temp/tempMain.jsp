@@ -336,7 +336,6 @@ c-scrollbar{
 					<div class="wave"></div>
 					<div class="wave"></div>
 					<div class="wave"></div>
-					<div class="wave"></div>
 					<h2 style="position: inherit; z-index: 2;">월간결제</h2>
 					<div style="position: inherit; z-index: 2;">Experience
 						best-in-class sound quality that opens up every detail with HiRes

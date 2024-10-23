@@ -54,7 +54,7 @@ public class popup {
       String tid = SessionUtils.getStringAttributeValue("tid");
       kakaoPayService.requestPaymentApprove(tid, pgToken);
       model.addAttribute("successMessage", "성공적으로 결제를 완료했습니다.");
-      return "temp/slide_popup";
+      return "Project_2/temp/slide_popup";
    }
 
 

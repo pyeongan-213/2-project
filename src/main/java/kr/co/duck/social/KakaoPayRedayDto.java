@@ -12,8 +12,6 @@ public class KakaoPayRedayDto {
     private Long memberId; //사용자 Id 필드 추가
     
     
-    
-    
    public String getName() {
       return name;
    }
@@ -32,10 +30,6 @@ public class KakaoPayRedayDto {
    public void setMemberId(Long memberId) {
       this.memberId = memberId;
    }
-    
-    
-    
-    
     
     
 
